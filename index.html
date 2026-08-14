@@ -579,7 +579,7 @@
                 const docSnap = await getDoc(docRef); 
                 
                 if (docSnap.exists()) { 
-                    document.title = displayCatName + " - " + displaySetName + " | 𝐐𝐔𝐄𝐒𝐓𝐈𝐎𝐍𝐙 ";
+                    document.title = displayCatName + " - " + displaySetName + " | 𝐐𝐔𝐄𝐒𝐓𝐈𝐎ປ ";
                     mcqData = docSnap.data().questions.map((q, index) => { 
                         let correctKey = q.ans; 
                         if (q.ans && !['a','b','c','d'].includes(q.ans)) { const idx = q.options.indexOf(q.ans); if (idx !== -1) correctKey = ['a','b','c','d'][idx]; } 
@@ -772,7 +772,8 @@
         }
 
         window.applyPagination = function() {
-            const container = document.getElementById('onuched-pages-container'); container.innerHTML = ''; 
+            const container = document.getElementById('onuched-pages-container'); 
+            container.innerHTML = ''; 
             const isMobile = document.body.classList.contains('mobile-mode');
             
             if (isMobile) {
@@ -782,18 +783,87 @@
                 restoreMarksAndCollectSpans(); return;
             }
             
-            const tempDiv = document.createElement('div'); tempDiv.innerHTML = window.lastFinalHTML;
-            // Simplified pagination logic for merged version
-            let pageNum = 1; let currentPage = createOnuchedPage(pageNum, container); let contentArea = currentPage.querySelector('.content-area');
-            const nodes = Array.from(tempDiv.childNodes);
-            
-            nodes.forEach(node => {
-                contentArea.appendChild(node);
-                if (contentArea.scrollWidth > contentArea.clientWidth + 5) {
-                    contentArea.removeChild(node); pageNum++; currentPage = createOnuchedPage(pageNum, container);
-                    contentArea = currentPage.querySelector('.content-area'); contentArea.appendChild(node);
+            const tempDiv = document.createElement('div'); 
+            tempDiv.innerHTML = window.lastFinalHTML;
+
+            // 🚀 Table Splitter for Large Tables
+            const tables = tempDiv.querySelectorAll('table');
+            tables.forEach(table => {
+                const rows = Array.from(table.querySelectorAll('tr'));
+                if (rows.length > 10) { 
+                    let headerRow = null; let startIndex = 0;
+                    if (rows[0] && rows[0].querySelector('th')) { headerRow = rows[0]; startIndex = 1; }
+                    const fragment = document.createDocumentFragment();
+                    let currentNewTable = null; let currentTbody = null; let rowCount = 0;
+                    for (let r = startIndex; r < rows.length; r++) {
+                        if (rowCount === 0) {
+                            currentNewTable = document.createElement('table');
+                            Array.from(table.attributes).forEach(attr => currentNewTable.setAttribute(attr.name, attr.value));
+                            currentTbody = document.createElement('tbody');
+                            if (headerRow) {
+                                if (r === startIndex) { currentTbody.appendChild(headerRow); } 
+                                else {
+                                    const clonedHeader = headerRow.cloneNode(true);
+                                    clonedHeader.querySelectorAll('span[data-index]').forEach(span => span.removeAttribute('data-index'));
+                                    currentTbody.appendChild(clonedHeader);
+                                }
+                            }
+                            currentNewTable.appendChild(currentTbody); fragment.appendChild(currentNewTable);
+                        }
+                        currentTbody.appendChild(rows[r]); rowCount++;
+                        if (rowCount >= 10) { rowCount = 0; }
+                    }
+                    if (table.parentNode) { table.parentNode.replaceChild(fragment, table); }
                 }
             });
+            
+            // Sentence Splitter
+            Array.from(tempDiv.childNodes).forEach(node => {
+                if (node.nodeType === 3 && node.textContent.trim() !== "") {
+                    const text = node.textContent;
+                    const sentences = text.split(/([।!?]+\s*)/);
+                    const fragment = document.createDocumentFragment();
+                    sentences.forEach(s => { if (s !== "") fragment.appendChild(document.createTextNode(s)); });
+                    tempDiv.insertBefore(fragment, node); tempDiv.removeChild(node);
+                }
+            });
+
+            // Smart Pagination with Node Batching
+            let pageNum = 1; 
+            let currentPage = createOnuchedPage(pageNum, container);
+            let contentArea = currentPage.querySelector('.content-area');
+            const nodes = Array.from(tempDiv.childNodes);
+            
+            let i = 0;
+            let batchCounter = 0;
+
+            while (i < nodes.length) {
+                let node = nodes[i];
+                if (node.nodeType === 3 && node.textContent.trim() === "") { i++; continue; }
+                
+                contentArea.appendChild(node);
+                batchCounter++;
+                
+                let isSentenceEnd = /[।!?]+/.test(node.textContent || "");
+                let isBlock = node.nodeType === 1 && /^(BR|P|DIV|TABLE|H[1-6]|UL|OL|LI)$/i.test(node.nodeName);
+                
+                // Only check overflow after adding a reasonable chunk or at a safe breaking point
+                if (isSentenceEnd || isBlock || batchCounter >= 50 || i === nodes.length - 1) {
+                    if (contentArea.scrollWidth > contentArea.clientWidth + 5) {
+                        // Backtrack to find exact overflow point
+                        while (contentArea.scrollWidth > contentArea.clientWidth + 5 && contentArea.childNodes.length > 1) {
+                            contentArea.removeChild(contentArea.lastChild);
+                            i--; 
+                        }
+                        pageNum++; 
+                        currentPage = createOnuchedPage(pageNum, container);
+                        contentArea = currentPage.querySelector('.content-area');
+                    }
+                    batchCounter = 0; 
+                }
+                i++;
+            }
+            
             if (window.renderMathInElement) document.querySelectorAll('#onuched-view .content-area').forEach(ca => renderMathInElement(ca, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false} ], throwOnError: false }));
             restoreMarksAndCollectSpans();
         }
