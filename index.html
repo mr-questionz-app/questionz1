@@ -10,7 +10,7 @@
     <link href="https://fonts.maateen.me/bensen/font.css" rel="stylesheet">
     <link href="https://fonts.maateen.me/hoogly/font.css" rel="stylesheet">
     
-    <!-- Test Fonts -->
+    <!-- Test & Onuched Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Hind+Siliguri:wght@300;400;500;600;700&family=Lora:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Libraries -->
@@ -21,7 +21,7 @@
 
     <style>
         /* ==========================================
-           DASHBOARD STYLES
+           GLOBAL & DASHBOARD STYLES
            ========================================== */
         :root {
             --primary-color: #1B251E; --secondary-color: #C9A461; --bg-color: #0B100E;
@@ -38,13 +38,14 @@
             --spring: cubic-bezier(0.34, 1.56, 0.64, 1); --ease: cubic-bezier(0.16, 1, 0.3, 1);
             --emerald-700: #0B3D30; --emerald-600: #0F5C46; --emerald-wash: rgba(15, 92, 70, 0.13);
             --gold-500: #B8935A; --gold-600: #9A7A42; --danger: #B5533E; --danger-wash: rgba(181, 83, 62, 0.13); --violet: #6D28D9;
+            --charcoal: #16241F; --cream: #F5EFE0;
             --print-margin-top: 8mm; --print-margin-right: 6mm; --print-margin-bottom: 8mm; --print-margin-left: 6mm;
         }
 
         body {
             font-family: 'Cuprum', sans-serif; font-weight: 400; background: var(--bg-color); color: var(--text-color);
             margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh;
-            transition: background-color 0.35s var(--ease);
+            transition: background-color 0.35s var(--ease); position: relative;
         }
 
         /* Dashboard Specific Elements */
@@ -75,15 +76,15 @@
         footer.dash-footer { width: 100%; padding: 30px 0; text-align: center; margin-top: auto; color: var(--cream-dim); font-size: 10px; }
 
         /* ==========================================
-           TEST UI STYLES (Activated by body classes)
+           TEST & ONUCHED SHARED UI STYLES
            ========================================== */
-        body.test-active { font-family: 'Noto Serif Bengali', 'Lora', serif; background-color: var(--bg-desktop); }
-        body.test-active #dashboard-view { display: none !important; }
+        body.test-active, body.onuched-active { font-family: 'Noto Serif Bengali', 'Lora', serif; background-color: var(--bg-desktop); }
+        body.test-active #dashboard-view, body.onuched-active #dashboard-view { display: none !important; }
         
-        #test-view { width: 100%; display: none; flex-direction: column; align-items: center; min-height: 100vh; position: relative; }
+        #test-view, #onuched-view { width: 100%; display: none; flex-direction: column; align-items: center; min-height: 100vh; position: relative; }
         body.test-active #test-view { display: flex; }
+        body.onuched-active #onuched-view { display: flex; }
 
-        /* Test specific elements */
         *, *::before, *::after { box-sizing: border-box; }
         .recurring { position: relative; display: inline-block; }
         .dot { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-weight: bold; font-size: 15px; }
@@ -95,129 +96,137 @@
         .top-nav-container { position: fixed; top: 8px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 4px; flex-wrap: wrap; justify-content: center; z-index: 3000; width: max-content; max-width: 98vw; background: rgba(255, 255, 255, 0.82); backdrop-filter: blur(22px) saturate(190%); -webkit-backdrop-filter: blur(22px) saturate(190%); border: 1px solid rgba(255, 255, 255, 0.65); border-radius: 40px; padding: 5px 10px; box-shadow: var(--shadow-nav); }
         .nav-sep { flex-shrink: 0; width: 1px; height: 16px; background: rgba(79, 70, 229, 0.16); border-radius: 1px; margin: 0 2px; }
         .action-group { display: flex; align-items: center; gap: 2px; }
-        .floating-stats { display: flex; align-items: center; gap: 8px; padding: 0 8px; height: 22px; font-family: 'Hind Siliguri', sans-serif; font-size: 11px; font-weight: 700; color: #374151; white-space: nowrap; user-select: none; cursor: pointer; }
-        .floating-stats svg { width: 12px; height: 12px; display: block; }
-        .floating-stats .stat-timer { display: inline-flex; align-items: center; gap: 3px; color: var(--danger); }
-        .floating-stats .timer-val, .floating-stats .rem-q { font-family: 'Cutive Mono', monospace; font-weight: 700; letter-spacing: 0.2px; }
-
+        
+        /* Shared Nav Buttons */
         .nav-icon-btn { border: none; width: 26px; height: 22px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; background: transparent; position: relative; transition: background 0.2s var(--ease), transform 0.18s var(--spring), box-shadow 0.24s var(--ease), color 0.2s var(--ease); color:#374151; }
         .nav-icon-btn svg { width: 15px; height: 15px; display: block; }
         .nav-icon-btn:active { transform: scale(0.86); }
-        .nav-icon-btn.save-tone { color: var(--emerald-600); background: var(--emerald-wash); }
-        .nav-icon-btn.save-tone:hover { background: rgba(15, 92, 70, 0.22); box-shadow: 0 3px 10px rgba(15, 92, 70, 0.28); transform: translateY(-1px); }
-        .nav-icon-btn.danger-tone { color: var(--danger); background: var(--danger-wash); }
-        .nav-icon-btn.danger-tone:hover { background: rgba(181, 83, 62, 0.22); box-shadow: 0 3px 10px rgba(181, 83, 62, 0.28); transform: translateY(-1px); }
-        .nav-icon-btn.gold-tone { color: var(--gold-600); background: rgba(184, 147, 90, 0.14); }
-        .nav-icon-btn.gold-tone:hover { background: rgba(184, 147, 90, 0.26); box-shadow: 0 3px 10px rgba(184, 147, 90, 0.3); transform: translateY(-1px); }
-        .nav-icon-btn.gold-tone.is-active { background: var(--gold-500); color: #fff; box-shadow: 0 2px 8px rgba(184, 147, 90, 0.45); }
-        .nav-icon-btn.violet-tone { color: var(--violet); background: rgba(109, 40, 217, 0.10); }
-        .nav-icon-btn.violet-tone:hover { background: rgba(109, 40, 217, 0.20); box-shadow: 0 3px 10px rgba(109, 40, 217, 0.26); transform: translateY(-1px); }
-        .nav-icon-btn.violet-tone.is-active { background: var(--violet); color: #fff; box-shadow: 0 2px 8px rgba(109, 40, 217, 0.45); }
         .back-tone { color: #fff; background: var(--danger); width: 32px; font-size:12px; font-weight:bold; }
         .back-tone:hover { background: #9b4735; transform: translateY(-1px); }
-
-        @keyframes btn-spin { to { transform: rotate(360deg); } }
-        .btn-spin { animation: btn-spin 0.8s linear infinite; }
-
+        
+        /* View Switcher */
         .view-switcher { display: flex; gap: 2px; padding: 2px; border-radius: 18px; background: var(--primary-dim); align-items: center; position: relative; }
-        .view-switcher-indicator { position: absolute; top: 2px; left: 2px; height: 22px; border-radius: 14px; background: var(--primary); box-shadow: 0 2px 8px var(--primary-glow); transition: transform 0.32s var(--spring), width 0.32s var(--spring); z-index: 0; }
         .view-btn { border: none; padding: 0 8px; height: 22px; border-radius: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; background: transparent; color: #374151; position: relative; z-index: 1; transition: color 0.22s var(--ease), transform 0.18s var(--spring); }
         .view-btn svg { width: 14px; height: 14px; display: block; }
-        .view-btn:not(.active):hover { color: var(--primary); }
+        .view-btn:not(.active):hover { background: rgba(79, 70, 229, 0.12); color: var(--primary); }
         .view-btn:active { transform: scale(0.88); }
-        .view-btn.active { color: white; }
+        .view-btn.active { background: var(--primary); color: white; box-shadow: 0 2px 8px var(--primary-glow); }
 
+        /* Shared Page Styles */
         .page { width: 210mm; height: 297mm; padding: 5mm 8mm 15mm 8mm; margin: 10mm auto; background: var(--bg-page); box-shadow: var(--shadow-page); box-sizing: border-box; position: relative; page-break-after: always; overflow: hidden; border-radius: 6px; display: flex; flex-direction: column; }
-        .content-columns { display: flex; flex-direction: column; flex-wrap: wrap; flex: 1 1 auto; min-height: 0; column-gap: 10mm; justify-content: flex-start; position: relative; }
-        body.print-mode .content-columns::after, body.desktop-mode .content-columns::after { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; border-left: 1px solid #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-        .q-card { width: calc(50% - 5mm); break-inside: avoid; margin-bottom: 5px; padding: 5px; padding-bottom: 8px; border-bottom: 1px dashed rgba(79, 70, 229, 0.18); box-sizing: border-box; border-radius: 4px; }
-
-        body.mobile-mode { background: linear-gradient(150deg, #F0F1FF 0%, #EBEEFF 100%); }
-        body.mobile-mode .page { width: 95%; height: auto; min-height: auto; margin: 55px auto 20px auto; padding: 15px; box-shadow: none; overflow: visible; border-top: 3px solid var(--primary); display: block; }
-        body.mobile-mode .content-columns { display: block; height: auto; column-gap: 0; }
-        body.mobile-mode .q-card { width: 100%; margin-bottom: 15px; padding: 14px; box-sizing: border-box; border: 1px solid rgba(79, 70, 229, 0.10); border-bottom: 1px solid rgba(79, 70, 229, 0.10); background: var(--bg-page); border-radius: 10px; box-shadow: 0 1px 3px rgba(15,23,42,0.04), 0 6px 20px rgba(79,70,229,0.06); }
-
-        .header { text-align: center; margin-top: 0; margin-bottom: 8px; border-bottom: 1px solid rgba(79, 70, 229, 0.12); padding-bottom: 4px; }
-        .header h2 { margin: 0; font-weight: 700; letter-spacing: 0.4px; font-size: 15px; text-transform: uppercase; font-family: 'Hind Siliguri', sans-serif; background: linear-gradient(118deg, var(--primary) 20%, #818CF8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .q-text { font-size: var(--q-font-size); font-weight: bold; display: block; margin-bottom: 5px; color: #1E293B; transition: font-size 0.2s; }
-        .option-container { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
-        .option-btn { padding: 3px 8px; background: #F8F9FC; border: 1px solid rgba(79, 70, 229, 0.14); border-radius: 6px; cursor: pointer; font-size: var(--opt-font-size); text-align: left; color: #1E293B; transition: background 0.18s var(--ease), border-color 0.18s var(--ease), color 0.18s var(--ease), transform 0.15s var(--spring), box-shadow 0.18s var(--ease); }
-        .option-btn:hover { background: var(--primary-dim); border-color: var(--primary-light); }
-        .option-btn.blur-logic { filter: blur(5px); user-select: none; transition: filter 0.3s ease; }
-        .option-btn.selected, .option-btn.opt-correct, .option-btn.opt-wrong, .option-btn.opt-missed { filter: blur(0) !important; }
-        .option-btn.selected { background: var(--primary-dim); color: var(--primary); border-color: var(--primary-light); font-weight: bold; }
-        .option-btn.opt-correct { background: var(--emerald-wash) !important; color: var(--emerald-700) !important; border-color: var(--emerald-600) !important; font-weight: bold; }
-        .option-btn.opt-wrong { background: var(--danger-wash) !important; color: var(--danger) !important; border-color: var(--danger) !important; font-weight: bold; }
-        .option-btn.opt-missed { background: rgba(184, 147, 90, 0.16) !important; color: var(--gold-600) !important; border-color: var(--gold-500) !important; font-weight: bold; }
-        .locked-card { pointer-events: none; opacity: 0.85; }
-        .locked-card .option-btn.opt-correct { background: #E4E6F5 !important; color: #4A4B68 !important; border-color: #B7BBE0 !important; font-weight: bold; }
-
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); z-index: 4000; justify-content: center; align-items: center; }
-        .result-modal { background: var(--bg-page); padding: 26px; border-radius: 16px; width: 320px; text-align: center; font-family: 'Noto Serif Bengali', 'Lora', serif; box-shadow: var(--shadow-page); border: 1px solid rgba(79, 70, 229, 0.10); }
-        .result-modal h3 { margin-top: 0; font-family: 'Hind Siliguri', sans-serif; font-weight: 700; letter-spacing: 0.3px; background: linear-gradient(118deg, var(--primary) 20%, #818CF8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; border-bottom: 1px solid rgba(79, 70, 229, 0.12); padding-bottom: 10px; }
-        .result-modal p { font-size: 17px; margin: 10px 0; line-height: 1.6; color: #1E293B; }
-        .close-modal-btn { background: var(--primary); color: white; border: none; padding: 9px 26px; border-radius: 999px; cursor: pointer; font-size: 15px; margin-top: 14px; font-family: 'Hind Siliguri', sans-serif; font-weight: 600; box-shadow: 0 4px 14px var(--primary-glow); transition: transform 0.18s var(--spring), box-shadow 0.18s var(--ease); }
-        .close-modal-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px var(--primary-glow); }
-        .close-modal-btn:active { transform: scale(0.96); }
-
-        .footer { flex-shrink: 0; display: flex; justify-content: center; text-align: center; font-size: 11px; line-height: 1.2; word-spacing: -1.5px; border-top: 1px solid rgba(15, 23, 42, 0.25); padding-top: 5px; color: #475569; font-family: 'Cutive Mono', 'Hind Siliguri', monospace; font-weight: 300; }
-        body.mobile-mode .footer { margin-top: 20px; padding-bottom: 10px; }
-
-        .result-fab { position: fixed; bottom: 25px; right: 25px; background: linear-gradient(135deg, #0F5C46 0%, #16966F 100%); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 6px 20px rgba(11, 61, 48, 0.38), 0 2px 8px rgba(11, 61, 48, 0.22), 0 0 0 0 rgba(15, 92, 70, 0.4); border: none; z-index: 999; transition: transform 0.2s var(--spring), box-shadow 0.3s var(--ease), background 0.35s var(--ease); animation: fab-pulse 2.8s ease-in-out infinite; }
-        .result-fab.is-reset { background: linear-gradient(135deg, #4F46E5 0%, #7C72F0 100%); animation: fab-pulse-indigo 2.8s ease-in-out infinite; }
-        .result-fab:hover { transform: translateY(-3px) scale(1.05); }
-        .result-fab:active { transform: scale(0.9); }
-        .result-fab svg { width: 26px; height: 26px; fill: white; }
-        @keyframes fab-pulse { 0%, 100% { box-shadow: 0 6px 20px rgba(11,61,48,0.38), 0 2px 8px rgba(11,61,48,0.22), 0 0 0 0 rgba(15,92,70,0.4); } 50% { box-shadow: 0 6px 20px rgba(11,61,48,0.38), 0 2px 8px rgba(11,61,48,0.22), 0 0 0 9px rgba(15,92,70,0); } }
-        @keyframes fab-pulse-indigo { 0%, 100% { box-shadow: 0 6px 20px rgba(79,70,229,0.38), 0 2px 8px rgba(79,70,229,0.22), 0 0 0 0 rgba(79,70,229,0.4); } 50% { box-shadow: 0 6px 20px rgba(79,70,229,0.38), 0 2px 8px rgba(79,70,229,0.22), 0 0 0 9px rgba(79,70,229,0); } }
-
-        #test-loading-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(150deg, #F0F1FF 0%, #EBEEFF 100%); display: flex; flex-direction: column; align-items: center; padding-top: 60px; z-index: 2000; }
-        .skeleton-nav { display: flex; gap: 6px; margin-bottom: 32px; align-items: center; width: max-content; background: rgba(255, 255, 255, 0.80); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.65); border-radius: 40px; padding: 6px 14px; box-shadow: var(--shadow-nav); }
-        .skeleton-pill { height: 22px; border-radius: 14px; }
-        .skeleton-container { width: 90%; max-width: 800px; display: flex; flex-direction: column; gap: 15px; }
-        .skeleton-card { background: var(--bg-page); padding: 15px; border-radius: 10px; border: 1px solid rgba(79, 70, 229, 0.08); box-shadow: 0 4px 24px rgba(79,70,229,0.07), 0 1px 4px rgba(0,0,0,0.04); }
-        .shimmer { background: #E8E9F7; background-image: linear-gradient(90deg, #E8E9F7 0px, #F2F3FF 80px, #E8E9F7 160px); background-size: 400% 100%; animation: shimmer-anim 1.7s infinite linear; border-radius: 6px; }
-        @keyframes shimmer-anim { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
-        .sk-text { height: 18px; width: 80%; margin-bottom: 15px; }
-        .sk-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .sk-opt { height: 32px; width: 100%; }
-
         .grand-header { position: relative; display: none; text-align: center; border-bottom: 1.5px solid #0F172A; padding-bottom: 8px; margin-bottom: 10px; }
         .grand-header h1 { margin: 0; font-size: 36px; font-weight: 900; letter-spacing: 5px; font-family: 'Cinzel', serif; color: #0F172A; }
         .grand-header h3 { margin: 6px 0; font-size: 15px; font-family: 'Cutive Mono', 'Hind Siliguri', monospace; font-weight: 500; color: #000; word-spacing: -1.5px; }
-        .grand-header .meta { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; margin-top: 5px; font-family: 'Noto Serif Bengali', serif; color: #334155; }
         .qr-code-print { position: absolute; top: 0; right: 0; width: 75px; height: 75px; border-radius: 4px; border: 2px solid #0F172A; padding: 2px; background: #FFFFFF; box-sizing: border-box; }
-        .katex { font-size: 1.1em; }
+        .header { text-align: center; margin-top: 0; margin-bottom: 8px; border-bottom: 1px solid rgba(79, 70, 229, 0.12); padding-bottom: 4px; }
+        .header h2, .header h3 { margin: 0; font-weight: 700; letter-spacing: 0.4px; font-size: 15px; text-transform: uppercase; font-family: 'Hind Siliguri', sans-serif; background: linear-gradient(118deg, var(--primary) 20%, #818CF8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 
+        /* Modes */
+        body.mobile-mode { background: linear-gradient(150deg, #F0F1FF 0%, #EBEEFF 100%); }
+        body.mobile-mode .page { width: 95%; height: auto; min-height: 100vh; margin: 55px auto 20px auto; padding: 15px; box-shadow: none; overflow: visible; border-top: 3px solid var(--primary); display: block; border-radius: 0; }
         body.print-mode { background-color: var(--bg-print); }
         body.print-mode .page, body.desktop-mode .page { width: 210mm; height: 297mm; padding: var(--print-margin-top) var(--print-margin-right) var(--print-margin-bottom) var(--print-margin-left); margin: 20px auto; background: var(--bg-page); box-shadow: 0 8px 30px rgba(0,0,0,0.35); border: none; border-radius: 4px; }
         body.print-mode .grand-header, body.desktop-mode .grand-header { display: block; }
-        body.print-mode .page-header, body.desktop-mode .page-header { display: none; }
+        body.print-mode .header, body.desktop-mode .header { display: none; }
+
+        /* Loaders */
+        .loading-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(150deg, #F0F1FF 0%, #EBEEFF 100%); display: flex; flex-direction: column; align-items: center; padding-top: 60px; z-index: 2000; }
+        .skeleton-nav { display: flex; gap: 6px; margin-bottom: 32px; align-items: center; width: max-content; background: rgba(255, 255, 255, 0.80); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.65); border-radius: 40px; padding: 6px 14px; box-shadow: var(--shadow-nav); }
+        .skeleton-pill { height: 22px; border-radius: 14px; }
+        .shimmer { background: #E8E9F7; background-image: linear-gradient(90deg, #E8E9F7 0px, #F2F3FF 80px, #E8E9F7 160px); background-size: 400% 100%; animation: shimmer-anim 1.7s infinite linear; border-radius: 6px; }
+        @keyframes shimmer-anim { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+
+        /* ==========================================
+           TEST (MCQ) SPECIFIC STYLES
+           ========================================== */
+        .floating-stats { display: flex; align-items: center; gap: 8px; padding: 0 8px; height: 22px; font-family: 'Hind Siliguri', sans-serif; font-size: 11px; font-weight: 700; color: #374151; white-space: nowrap; user-select: none; cursor: pointer; }
+        .floating-stats .stat-timer { display: inline-flex; align-items: center; gap: 3px; color: var(--danger); }
+        .floating-stats .timer-val, .floating-stats .rem-q { font-family: 'Cutive Mono', monospace; font-weight: 700; letter-spacing: 0.2px; }
+        .nav-icon-btn.save-tone { color: var(--emerald-600); background: var(--emerald-wash); }
+        .nav-icon-btn.danger-tone { color: var(--danger); background: var(--danger-wash); }
+        .nav-icon-btn.gold-tone { color: var(--gold-600); background: rgba(184, 147, 90, 0.14); }
+        .nav-icon-btn.violet-tone { color: var(--violet); background: rgba(109, 40, 217, 0.10); }
+
+        #test-view .content-columns { display: flex; flex-direction: column; flex-wrap: wrap; flex: 1 1 auto; min-height: 0; column-gap: 10mm; justify-content: flex-start; position: relative; }
+        body.print-mode #test-view .content-columns::after, body.desktop-mode #test-view .content-columns::after { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; border-left: 1px solid #000; }
+        body.mobile-mode #test-view .content-columns { display: block; height: auto; column-gap: 0; }
+        
+        .q-card { width: calc(50% - 5mm); break-inside: avoid; margin-bottom: 5px; padding: 5px; padding-bottom: 8px; border-bottom: 1px dashed rgba(79, 70, 229, 0.18); box-sizing: border-box; border-radius: 4px; }
+        body.mobile-mode .q-card { width: 100%; margin-bottom: 15px; padding: 14px; border: 1px solid rgba(79, 70, 229, 0.10); background: var(--bg-page); border-radius: 10px; box-shadow: 0 1px 3px rgba(15,23,42,0.04), 0 6px 20px rgba(79,70,229,0.06); }
         body.print-mode .q-card, body.desktop-mode .q-card { width: calc(50% - 5mm); border: none; margin-bottom: 0px; padding: 2px 5px; }
-        body.print-mode .q-card { pointer-events: none !important; opacity: 1 !important; }
-        body.print-mode .q-text, body.desktop-mode .q-text { line-height: 1.1; margin-bottom: 2px; }
-        body.print-mode .option-container, body.desktop-mode .option-container { gap: 2px; }
-        body.print-mode .option-btn, body.desktop-mode .option-btn, body.print-mode .option-btn.selected, body.print-mode .option-btn.opt-correct, body.print-mode .option-btn.opt-wrong, body.print-mode .option-btn.opt-missed, body.print-mode .locked-card .option-btn.opt-correct { background: transparent !important; border: 1px solid transparent !important; padding: 1px 4px; color: #000 !important; font-weight: normal !important; line-height: 1.1; }
-        body.desktop-mode .option-btn.selected { background: var(--primary-dim) !important; color: var(--primary) !important; border-color: var(--primary-light) !important; font-weight: bold !important; }
-        body.desktop-mode .option-btn.opt-correct { background: var(--emerald-wash) !important; color: var(--emerald-700) !important; border-color: var(--emerald-600) !important; font-weight: bold !important; }
-        body.desktop-mode .option-btn.opt-wrong { background: var(--danger-wash) !important; color: var(--danger) !important; border-color: var(--danger) !important; font-weight: bold !important; }
-        body.desktop-mode .option-btn.opt-missed { background: rgba(184, 147, 90, 0.16) !important; color: var(--gold-600) !important; border-color: var(--gold-500) !important; font-weight: bold !important; }
-        body.desktop-mode .locked-card .option-btn.opt-correct { background: #E4E6F5 !important; color: #4A4B68 !important; border-color: #B7BBE0 !important; font-weight: bold !important; }
-        body.print-mode .footer, body.desktop-mode .footer { border-top: none; }
+        
+        .q-text { font-size: var(--q-font-size); font-weight: bold; display: block; margin-bottom: 5px; color: #1E293B; }
+        .option-container { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+        .option-btn { padding: 3px 8px; background: #F8F9FC; border: 1px solid rgba(79, 70, 229, 0.14); border-radius: 6px; cursor: pointer; font-size: var(--opt-font-size); text-align: left; color: #1E293B; }
+        .option-btn.selected { background: var(--primary-dim); color: var(--primary); border-color: var(--primary-light); font-weight: bold; }
+        .option-btn.opt-correct { background: var(--emerald-wash) !important; color: var(--emerald-700) !important; border-color: var(--emerald-600) !important; font-weight: bold; }
+        .option-btn.opt-wrong { background: var(--danger-wash) !important; color: var(--danger) !important; border-color: var(--danger) !important; font-weight: bold; }
+        .locked-card { pointer-events: none; opacity: 0.85; }
+
+        .result-fab { position: fixed; bottom: 25px; right: 25px; background: linear-gradient(135deg, #0F5C46 0%, #16966F 100%); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 6px 20px rgba(11, 61, 48, 0.38); border: none; z-index: 999; animation: fab-pulse 2.8s ease-in-out infinite; }
+        .result-fab svg { width: 26px; height: 26px; fill: white; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.55); backdrop-filter: blur(3px); z-index: 4000; justify-content: center; align-items: center; }
+        .result-modal { background: var(--bg-page); padding: 26px; border-radius: 16px; width: 320px; text-align: center; }
+        
+        /* ==========================================
+           ONUCHED SPECIFIC STYLES
+           ========================================== */
+        #onuched-view .content-area {
+            font-size: var(--q-font-size); line-height: 1.45; color: #0F172A; text-align: left; 
+            column-count: 2; column-gap: 8mm; column-fill: auto;
+            width: 100%; overflow-x: hidden; overflow-y: hidden; box-sizing: border-box;
+            word-break: normal; overflow-wrap: break-word; hyphens: none; position: relative; 
+            user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+        }
+        body.mobile-mode #onuched-view .content-area { column-count: 1; height: auto !important; overflow: visible; column-rule: none; }
+        body.print-mode #onuched-view .content-area::after, body.desktop-mode #onuched-view .content-area::after { content: ''; position: absolute; top: 0; bottom: 0; left: calc(50% - 0.5px); border-left: 1px solid #000000; pointer-events: none; z-index: 10; }
+        body.print-mode #onuched-view .content-area p, body.desktop-mode #onuched-view .content-area p { margin-top: 0 !important; margin-bottom: 6px !important; }
+
+        /* Premium Marking Styles */
+        #onuched-view .content-area span[data-index] { transition: color .15s ease; cursor: text; }
+        #onuched-view .content-area span.selecting { color: var(--emerald-700); }
+        #onuched-view .content-area span.marked { color: var(--emerald-700); font-weight: 600; text-decoration: underline; text-decoration-color: var(--gold-500); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+        
+        body.print-mode #onuched-view .content-area span[data-index] { pointer-events: none; }
+        body.print-mode #onuched-view .content-area span.marked { display: none !important; }
+        body.print-mode #onuched-view .content-area span.marked[data-blank-num] { display: inline-block !important; min-width: 60px; margin: 0 4px; background-color: transparent !important; color: transparent !important; border-bottom: 1.5px dashed #000 !important; pointer-events: none; position: relative; text-decoration: none; font-weight: normal; vertical-align: baseline; line-height: 1; }
+        body.print-mode #onuched-view .content-area span.marked[data-blank-num]::after { content: attr(data-blank-num); position: absolute; left: 50%; bottom: -1px; transform: translateX(-50%); color: #000; font-size: 14px; visibility: visible; white-space: nowrap; }
+
+        /* Grabbers & Tooltips */
+        #highlight { position: absolute; background: linear-gradient(180deg, rgba(15, 92, 70, 0.16), rgba(15, 92, 70, 0.09)); border-radius: 5px; box-shadow: inset 0 -3px 0 0 rgba(184, 147, 90, 0.55); opacity: 0; visibility: hidden; transform: scaleY(0.4); transform-origin: center; pointer-events: none; z-index: 1000; transition: opacity .16s ease, transform .2s cubic-bezier(.34,1.56,.64,1); }
+        #highlight.active { opacity: 1; visibility: visible; transform: scaleY(1); }
+        .grabber { position: absolute; width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(circle at 32% 28%, #2E8A6B, var(--emerald-600) 55%, var(--emerald-700)); box-shadow: 0 2px 6px rgba(11, 61, 48, 0.4), 0 0 0 3px rgba(184, 147, 90, 0.22); z-index: 1010; cursor: ew-resize; touch-action: none; opacity: 0; visibility: hidden; transition: opacity .16s ease, transform .2s cubic-bezier(.34,1.56,.64,1); }
+        .grabber::after { content: ''; position: absolute; width: 2px; height: 34px; left: 7px; background: linear-gradient(180deg, var(--emerald-600), var(--gold-500)); border-radius: 1px; }
+        #grabber-left { transform: translate(-50%, -16px) scale(0.4); } #grabber-left::after { top: 8px; } #grabber-left.active { opacity: 1; visibility: visible; transform: translate(-50%, -16px) scale(1); }
+        #grabber-right { transform: translate(-50%, 34px) scale(0.4); } #grabber-right::after { bottom: 8px; } #grabber-right.active { opacity: 1; visibility: visible; transform: translate(-50%, 34px) scale(1); }
+        
+        #tooltip { position: absolute; display: flex; align-items: center; gap: 7px; background: var(--charcoal); color: var(--cream); padding: 9px 18px; border-radius: 999px; border: 1px solid rgba(184, 147, 90, 0.35); font-family: 'Hind Siliguri', sans-serif; font-size: 13px; font-weight: 700; z-index: 1020; cursor: pointer; opacity: 0; visibility: hidden; transform: translate(-50%, -100%) translateY(6px) scale(0.9); transition: opacity .16s ease, transform .2s cubic-bezier(.34,1.56,.64,1); }
+        #tooltip.active { opacity: 1; visibility: visible; pointer-events: auto; transform: translate(-50%, -100%) translateY(0) scale(1); }
+        #tooltip::after { content: ''; position: absolute; top: 100%; left: 50%; margin-left: -6px; border-width: 6px; border-style: solid; border-color: var(--charcoal) transparent transparent transparent; }
+        
+        #toast { position: fixed; left: 50%; bottom: 30px; transform: translate(-50%, 14px); display: flex; align-items: center; gap: 10px; background: var(--charcoal); color: var(--cream); padding: 13px 22px; border-radius: 999px; border: 1px solid rgba(184, 147, 90, 0.3); font-family: 'Hind Siliguri', sans-serif; font-size: 14.5px; opacity: 0; pointer-events: none; z-index: 6000; transition: opacity .22s ease, transform .28s cubic-bezier(.34,1.56,.64,1); }
+        #toast.show { opacity: 1; transform: translate(-50%, 0); }
+        
+        body.print-mode #highlight, body.print-mode .grabber, body.print-mode #tooltip, body.print-mode #toast { display: none !important; }
 
         @media print {
             @page { size: A4; margin: 0; }
-            .top-nav-container, .result-fab, #test-loading-screen, .modal-overlay, #dashboard-view { display: none !important; }
-            body { background: none !important; margin: 0 !important; padding: 0 !important; }
-            #test-view { display: block !important; }
-            .page { box-shadow: none !important; margin: 0 !important; padding: var(--print-margin-top) var(--print-margin-right) var(--print-margin-bottom) var(--print-margin-left) !important; width: 210mm !important; height: 297mm !important; page-break-after: always; box-sizing: border-box; }
-            .page:last-child { page-break-after: auto; }
+            .top-nav-container, .result-fab, .loading-screen, #highlight, .grabber, #tooltip, #toast, #dashboard-view { display: none !important; }
+            body { background: none !important; margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            .page { box-shadow: none !important; margin: 0 !important; padding: var(--print-margin-top) var(--print-margin-right) var(--print-margin-bottom) var(--print-margin-left) !important; width: 210mm !important; height: 297mm !important; box-sizing: border-box !important; border-radius: 0 !important; page-break-after: always; position: relative !important; }
             .grand-header { display: block !important; }
-            .page-header { display: none !important; }
-            .q-card { border: none !important; margin-bottom: 0 !important; pointer-events: none !important; opacity: 1 !important; }
-            .q-text { line-height: 1.1 !important; margin-bottom: 2px !important; }
-            .option-container { gap: 2px !important; }
-            .option-btn, .option-btn.selected, .option-btn.opt-correct, .option-btn.opt-wrong, .option-btn.opt-missed, .locked-card .option-btn.opt-correct { background: transparent !important; border: 1px solid transparent !important; color: #000 !important; font-weight: normal !important; line-height: 1.1 !important; }
+            .header { display: none !important; }
+            
+            /* MCQ Specific Print */
+            #test-view .q-card { border: none !important; margin-bottom: 0 !important; pointer-events: none !important; opacity: 1 !important; }
+            #test-view .option-container { gap: 2px !important; }
+            #test-view .option-btn { background: transparent !important; border: 1px solid transparent !important; color: #000 !important; font-weight: normal !important; line-height: 1.1 !important; }
+            
+            /* Onuched Specific Print */
+            #onuched-view .content-area { column-rule: none !important; position: relative !important; }
+            #onuched-view .content-area::after { content: ''; position: absolute; top: 0; bottom: 0; left: calc(50% - 0.5px); border-left: 1px solid #000000 !important; pointer-events: none; z-index: 10; }
+            #onuched-view .page-1 .content-area { height: 265mm !important; }
+            #onuched-view .page-n .content-area { height: 288mm !important; }
         }
     </style>
 </head>
@@ -240,11 +249,7 @@
         
         <div class="noun-section-wrapper">
             <div id="loading">
-                <div class="skeleton"></div>
-                <div class="skeleton"></div>
-                <div class="skeleton"></div>
-                <div class="skeleton"></div>
-                <div class="skeleton"></div>
+                <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
             </div>
             <div id="category-grid" class="grid-container"></div>
         </div>
@@ -254,62 +259,105 @@
         </footer>
     </div>
 
-    <!-- ==================== TEST VIEW ==================== -->
+    <!-- ==================== TEST (MCQ) VIEW ==================== -->
     <div id="test-view">
-        <div id="test-loading-screen" style="display: none;">
+        <div id="test-loading-screen" class="loading-screen" style="display: none;">
             <div class="skeleton-nav">
-                <div class="shimmer skeleton-pill" style="width: 100px;"></div>
-                <div class="shimmer skeleton-pill" style="width: 60px;"></div>
-                <div class="shimmer skeleton-pill" style="width: 60px;"></div>
-                <div class="shimmer skeleton-pill" style="width: 80px;"></div>
+                <div class="shimmer skeleton-pill" style="width: 100px;"></div><div class="shimmer skeleton-pill" style="width: 60px;"></div><div class="shimmer skeleton-pill" style="width: 60px;"></div><div class="shimmer skeleton-pill" style="width: 80px;"></div>
             </div>
-            <div class="skeleton-container">
-                <div class="skeleton-card"><div class="shimmer sk-text"></div><div class="sk-options"><div class="shimmer sk-opt"></div><div class="shimmer sk-opt"></div><div class="shimmer sk-opt"></div><div class="shimmer sk-opt"></div></div></div>
-                <div class="skeleton-card"><div class="shimmer sk-text"></div><div class="sk-options"><div class="shimmer sk-opt"></div><div class="shimmer sk-opt"></div><div class="shimmer sk-opt"></div><div class="shimmer sk-opt"></div></div></div>
+            <div class="skeleton-container" style="width: 90%; max-width: 800px; display: flex; flex-direction: column; gap: 15px;">
+                <div style="background: var(--bg-page); padding: 15px; border-radius: 10px; border: 1px solid rgba(79, 70, 229, 0.08);"><div class="shimmer" style="height: 18px; width: 80%; margin-bottom: 15px;"></div><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;"><div class="shimmer" style="height: 32px;"></div><div class="shimmer" style="height: 32px;"></div></div></div>
+                <div style="background: var(--bg-page); padding: 15px; border-radius: 10px; border: 1px solid rgba(79, 70, 229, 0.08);"><div class="shimmer" style="height: 18px; width: 80%; margin-bottom: 15px;"></div><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;"><div class="shimmer" style="height: 32px;"></div><div class="shimmer" style="height: 32px;"></div></div></div>
             </div>
         </div>
 
         <div class="top-nav-container">
-            <!-- Back Button Added -->
             <div class="nav-icon-btn back-tone" onclick="goBackToDashboard()" title="Back">🔙</div>
             <div class="nav-sep"></div>
             
-            <div class="floating-stats" ondblclick="decreaseFontSize()">
+            <div class="floating-stats" ondblclick="decreaseFontSize('test')">
                 <span>বাকি: <span class="rem-q">০</span></span>
                 <span class="stat-timer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 15,14"/></svg><span class="timer-val">০০:০০</span></span>
             </div>
             <div class="nav-sep"></div>
             <div class="action-group">
-                <div id="cloud-save-btn" class="nav-icon-btn save-tone" onclick="saveProgress()" title="সেভ করুন"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="7.5,12.5 10.5,15.5 16.5,8.5"/></svg></div>
-                <div id="unlock-all-btn" class="nav-icon-btn danger-tone" onclick="unlockAllProgress()" title="আনলক করুন"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.8-1.3"/></svg></div>
-                <div id="blur-toggle-btn" class="nav-icon-btn gold-tone" onclick="toggleAllBlur()" title="অপশন ব্লার"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="9" ry="6"/><circle cx="12" cy="12" r="3"/></svg></div>
-                <div id="shuffle-toggle-btn" class="nav-icon-btn violet-tone" onclick="toggleShuffle()" title="শাফল"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="9" y2="6"/><line x1="9" y1="6" x2="19" y2="18"/><polyline points="15,6 19,6 19,10"/><line x1="3" y1="18" x2="9" y2="18"/><line x1="9" y1="18" x2="13" y2="14"/><polyline points="15,18 19,18 19,14"/></svg></div>
+                <div id="cloud-save-btn" class="nav-icon-btn save-tone" onclick="saveTestProgress()" title="সেভ করুন"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="7.5,12.5 10.5,15.5 16.5,8.5"/></svg></div>
+                <div class="nav-icon-btn danger-tone" onclick="unlockAllTestProgress()" title="আনলক করুন"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.8-1.3"/></svg></div>
+                <div id="blur-toggle-btn" class="nav-icon-btn gold-tone" onclick="toggleTestBlur()" title="অপশন ব্লার"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="9" ry="6"/><circle cx="12" cy="12" r="3"/></svg></div>
+                <div id="shuffle-toggle-btn" class="nav-icon-btn violet-tone" onclick="toggleTestShuffle()" title="শাফল"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="9" y2="6"/><line x1="9" y1="6" x2="19" y2="18"/><polyline points="15,6 19,6 19,10"/><line x1="3" y1="18" x2="9" y2="18"/><line x1="9" y1="18" x2="13" y2="14"/><polyline points="15,18 19,18 19,14"/></svg></div>
             </div>
             <div class="nav-sep"></div>
             <div class="view-switcher">
-                <div class="view-switcher-indicator" id="view-switcher-indicator"></div>
-                <button id="mobile-view-btn" class="view-btn active" onclick="toggleView('mobile')" ondblclick="increaseFontSize()" title="Mobile View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg></button>
-                <button id="desktop-view-btn" class="view-btn" onclick="toggleView('desktop')" title="Desktop View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="18" x2="12" y2="21"/></svg></button>
-                <button id="print-view-btn" class="view-btn" onclick="toggleView('print')" title="Print View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,9 6,4 18,4 18,9"/><rect x="4" y="9" width="16" height="8" rx="1"/><rect x="8" y="15" width="8" height="6"/></svg></button>
+                <button id="test-mobile-btn" class="view-btn active" onclick="toggleView('test', 'mobile')" ondblclick="increaseFontSize('test')" title="Mobile View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg></button>
+                <button id="test-desktop-btn" class="view-btn" onclick="toggleView('test', 'desktop')" title="Desktop View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="18" x2="12" y2="21"/></svg></button>
+                <button id="test-print-btn" class="view-btn" onclick="toggleView('test', 'print')" title="Print View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,9 6,4 18,4 18,9"/><rect x="4" y="9" width="16" height="8" rx="1"/><rect x="8" y="15" width="8" height="6"/></svg></button>
             </div>
         </div>
 
-        <div id="pages-container" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
+        <div id="test-pages-container" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
 
-        <button id="action-btn" class="result-fab" onclick="showFinalResult()">
+        <button id="test-action-btn" class="result-fab" onclick="showTestResult()">
             <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </button>
 
-        <div id="result-overlay" class="modal-overlay">
+        <div id="test-result-overlay" class="modal-overlay">
             <div class="result-modal">
                 <h3>--- পরীক্ষার ফলাফল ---</h3>
-                <div id="result-content"></div>
-                <button class="close-modal-btn" onclick="closeModal()">ঠিক আছে</button>
+                <div id="test-result-content"></div>
+                <button class="nav-icon-btn back-tone" style="width:auto; padding:5px 15px; margin:15px auto 0;" onclick="closeTestModal()">ঠিক আছে</button>
             </div>
         </div>
     </div>
 
-    <!-- MAIN SCRIPT (Dashboard + Test Logic combined) -->
+    <!-- ==================== ONUCHED VIEW ==================== -->
+    <div id="onuched-view">
+        <div id="onuched-loading-screen" class="loading-screen" style="display: none;">
+            <div class="skeleton-nav">
+                <div class="shimmer skeleton-pill" style="width:70px;"></div>
+                <div style="width:1px;height:14px;background:rgba(79,70,229,0.16);border-radius:1px;"></div>
+                <div class="shimmer skeleton-pill" style="width:76px;"></div>
+            </div>
+            <div class="skeleton-container" style="width: 90%; max-width: 720px; display: flex; flex-direction: column; gap: 13px; background: #fff; padding: 28px; border-radius: 12px;">
+                <div class="shimmer" style="height: 15px; width: 100%;"></div><div class="shimmer" style="height: 15px; width: 90%;"></div><div class="shimmer" style="height: 15px; width: 80%;"></div>
+            </div>
+        </div>
+
+        <div class="top-nav-container">
+            <div class="nav-icon-btn back-tone" onclick="goBackToDashboard()" title="Back">🔙</div>
+            <div class="nav-sep"></div>
+            
+            <div class="view-switcher">
+                <button id="onuched-mobile-btn"  class="view-btn active" onclick="toggleView('onuched', 'mobile')" ondblclick="increaseFontSize('onuched')" title="Mobile View">📱</button>
+                <button id="onuched-desktop-btn" class="view-btn"        onclick="toggleView('onuched', 'desktop')" title="Desktop View">🖥️</button>
+                <button id="onuched-print-btn"   class="view-btn"        onclick="toggleView('onuched', 'print')" title="Print View">🖨️</button>
+                <div class="nav-sep"></div>
+                <button class="view-btn" onclick="saveMarkedWords()" title="Save Marked Words">💾</button>
+            </div>
+        </div>
+
+        <div id="onuched-pages-container" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
+
+        <!-- Onuched Tools -->
+        <div id="highlight"></div>
+        <div id="grabber-left" class="grabber"></div>
+        <div id="grabber-right" class="grabber"></div>
+        <div id="tooltip" role="button" tabindex="0">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                <path id="tooltip-icon-path" d="M12 2L14.9 8.6L22 9.3L16.7 14L18.2 21L12 17.3L5.8 21L7.3 14L2 9.3L9.1 8.6L12 2Z" fill="#B8935A"/>
+            </svg>
+            <span id="tooltip-label">MARK</span>
+        </div>
+
+        <div id="toast">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <circle id="toast-icon-circle" cx="12" cy="12" r="10" fill="#0F5C46"/>
+                <path id="toast-icon-path" d="M7.5 12.5L10.3 15.3L16.5 9" stroke="#F5EFE0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span id="toast-text"></span>
+        </div>
+    </div>
+
+    <!-- MAIN SCRIPT (Dashboard + Test + Onuched) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, query, where, onSnapshot, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -326,6 +374,15 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // Progress Helper using LocalStorage
+        const getLocalProgress = (key) => JSON.parse(localStorage.getItem(`qz_prog_${key}`)) || { percent: 0, locked: [] };
+        const saveLocalProgress = (key, data) => localStorage.setItem(`qz_prog_${key}`, JSON.stringify(data));
+
+        // Shared Variables
+        let currentParentID, currentCatID, currentSetID, displaySetName, displayCatName, pathTextGlobal;
+        let activeModule = null; // 'test' or 'onuched'
+        const toBengaliNumber = (n) => n.toString().split('').map(d => ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'][d] || d).join('');
+
         // =====================================
         // DASHBOARD LOGIC
         // =====================================
@@ -339,10 +396,6 @@
         const loading = document.getElementById('loading');
         const breadcrumbContainer = document.getElementById('breadcrumb-container');
         
-        // Progress Helper using LocalStorage instead of Firestore
-        const getLocalProgress = (key) => JSON.parse(localStorage.getItem(`qz_prog_${key}`)) || { percent: 0, locked: [] };
-        const saveLocalProgress = (key, data) => localStorage.setItem(`qz_prog_${key}`, JSON.stringify(data));
-
         renderBreadcrumbs();
         updateUI(historyStack[historyStack.length - 1]);
 
@@ -351,11 +404,7 @@
             if (metadataCache.has(k)) { renderSets(metadataCache.get(k), s, c); return; }
             try {
                 const m = await getDoc(doc(db, s, c, 'sets', '_metadata'));
-                if (m.exists()) {
-                    const d = m.data();
-                    metadataCache.set(k, d);
-                    await renderSets(d, s, c);
-                }
+                if (m.exists()) { const d = m.data(); metadataCache.set(k, d); await renderSets(d, s, c); }
             } catch (e) { console.error("Metadata Load Error:", e); }
         }
 
@@ -369,28 +418,25 @@
                 const info = d[k];
                 const title = info.title || k;
                 const display = title.length > 30 ? title.substring(0, 30) + "..." : title;
-                
-                // Read local progress
-                const pData = getLocalProgress(`${s}_${c}_${k}`);
-                const p = pData.percent || 0;
+                const p = getLocalProgress(`${s}_${c}_${k}`).percent || 0;
 
                 const box = document.createElement('div');
-                box.id = `set-${k}`;
-                box.className = 'noun-box';
+                box.id = `set-${k}`; box.className = 'noun-box';
                 box.innerHTML = `<span>${display}</span><div class="progress-percent">${p}%</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${Math.min(100, p)}%"></div></div>`;
                 
                 box.onclick = () => {
                     let pathText = ['Home', ...breadcrumbs, display].join(' > ');
-                    // SPA test launch function
-                    startTest(s, c, k, pathText, display);
+                    // 🚀 Routing Logic: Check if it's an onuched test or mcq test
+                    if (k.toLowerCase().endsWith('_onu')) {
+                        startOnuched(s, c, k, pathText, display);
+                    } else {
+                        startTest(s, c, k, pathText, display);
+                    }
                 };
                 fragment.appendChild(box);
             });
             
-            if (c === historyStack[historyStack.length - 1]) {
-                grid.appendChild(fragment);
-                loading.style.display = "none";
-            }
+            if (c === historyStack[historyStack.length - 1]) { grid.appendChild(fragment); loading.style.display = "none"; }
         }
 
         function renderItems(items, pId) {
@@ -399,22 +445,18 @@
             items.forEach(cat => {
                 if (!document.getElementById(`cat-${cat.id}`)) {
                     const display = cat.name.length > 30 ? cat.name.substring(0, 30) + "..." : cat.name;
-                    const box = document.createElement('div');
-                    box.id = `cat-${cat.id}`;
-                    box.className = 'noun-box';
+                    const box = document.createElement('div'); box.id = `cat-${cat.id}`; box.className = 'noun-box';
                     box.innerHTML = `<span>${display}</span>`;
                     box.onclick = () => navigateTo(cat.id, cat.name);
                     f.appendChild(box);
                 }
             });
-            grid.appendChild(f);
-            loading.style.display = "none";
+            grid.appendChild(f); loading.style.display = "none";
         }
 
         function loadCategories(pId) {
             if (unsubscribe) unsubscribe();
-            grid.innerHTML = "";
-            loading.style.display = "flex";
+            grid.innerHTML = ""; loading.style.display = "flex";
             const sId = historyStack[1];
             if (pId !== "root" && sId) loadSetsFromMetadata(sId, pId);
             
@@ -427,74 +469,87 @@
                     return (parseInt(a.name) || 0) - (parseInt(b.name) || 0);
                 });
                 
-                if (items.length > 0) {
-                    categoryCache.set(pId, items);
-                    renderItems(items, pId);
-                } else if (pId === "root") {
-                    loading.style.display = "none";
-                    grid.innerHTML = "<p style='text-align:center;font-size:14px;color:#B9B2A0;'>কোনো ক্যাটাগরি পাওয়া যায়নি।</p>";
-                } else {
-                    setTimeout(() => {
-                        if (grid.children.length === 0 && pId === historyStack[historyStack.length - 1]) {
-                            loading.style.display = "none";
-                            grid.innerHTML = "<p style='text-align:center;font-size:14px;color:#B9B2A0;'>কিছুই পাওয়া যায়নি।</p>";
-                        }
-                    }, 6000);
-                }
+                if (items.length > 0) { categoryCache.set(pId, items); renderItems(items, pId); } 
+                else if (pId === "root") { loading.style.display = "none"; grid.innerHTML = "<p style='text-align:center;font-size:14px;color:#B9B2A0;'>কোনো ক্যাটাগরি পাওয়া যায়নি।</p>"; } 
+                else { setTimeout(() => { if (grid.children.length === 0 && pId === historyStack[historyStack.length - 1]) { loading.style.display = "none"; grid.innerHTML = "<p style='text-align:center;font-size:14px;color:#B9B2A0;'>কিছুই পাওয়া যায়নি।</p>"; } }, 6000); }
             });
         }
 
-        function saveState() {
-            sessionStorage.setItem('qz_history', JSON.stringify(historyStack));
-            sessionStorage.setItem('qz_breadcrumbs', JSON.stringify(breadcrumbs));
-        }
-
-        function navigateTo(id, name) {
-            historyStack.push(id);
-            breadcrumbs.push(name);
-            saveState();
-            history.pushState({ id: id }, "");
-            updateUI(id);
-        }
-
-        window.jumpTo = function(i) {
-            if (i === -1) { historyStack = ["root"]; breadcrumbs = []; } 
-            else { historyStack = historyStack.slice(0, i + 2); breadcrumbs = breadcrumbs.slice(0, i + 1); }
-            saveState();
-            updateUI(historyStack[historyStack.length - 1]);
-        };
-
+        function saveState() { sessionStorage.setItem('qz_history', JSON.stringify(historyStack)); sessionStorage.setItem('qz_breadcrumbs', JSON.stringify(breadcrumbs)); }
+        function navigateTo(id, name) { historyStack.push(id); breadcrumbs.push(name); saveState(); history.pushState({ id: id }, ""); updateUI(id); }
+        window.jumpTo = function(i) { if (i === -1) { historyStack = ["root"]; breadcrumbs = []; } else { historyStack = historyStack.slice(0, i + 2); breadcrumbs = breadcrumbs.slice(0, i + 1); } saveState(); updateUI(historyStack[historyStack.length - 1]); };
         function updateUI(id) { loadCategories(id); renderBreadcrumbs(); }
 
         function renderBreadcrumbs() {
             while (breadcrumbContainer.children.length > 1) breadcrumbContainer.removeChild(breadcrumbContainer.lastChild);
             breadcrumbs.forEach((name, i) => {
-                const s = document.createElement('div');
-                s.innerText = ">"; s.className = "separator";
-                breadcrumbContainer.appendChild(s);
-                const item = document.createElement('div');
-                item.className = 'breadcrumb-item';
-                item.innerText = name;
-                item.onclick = () => jumpTo(i);
-                breadcrumbContainer.appendChild(item);
+                const s = document.createElement('div'); s.innerText = ">"; s.className = "separator"; breadcrumbContainer.appendChild(s);
+                const item = document.createElement('div'); item.className = 'breadcrumb-item'; item.innerText = name; item.onclick = () => jumpTo(i); breadcrumbContainer.appendChild(item);
             });
         }
 
         window.addEventListener('popstate', () => {
-            // যদি ইউজার ব্রাউজারের ব্যাক বাটন চাপে এবং টেস্ট ভিউতে থাকে, তাহলে ড্যাশবোর্ডে ফেরত আনবো
-            if(document.body.classList.contains('test-active')){
-                window.goBackToDashboard();
-            } else if (historyStack.length > 1) {
-                historyStack.pop(); breadcrumbs.pop();
-                saveState(); updateUI(historyStack[historyStack.length - 1]);
-            }
+            if(activeModule) { window.goBackToDashboard(); } 
+            else if (historyStack.length > 1) { historyStack.pop(); breadcrumbs.pop(); saveState(); updateUI(historyStack[historyStack.length - 1]); }
         });
-
         if (!history.state) history.replaceState({ id: historyStack[historyStack.length - 1] }, "");
 
 
         // =====================================
-        // TEST LOGIC
+        // GLOBAL VIEW SWITCHER & FONT CONTROL
+        // =====================================
+        let currentQFontSize = 15; 
+        let currentOptFontSize = 13;
+
+        window.toggleView = function(module, view) { 
+            document.body.classList.remove('mobile-mode', 'desktop-mode', 'print-mode'); 
+            document.getElementById(`${module}-mobile-btn`).classList.remove('active'); 
+            document.getElementById(`${module}-desktop-btn`).classList.remove('active'); 
+            document.getElementById(`${module}-print-btn`).classList.remove('active'); 
+
+            document.body.classList.add(view + '-mode'); 
+            document.getElementById(`${module}-${view}-btn`).classList.add('active'); 
+            
+            if(module === 'test' && mcqData.length > 0) setTimeout(() => paginateTest(), 10);
+            if(module === 'onuched' && window.lastFinalHTML) {
+                window.clearSelectionUI();
+                setTimeout(() => window.applyPagination(), 100);
+            }
+        };
+
+        window.increaseFontSize = function(module) { 
+            currentQFontSize += 2; currentOptFontSize += 2; 
+            document.documentElement.style.setProperty('--q-font-size', currentQFontSize + 'px'); 
+            document.documentElement.style.setProperty('--opt-font-size', currentOptFontSize + 'px'); 
+            
+            if(module === 'test' && mcqData.length > 0) setTimeout(() => paginateTest(), 10);
+            if(module === 'onuched' && window.lastFinalHTML) {
+                window.clearSelectionUI();
+                setTimeout(() => window.applyPagination(), 100);
+            }
+        }; 
+        
+        window.decreaseFontSize = function(module) { 
+            if (currentQFontSize > 10) { 
+                currentQFontSize -= 2; currentOptFontSize -= 2; 
+                document.documentElement.style.setProperty('--q-font-size', currentQFontSize + 'px'); 
+                document.documentElement.style.setProperty('--opt-font-size', currentOptFontSize + 'px'); 
+                if(module === 'test' && mcqData.length > 0) setTimeout(() => paginateTest(), 10);
+            } 
+        };
+
+        window.goBackToDashboard = function() {
+            if (timerInterval) clearInterval(timerInterval);
+            document.body.classList.remove('test-active', 'onuched-active', 'mobile-mode', 'desktop-mode', 'print-mode');
+            document.title = "Questionz - Dashboard";
+            activeModule = null;
+            history.pushState({}, "", window.location.pathname);
+            updateUI(historyStack[historyStack.length - 1]);
+        };
+
+
+        // =====================================
+        // TEST (MCQ) LOGIC
         // =====================================
         let mcqData = []; 
         let userAnswers = {}; 
@@ -502,32 +557,20 @@
         let totalQuestionsCount = 0; 
         let timerInterval = null; 
         let isShuffled = false; 
-        
-        let currentParentID, currentCatID, currentSetID, displaySetName, displayCatName, pathTextGlobal;
-        let currentQFontSize = 15; 
-        let currentOptFontSize = 13;
-
-        const ICON_EYE      = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="9" ry="6"/><circle cx="12" cy="12" r="3"/></svg>';
-        const ICON_EYE_OFF  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="9" ry="6"/><circle cx="12" cy="12" r="3"/><line x1="4" y1="4" x2="20" y2="20"/></svg>';
-        const ICON_SPINNER  = '<svg class="btn-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 3a9 9 0 1 1-9 9"/></svg>';
-        const ICON_PLAY     = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
-        const ICON_REFRESH  = '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 1 2.6 6.36"/><polyline points="3,17 3,21 7,21"/></svg>';
 
         const tempStorageKey = () => `temp_ans_${currentParentID}_${currentCatID}_${currentSetID}`; 
         const fR = (text) => text ? text.toString().replace(/([০-৯0-9])\u0307/g, '<span class="recurring">$1<span class="dot">.</span></span>') : "";
-        const toBengaliNumber = (n) => n.toString().split('').map(d => ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'][d] || d).join('');
 
         window.startTest = async function(parent, cat, set, pathText, setName) {
+            activeModule = 'test';
             currentParentID = parent; currentCatID = cat; currentSetID = set;
-            displaySetName = setName; pathTextGlobal = pathText;
-            displayCatName = breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1] : cat;
+            displaySetName = setName; pathTextGlobal = pathText; displayCatName = breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1] : cat;
 
-            // UI Switch to Test
-            document.body.classList.add('test-active', 'mobile-mode'); // default mobile
-            document.getElementById('pages-container').innerHTML = '';
+            document.body.classList.add('test-active', 'mobile-mode');
+            document.getElementById('test-mobile-btn').classList.add('active');
+            document.getElementById('test-pages-container').innerHTML = '';
             document.getElementById('test-loading-screen').style.display = 'flex';
             
-            // Push state for back button handling AND update the URL for direct sharing
             const newUrl = `${window.location.pathname}?parent=${parent}&cat=${cat}&set=${set}`;
             history.pushState({ testView: true }, "", newUrl);
 
@@ -536,287 +579,309 @@
                 const docSnap = await getDoc(docRef); 
                 
                 if (docSnap.exists()) { 
-                    const data = docSnap.data(); 
                     document.title = displayCatName + " - " + displaySetName + " | 𝐐𝐔𝐄𝐒𝐓𝐈𝐎𝐍𝐙 ";
-                    const rawQuestions = data.questions; 
-                    
-                    mcqData = rawQuestions.map((q, index) => { 
+                    mcqData = docSnap.data().questions.map((q, index) => { 
                         let correctKey = q.ans; 
-                        if (q.ans && !['a','b','c','d'].includes(q.ans)) { 
-                            const idx = q.options.indexOf(q.ans); 
-                            if (idx !== -1) correctKey = ['a','b','c','d'][idx]; 
-                        } 
+                        if (q.ans && !['a','b','c','d'].includes(q.ans)) { const idx = q.options.indexOf(q.ans); if (idx !== -1) correctKey = ['a','b','c','d'][idx]; } 
                         return { id: index + 1, q: q.question, a: q.options[0], b: q.options[1], c: q.options[2], d: q.options[3], ans: correctKey, orig_a: q.options[0], orig_b: q.options[1], orig_c: q.options[2], orig_d: q.options[3], orig_ans: correctKey }; 
                     }); 
-                    
                     totalQuestionsCount = mcqData.length; 
-                    
-                    // Load local progress instead of Firestore auth
-                    const pData = getLocalProgress(`${currentParentID}_${currentCatID}_${currentSetID}`);
-                    lockedIds = new Set(pData.locked || []);
-                    
+                    lockedIds = new Set(getLocalProgress(`${currentParentID}_${currentCatID}_${currentSetID}`).locked || []);
                     initTestApp(); 
-                } else {
-                    document.getElementById('test-loading-screen').innerHTML = "<div style='color:#666; font-size:18px;'>ডেটা পাওয়া যায়নি!</div>";
-                }
-            } catch (error) { 
-                document.getElementById('test-loading-screen').innerHTML = "<div style='color:#d93025; font-size:18px;'>এরর: " + error.message + "</div>"; 
-            }
-        };
-
-        window.goBackToDashboard = function() {
-            if (timerInterval) clearInterval(timerInterval);
-            document.body.classList.remove('test-active', 'mobile-mode', 'desktop-mode', 'print-mode');
-            document.title = "Questionz - Dashboard";
-            
-            // Revert URL back to normal
-            history.pushState({}, "", window.location.pathname);
-            
-            // Refresh category grid to update progress bar visually
-            updateUI(historyStack[historyStack.length - 1]);
+                } else { document.getElementById('test-loading-screen').innerHTML = "<div style='color:#666; font-size:18px;'>ডেটা পাওয়া যায়নি!</div>"; }
+            } catch (error) { document.getElementById('test-loading-screen').innerHTML = "<div style='color:#d93025; font-size:18px;'>এরর: " + error.message + "</div>"; }
         };
 
         function initTestApp() { 
             document.getElementById('test-loading-screen').style.display = "none"; 
-            
             const savedTemp = localStorage.getItem(tempStorageKey()); 
-            if (savedTemp) userAnswers = JSON.parse(savedTemp); 
-            else userAnswers = {};
-            
-            let activeQ = mcqData.filter(q => !lockedIds.has(q.id)); 
-            let lockedQ = mcqData.filter(q => lockedIds.has(q.id)); 
+            userAnswers = savedTemp ? JSON.parse(savedTemp) : {};
+            let activeQ = mcqData.filter(q => !lockedIds.has(q.id)); let lockedQ = mcqData.filter(q => lockedIds.has(q.id)); 
             mcqData = [...activeQ, ...lockedQ]; 
             
-            // Reset reset buttons and views
-            const btn = document.getElementById('action-btn');
-            btn.onclick = showFinalResult; btn.classList.remove('is-reset'); btn.innerHTML = ICON_PLAY;
-            
-            window.toggleView('mobile'); // initialize active view states
-            paginate(); 
-            startTimer(activeQ.length); 
+            const btn = document.getElementById('test-action-btn'); btn.onclick = showTestResult; btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+            paginateTest(); startTimer(activeQ.length); 
         }
 
-        window.toggleView = function(view) { 
-            document.body.classList.remove('mobile-mode', 'desktop-mode', 'print-mode'); 
-            document.getElementById('mobile-view-btn').classList.remove('active'); 
-            document.getElementById('desktop-view-btn').classList.remove('active'); 
-            document.getElementById('print-view-btn').classList.remove('active'); 
-
-            if (view === 'mobile') { document.body.classList.add('mobile-mode'); document.getElementById('mobile-view-btn').classList.add('active'); } 
-            else if (view === 'desktop') { document.body.classList.add('desktop-mode'); document.getElementById('desktop-view-btn').classList.add('active'); } 
-            else if (view === 'print') { document.body.classList.add('print-mode'); document.getElementById('print-view-btn').classList.add('active'); }
-            
-            if(mcqData.length > 0) setTimeout(() => paginate(), 10);
-            updateViewIndicator();
-        };
-
-        function updateViewIndicator() {
-            const activeBtn = document.querySelector('.view-btn.active');
-            const indicator = document.getElementById('view-switcher-indicator');
-            if (activeBtn && indicator) {
-                indicator.style.width = activeBtn.offsetWidth + 'px';
-                indicator.style.transform = `translateX(${activeBtn.offsetLeft - 2}px)`;
-            }
-        }
-
-        window.increaseFontSize = function() { 
-            currentQFontSize += 1; currentOptFontSize += 1; 
-            document.documentElement.style.setProperty('--q-font-size', currentQFontSize + 'px'); 
-            document.documentElement.style.setProperty('--opt-font-size', currentOptFontSize + 'px'); 
-            if(mcqData.length > 0) setTimeout(() => paginate(), 10);
-        }; 
-        
-        window.decreaseFontSize = function() { 
-            if (currentQFontSize > 10) { 
-                currentQFontSize -= 1; currentOptFontSize -= 1; 
-                document.documentElement.style.setProperty('--q-font-size', currentQFontSize + 'px'); 
-                document.documentElement.style.setProperty('--opt-font-size', currentOptFontSize + 'px'); 
-                if(mcqData.length > 0) setTimeout(() => paginate(), 10);
-            } 
-        };
-
-        // SAVE LOGIC - Modified for LocalStorage Only (No Auth needed)
-        window.saveProgress = async function() { 
-            const saveBtn = document.getElementById('cloud-save-btn'); 
-            const originalText = saveBtn.innerHTML; 
-            saveBtn.innerHTML = ICON_SPINNER; 
-            
-            Object.keys(userAnswers).forEach(id => { 
-                const qId = Number(id); 
-                const questionItem = mcqData.find(q => q.id === qId); 
-                if (questionItem && userAnswers[id] === questionItem[questionItem.ans]) { 
-                    lockedIds.add(qId); 
-                } 
-            }); 
-            
+        window.saveTestProgress = async function() { 
+            const saveBtn = document.getElementById('cloud-save-btn'); const originalText = saveBtn.innerHTML; saveBtn.innerHTML = '...'; 
+            Object.keys(userAnswers).forEach(id => { const qId = Number(id); const q = mcqData.find(x => x.id === qId); if (q && userAnswers[id] === q[q.ans]) lockedIds.add(qId); }); 
             const progressPercent = totalQuestionsCount > 0 ? Math.min(100, Math.round((lockedIds.size / totalQuestionsCount) * 100)) : 0; 
             saveLocalProgress(`${currentParentID}_${currentCatID}_${currentSetID}`, { locked: Array.from(lockedIds), percent: progressPercent });
-            
             localStorage.removeItem(tempStorageKey()); 
-            
-            Swal.fire({ icon: 'success', title: 'সেভ সফল!', text: 'আপনার প্রগ্রেস ব্রাউজারে সেভ হয়েছে।', timer: 2000, showConfirmButton: false }); 
-            userAnswers = {}; paginate(); 
-            saveBtn.innerHTML = originalText; 
+            Swal.fire({ icon: 'success', title: 'সেভ সফল!', timer: 2000, showConfirmButton: false }); 
+            userAnswers = {}; paginateTest(); saveBtn.innerHTML = originalText; 
         };
 
-        window.unlockAllProgress = async function() { 
-            const result = await Swal.fire({ title: 'সব প্রশ্ন আনলক করবেন?', text: "আপনার সংরক্ষিত সব প্রগ্রেস মুছে যাবে!", icon: 'warning', showCancelButton: true, confirmButtonColor: '#B5533E', cancelButtonColor: '#4F46E5', confirmButtonText: 'হ্যাঁ!', cancelButtonText: 'বাতিল' }); 
-            if (result.isConfirmed) { 
-                lockedIds.clear(); userAnswers = {}; localStorage.removeItem(tempStorageKey()); 
-                localStorage.removeItem(`qz_prog_${currentParentID}_${currentCatID}_${currentSetID}`);
-                Swal.fire('সফল!', 'সব প্রশ্ন আনলক করা হয়েছে।', 'success'); 
-                initTestApp(); 
-            } 
+        window.unlockAllTestProgress = async function() { 
+            const res = await Swal.fire({ title: 'সব আনলক করবেন?', icon: 'warning', showCancelButton: true }); 
+            if (res.isConfirmed) { lockedIds.clear(); userAnswers = {}; localStorage.removeItem(tempStorageKey()); localStorage.removeItem(`qz_prog_${currentParentID}_${currentCatID}_${currentSetID}`); Swal.fire('সফল!', '', 'success'); initTestApp(); } 
         };
 
-        window.toggleAllBlur = function() { 
-            const btn = document.getElementById('blur-toggle-btn'); const options = document.querySelectorAll('.option-btn'); 
-            if (btn.classList.contains('is-active')) { options.forEach(opt => opt.classList.remove('blur-logic')); btn.classList.remove('is-active'); btn.innerHTML = ICON_EYE; } 
-            else { options.forEach(opt => { const card = opt.closest('.q-card'); if (!opt.classList.contains('selected') && !opt.classList.contains('opt-correct') && !(card && card.classList.contains('locked-card'))) { opt.classList.add('blur-logic'); } }); btn.classList.add('is-active'); btn.innerHTML = ICON_EYE_OFF; } 
-        };
+        window.toggleTestBlur = function() { const btn = document.getElementById('blur-toggle-btn'); const options = document.querySelectorAll('#test-view .option-btn'); if (btn.classList.contains('is-active')) { options.forEach(opt => opt.style.filter = 'none'); btn.classList.remove('is-active'); } else { options.forEach(opt => { if (!opt.classList.contains('selected') && !opt.classList.contains('opt-correct')) { opt.style.filter = 'blur(5px)'; } }); btn.classList.add('is-active'); } };
 
         function shuffle(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } } 
 
-        window.toggleShuffle = function() { 
-            const btn = document.getElementById('shuffle-toggle-btn'); 
+        window.toggleTestShuffle = function() { 
             let activeQ = mcqData.filter(q => !lockedIds.has(q.id)); let lockedQ = mcqData.filter(q => lockedIds.has(q.id)); 
-            const isPrintOrAllLocked = document.body.classList.contains('print-mode') || (lockedIds.size > 0 && lockedIds.size === totalQuestionsCount);
-            
-            if (isShuffled) { 
-                activeQ.sort((a, b) => a.id - b.id); lockedQ.sort((a, b) => a.id - b.id); 
-                mcqData.forEach(q => { q.a = q.orig_a; q.b = q.orig_b; q.c = q.orig_c; q.d = q.orig_d; q.ans = q.orig_ans; }); 
-                isShuffled = false; btn.classList.remove('is-active'); 
-            } else { 
-                shuffle(activeQ); if (isPrintOrAllLocked) shuffle(lockedQ);
-                const targetQs = isPrintOrAllLocked ? [...activeQ, ...lockedQ] : activeQ;
-                targetQs.forEach(q => { let opts = [q.a, q.b, q.c, q.d]; let correctVal = q[q.ans]; shuffle(opts); q.a = opts[0]; q.b = opts[1]; q.c = opts[2]; q.d = opts[3]; q.ans = correctVal === q.a ? 'a' : correctVal === q.b ? 'b' : correctVal === q.c ? 'c' : 'd'; }); 
-                isShuffled = true; btn.classList.add('is-active'); 
-            } 
-            mcqData = [...activeQ, ...lockedQ]; paginate(); 
-            const blurBtn = document.getElementById('blur-toggle-btn'); 
-            if (blurBtn && !blurBtn.classList.contains('is-active')) document.querySelectorAll('.option-btn').forEach(opt => opt.classList.remove('blur-logic')); 
+            if (isShuffled) { activeQ.sort((a, b) => a.id - b.id); lockedQ.sort((a, b) => a.id - b.id); mcqData.forEach(q => { q.a = q.orig_a; q.b = q.orig_b; q.c = q.orig_c; q.d = q.orig_d; q.ans = q.orig_ans; }); isShuffled = false; } 
+            else { shuffle(activeQ); activeQ.forEach(q => { let opts = [q.a, q.b, q.c, q.d]; let correctVal = q[q.ans]; shuffle(opts); q.a = opts[0]; q.b = opts[1]; q.c = opts[2]; q.d = opts[3]; q.ans = correctVal === q.a ? 'a' : correctVal === q.b ? 'b' : correctVal === q.c ? 'c' : 'd'; }); isShuffled = true; } 
+            mcqData = [...activeQ, ...lockedQ]; paginateTest(); 
         };
 
-        function paginate() { 
-            const container = document.getElementById('pages-container');
-            container.innerHTML = ''; 
-            
-            let currentPageNum = 1; 
-            let currentPage = createNewPage(currentPageNum, container); 
-            let currentColumnContainer = currentPage.querySelector('.content-columns'); 
-            const isMobile = document.body.classList.contains('mobile-mode');
-            const isPrint = document.body.classList.contains('print-mode');
+        function paginateTest() { 
+            const container = document.getElementById('test-pages-container'); container.innerHTML = ''; 
+            let currentPageNum = 1; let currentPage = createTestPage(currentPageNum, container); let col = currentPage.querySelector('.content-columns'); 
+            const isMobile = document.body.classList.contains('mobile-mode'); const isPrint = document.body.classList.contains('print-mode');
 
             for (let i = 0; i < mcqData.length; i++) { 
-                const item = mcqData[i]; 
-                const card = document.createElement('div'); card.className = 'q-card'; 
-                
-                const isLocked = isPrint ? false : lockedIds.has(item.id);
-                if (isLocked) card.classList.add('locked-card'); 
-                card.id = `q-card-display-${i}`; 
-                
+                const item = mcqData[i]; const card = document.createElement('div'); card.className = 'q-card'; card.id = `q-card-display-${i}`; 
+                const isLocked = isPrint ? false : lockedIds.has(item.id); if (isLocked) card.classList.add('locked-card'); 
                 const savedText = isPrint ? null : userAnswers[item.id]; 
                 const isSelected = (optKey) => savedText && item[optKey] === savedText ? 'selected' : ''; 
                 const isLockedCorrect = (opt) => (isLocked && item.ans === opt) ? 'opt-correct' : ''; 
-                const isBlurred = (optKey) => { const bBtn = document.getElementById('blur-toggle-btn'); if(bBtn && !bBtn.classList.contains('is-active')) return ''; return (savedText && item[optKey] === savedText) || isLocked ? '' : 'blur-logic'; }; 
                 
-                card.innerHTML = `<span class="q-text">${toBengaliNumber(i + 1)}. ${fR(item.q)}</span><div class="option-container"><div class="option-btn ${isLockedCorrect('a')} ${isSelected('a')} ${isBlurred('a')}" onclick="markAnswered(this, ${i}, 'a')">ক) ${fR(item.a)}</div><div class="option-btn ${isLockedCorrect('b')} ${isSelected('b')} ${isBlurred('b')}" onclick="markAnswered(this, ${i}, 'b')">খ) ${fR(item.b)}</div><div class="option-btn ${isLockedCorrect('c')} ${isSelected('c')} ${isBlurred('c')}" onclick="markAnswered(this, ${i}, 'c')">গ) ${fR(item.c)}</div><div class="option-btn ${isLockedCorrect('d')} ${isSelected('d')} ${isBlurred('d')}" onclick="markAnswered(this, ${i}, 'd')">ঘ) ${fR(item.d)}</div></div>`; 
-                currentColumnContainer.appendChild(card); 
+                card.innerHTML = `<span class="q-text">${toBengaliNumber(i + 1)}. ${fR(item.q)}</span><div class="option-container"><div class="option-btn ${isLockedCorrect('a')} ${isSelected('a')}" onclick="markTestAnswered(this, ${i}, 'a')">ক) ${fR(item.a)}</div><div class="option-btn ${isLockedCorrect('b')} ${isSelected('b')}" onclick="markTestAnswered(this, ${i}, 'b')">খ) ${fR(item.b)}</div><div class="option-btn ${isLockedCorrect('c')} ${isSelected('c')}" onclick="markTestAnswered(this, ${i}, 'c')">গ) ${fR(item.c)}</div><div class="option-btn ${isLockedCorrect('d')} ${isSelected('d')}" onclick="markTestAnswered(this, ${i}, 'd')">ঘ) ${fR(item.d)}</div></div>`; 
+                col.appendChild(card); 
 
-                if (!isMobile) {
-                    if (currentColumnContainer.scrollWidth > currentColumnContainer.clientWidth + 5) { 
-                        currentColumnContainer.removeChild(card); 
-                        currentPageNum++; 
-                        currentPage = createNewPage(currentPageNum, container); 
-                        currentColumnContainer = currentPage.querySelector('.content-columns'); 
-                        currentColumnContainer.appendChild(card); 
-                    } 
-                }
+                if (!isMobile && col.scrollWidth > col.clientWidth + 5) { col.removeChild(card); currentPageNum++; currentPage = createTestPage(currentPageNum, container); col = currentPage.querySelector('.content-columns'); col.appendChild(card); }
             } 
-            updateFooterStats(); 
-            
-            if (window.renderMathInElement) {
-                document.querySelectorAll('.q-card').forEach(card => {
-                    renderMathInElement(card, { delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\(', right: '\\)', display: false}, {left: '\\[', right: '\\]', display: true}], throwOnError: false });
-                });
-            }
+            updateTestFooterStats(); 
+            if (window.renderMathInElement) document.querySelectorAll('#test-view .q-card').forEach(card => renderMathInElement(card, { delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}], throwOnError: false }));
         }
 
-        function createNewPage(num, container) { 
+        function createTestPage(num, container) { 
             const page = document.createElement('div'); page.className = 'page'; 
-            let grandHeaderHTML = ''; let colClass = 'content-columns';
-            
-            if (num === 1) {
-                colClass = 'content-columns first-page-columns';
-                // URL for the QR code
-                const currentTestUrl = `${window.location.origin}${window.location.pathname}?parent=${currentParentID}&cat=${currentCatID}&set=${currentSetID}`;
-                const qrDataEncoded = encodeURIComponent(currentTestUrl);
-                
-                grandHeaderHTML = `<div class="grand-header"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${qrDataEncoded}" class="qr-code-print" alt="QR Code"><h1>QUESTIONZ</h1><h3>${pathTextGlobal}</h3><div class="meta"><span>সময়: ${toBengaliNumber(totalQuestionsCount)} মিনিট</span><span>পূর্ণমান: ${toBengaliNumber(totalQuestionsCount)}</span></div></div>`;
+            let grandHeaderHTML = ''; 
+            if (num === 1) { 
+                const qrUrl = `${window.location.origin}${window.location.pathname}?parent=${currentParentID}&cat=${currentCatID}&set=${currentSetID}`; 
+                grandHeaderHTML = `<div class="grand-header"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrUrl)}" class="qr-code-print"><h1>QUESTIONZ</h1><h3>${pathTextGlobal}</h3></div>`; 
             }
-
-            page.innerHTML = `${grandHeaderHTML}<div class="header page-header"><h2>পেইজ - ${toBengaliNumber(num)}</h2></div><div class="${colClass}"></div><div class="footer"></div>`; 
-            container.appendChild(page); 
-            return page; 
+            page.innerHTML = `${grandHeaderHTML}<div class="header"><h2>পেইজ - ${toBengaliNumber(num)}</h2></div><div class="content-columns"></div>`; 
+            container.appendChild(page); return page; 
         }
 
-        window.markAnswered = function(btn, displayIdx, selectedOpt) { const item = mcqData[displayIdx]; if (lockedIds.has(item.id)) return; if (btn.classList.contains('blur-logic')) { btn.classList.remove('blur-logic'); return; } const parent = btn.parentElement; parent.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); userAnswers[item.id] = item[selectedOpt]; localStorage.setItem(tempStorageKey(), JSON.stringify(userAnswers)); updateFooterStats(); }; 
-        function updateFooterStats() { const answeredCount = Object.keys(userAnswers).length + lockedIds.size; const remaining = totalQuestionsCount - answeredCount; document.querySelectorAll('.rem-q').forEach(el => { el.innerText = toBengaliNumber(Math.max(0, remaining)); }); }
+        window.markTestAnswered = function(btn, idx, opt) { const item = mcqData[idx]; if (lockedIds.has(item.id)) return; btn.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); userAnswers[item.id] = item[opt]; localStorage.setItem(tempStorageKey(), JSON.stringify(userAnswers)); updateTestFooterStats(); }; 
+        function updateTestFooterStats() { const ansCount = Object.keys(userAnswers).length + lockedIds.size; document.querySelectorAll('#test-view .rem-q').forEach(el => el.innerText = toBengaliNumber(Math.max(0, totalQuestionsCount - ansCount))); }
 
-        window.showFinalResult = async function() { 
-            let roundCorrectCount = 0; let wrongCount = 0; const letterToIndex = { 'a': 0, 'b': 1, 'c': 2, 'd': 3 }; 
+        window.showTestResult = async function() { 
+            let roundCorrect = 0; let wrongCount = 0; const letterIdx = { 'a': 0, 'b': 1, 'c': 2, 'd': 3 }; 
             mcqData.forEach((item, i) => { 
-                const card = document.getElementById(`q-card-display-${i}`); if(!card) return; 
-                const options = card.querySelectorAll('.option-btn'); const correctLetter = item.ans; const correctText = item[correctLetter]; const userSelectedText = userAnswers[item.id]; 
-                if (lockedIds.has(item.id)) return; 
-                if (userSelectedText) { 
-                    if (userSelectedText === correctText) { options[letterToIndex[correctLetter]].classList.add('opt-correct'); lockedIds.add(item.id); roundCorrectCount++; } 
-                    else { wrongCount++; const wrongLetter = ['a','b','c','d'].find(k => item[k] === userSelectedText); if(wrongLetter) options[letterToIndex[wrongLetter]].classList.add('opt-wrong'); options[letterToIndex[correctLetter]].classList.add('opt-correct'); } 
-                } 
+                const card = document.getElementById(`q-card-display-${i}`); if(!card || lockedIds.has(item.id)) return; 
+                const opts = card.querySelectorAll('.option-btn'); const uAns = userAnswers[item.id]; 
+                if (uAns) { if (uAns === item[item.ans]) { opts[letterIdx[item.ans]].classList.add('opt-correct'); lockedIds.add(item.id); roundCorrect++; } else { wrongCount++; const wLetter = ['a','b','c','d'].find(k => item[k] === uAns); if(wLetter) opts[letterIdx[wLetter]].classList.add('opt-wrong'); opts[letterIdx[item.ans]].classList.add('opt-correct'); } } 
             }); 
-            localStorage.removeItem(tempStorageKey()); 
-            
-            const progressPercent = totalQuestionsCount > 0 ? Math.min(100, Math.round((lockedIds.size / totalQuestionsCount) * 100)) : 0; 
-            saveLocalProgress(`${currentParentID}_${currentCatID}_${currentSetID}`, { locked: Array.from(lockedIds), percent: progressPercent });
-            
-            let totalCorrect = lockedIds.size; let finalScore = totalCorrect - (wrongCount * 0.25); 
-            const btn = document.getElementById('action-btn'); btn.onclick = resetExam; btn.classList.add('is-reset'); btn.innerHTML = ICON_REFRESH; 
-            document.getElementById('result-content').innerHTML = `<p>এই রাউন্ডে সঠিক: ${toBengaliNumber(roundCorrectCount)} টি</p><p>সঠিক (মোট): ${toBengaliNumber(totalCorrect)} টি</p><p>ভুল (এই রাউন্ড): ${toBengaliNumber(wrongCount)} টি</p><p style="font-weight:bold; color:#B5533E;">মোট নম্বর: ${toBengaliNumber(finalScore.toFixed(2))}</p>`; 
-            document.getElementById('result-overlay').style.display = 'flex'; 
+            localStorage.removeItem(tempStorageKey()); saveLocalProgress(`${currentParentID}_${currentCatID}_${currentSetID}`, { locked: Array.from(lockedIds), percent: Math.round((lockedIds.size/totalQuestionsCount)*100) });
+            const btn = document.getElementById('test-action-btn'); btn.onclick = resetTestExam; btn.innerHTML = '↻'; 
+            document.getElementById('test-result-content').innerHTML = `<p>সঠিক: ${toBengaliNumber(roundCorrect)} টি</p><p>ভুল: ${toBengaliNumber(wrongCount)} টি</p>`; 
+            document.getElementById('test-result-overlay').style.display = 'flex'; 
         }; 
+        window.closeTestModal = function() { document.getElementById('test-result-overlay').style.display = 'none'; }; 
+        window.resetTestExam = async function() { userAnswers = {}; localStorage.removeItem(tempStorageKey()); initTestApp(); }; 
+        function startTimer(mins) { if (timerInterval) clearInterval(timerInterval); let time = mins * 60; timerInterval = setInterval(() => { let m = Math.floor(time / 60); let s = time % 60; document.querySelectorAll('#test-view .timer-val').forEach(el => el.innerText = `${toBengaliNumber(m.toString().padStart(2, '0'))}:${toBengaliNumber(s.toString().padStart(2, '0'))}`); if (time > 0) time--; else clearInterval(timerInterval); }, 1000); }
 
-        window.closeModal = function() { document.getElementById('result-overlay').style.display = 'none'; }; 
-        
-        window.resetExam = async function() { 
-            if (lockedIds.size === totalQuestionsCount) { Swal.fire({ icon: 'info', title: 'সবগুলো সঠিক হয়েছে!', text: 'পুনরায় পরীক্ষা দেওয়ার জন্য দয়া করে আগে সবগুলো প্রশ্ন আনলক করুন।', confirmButtonText: 'ঠিক আছে' }); return; } 
-            userAnswers = {}; localStorage.removeItem(tempStorageKey()); initTestApp(); 
-            const btn = document.getElementById('action-btn'); btn.onclick = showFinalResult; btn.classList.remove('is-reset'); btn.innerHTML = ICON_PLAY; 
-        }; 
 
-        function startTimer(mins) { 
-            if (timerInterval) clearInterval(timerInterval); 
-            let time = mins * 60; 
-            timerInterval = setInterval(() => { 
-                let m = Math.floor(time / 60); let s = time % 60; 
-                let display = `${toBengaliNumber(m.toString().padStart(2, '0'))}:${toBengaliNumber(s.toString().padStart(2, '0'))}`; 
-                document.querySelectorAll('.timer-val').forEach(el => el.innerText = display); 
-                if (time > 0) time--; else { clearInterval(timerInterval); timerInterval = null; } 
-            }, 1000); 
+        // =====================================
+        // ONUCHED LOGIC
+        // =====================================
+        // Grapheme Cluster Logic
+        window.VOWEL_SIGNS = new Set(['\u09BE','\u09BF','\u09C0','\u09C1','\u09C2','\u09C3','\u09C4','\u09C7','\u09C8','\u09CB','\u09CC','\u09D7']);
+        window.OTHER_MARKS = new Set(['\u0981','\u0982','\u0983','\u09BC']);
+        window.VIRAMA = '\u09CD';
+        window.isBengaliConsonant = function(ch) { const cp = ch.codePointAt(0); return cp >= 0x0995 && cp <= 0x09B9; };
+        window.graphemeClusters = function(str) { const chars = Array.from(str); const result = []; let i = 0; while (i < chars.length) { let cluster = chars[i]; i++; while (i < chars.length) { const ch = chars[i]; if (window.VOWEL_SIGNS.has(ch) || window.OTHER_MARKS.has(ch)) { cluster += ch; i++; } else if (ch === window.VIRAMA && i + 1 < chars.length && window.isBengaliConsonant(chars[i + 1])) { cluster += ch + chars[i + 1]; i += 2; } else if (ch === window.VIRAMA) { cluster += ch; i++; break; } else { break; } } result.push(cluster); } return result; };
+
+        let onuchedContent = ""; 
+        window.lastFinalHTML = "";
+        window.clusters = []; window.spans = []; window.markedRanges = [];
+        window.startIndex = -1; window.endIndex = -1; window.isDragging = null; window.wordStart = -1; window.wordEnd = -1; window.currentMode = 'mark'; window.spanRects = []; window.rafPending = false; window.lastPointerEvent = null;
+
+        const highlight = document.getElementById('highlight');
+        const grabberLeft = document.getElementById('grabber-left');
+        const grabberRight = document.getElementById('grabber-right');
+        const tooltip = document.getElementById('tooltip');
+        const toast = document.getElementById('toast');
+        let toastTimer = null;
+
+        function cleanContent(raw) { return (raw || "").replace(/&nbsp;/gi, ' ').replace(/<p>\s*<\/p>/gi, '').replace(/(<br\s*\/?>\s*){2,}/gi, '<br>').replace(/\s{2,}/g, ' '); }
+
+        window.startOnuched = async function(parent, cat, set, pathText, setName) {
+            activeModule = 'onuched';
+            currentParentID = parent; currentCatID = cat; currentSetID = set;
+            displaySetName = setName; pathTextGlobal = pathText; displayCatName = breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1] : cat;
+
+            document.body.classList.add('onuched-active', 'mobile-mode');
+            document.getElementById('onuched-mobile-btn').classList.add('active');
+            document.getElementById('onuched-pages-container').innerHTML = '';
+            document.getElementById('onuched-loading-screen').style.display = 'flex';
+            
+            const newUrl = `${window.location.pathname}?parent=${parent}&cat=${cat}&set=${set}`;
+            history.pushState({ onuchedView: true }, "", newUrl);
+
+            const storageKey = `${currentParentID}_${currentCatID}_${currentSetID}`;
+            const savedMarks = localStorage.getItem('qz_saved_ranges_' + storageKey);
+            window.markedRanges = savedMarks ? JSON.parse(savedMarks) : [];
+            
+            try {
+                const setDocRef = doc(db, currentParentID, currentCatID, "sets", currentSetID);
+                const docSnap = await getDoc(setDocRef);
+
+                if (docSnap.exists()) {
+                    document.title = displayCatName + " - " + displaySetName + " | 𝐐𝐔𝐄𝐒𝐓𝐈𝐎𝐍𝐙 ";
+                    onuchedContent = cleanContent(docSnap.data().content || "");
+                    window.renderOnuched();
+                } else { document.getElementById('onuched-pages-container').innerHTML = '<p style="text-align:center;margin-top:80px;">এই অনুচ্ছেদটি খুঁজে পাওয়া যায়নি।</p>'; }
+            } catch (error) { console.error(error); document.getElementById('onuched-pages-container').innerHTML = '<p style="text-align:center;margin-top:80px;color:red;">ডেটা লোড করতে সমস্যা হয়েছে।</p>'; } 
+            finally { document.getElementById('onuched-loading-screen').style.display = 'none'; }
+        };
+
+        window.renderOnuched = function() {
+            window.clusters = []; let globalIndex = 0; let finalHTML = "";
+            const chunks = onuchedContent.split(/(<[^>]+>)/g);
+            for (let t = 0; t < chunks.length; t++) {
+                let chunk = chunks[t];
+                if (chunk.startsWith("<") && chunk.endsWith(">")) {
+                    finalHTML += chunk;
+                    if (/<\/?(td|th|tr|table|tbody|thead|p|div|br|hr|li|ul|ol|h[1-6])[^>]*>/i.test(chunk)) { window.clusters.push(' '); globalIndex++; }
+                    continue;
+                }
+                
+                let mathBlocks = [];
+                let safeChunk = chunk.replace(/(\$\$[\s\S]*?\$\$|\$[\s\S]*?\$)/g, (match) => { mathBlocks.push(match); return `__MATH_${mathBlocks.length - 1}__`; });
+                let parts = safeChunk.split(/(__MATH_\d+__)/);
+                
+                for (let p of parts) {
+                    let m = p.match(/__MATH_(\d+)__/);
+                    if (m) {
+                        finalHTML += `<span class="qz-math">${mathBlocks[parseInt(m[1])]}</span>`;
+                        window.clusters.push(' '); finalHTML += `<span data-index="${globalIndex}" style="display:none;"> </span>`; globalIndex++;
+                    } else if (p) {
+                        let tokens = p.split(/(\s+|[।!?]+)/);
+                        for (let token of tokens) {
+                            if (!token) continue;
+                            let isSpaceOrPunc = /^(\s+|[।!?]+)$/.test(token);
+                            let tokenClusters = window.graphemeClusters(token);
+                            let tokenHTML = "";
+                            for (let c of tokenClusters) { window.clusters.push(c); tokenHTML += `<span data-index="${globalIndex}">${c}</span>`; globalIndex++; }
+                            finalHTML += isSpaceOrPunc ? tokenHTML : `<span class="word-group" style="white-space: nowrap; display: inline-block; cursor: text;">${tokenHTML}</span>`;
+                        }
+                    }
+                }
+            }
+            window.lastFinalHTML = finalHTML; window.applyPagination();
         }
+
+        window.applyPagination = function() {
+            const container = document.getElementById('onuched-pages-container'); container.innerHTML = ''; 
+            const isMobile = document.body.classList.contains('mobile-mode');
+            
+            if (isMobile) {
+                const page = createOnuchedPage(1, container);
+                page.querySelector('.content-area').innerHTML = window.lastFinalHTML;
+                if (window.renderMathInElement) renderMathInElement(page.querySelector('.content-area'), { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false} ], throwOnError: false });
+                restoreMarksAndCollectSpans(); return;
+            }
+            
+            const tempDiv = document.createElement('div'); tempDiv.innerHTML = window.lastFinalHTML;
+            // Simplified pagination logic for merged version
+            let pageNum = 1; let currentPage = createOnuchedPage(pageNum, container); let contentArea = currentPage.querySelector('.content-area');
+            const nodes = Array.from(tempDiv.childNodes);
+            
+            nodes.forEach(node => {
+                contentArea.appendChild(node);
+                if (contentArea.scrollWidth > contentArea.clientWidth + 5) {
+                    contentArea.removeChild(node); pageNum++; currentPage = createOnuchedPage(pageNum, container);
+                    contentArea = currentPage.querySelector('.content-area'); contentArea.appendChild(node);
+                }
+            });
+            if (window.renderMathInElement) document.querySelectorAll('#onuched-view .content-area').forEach(ca => renderMathInElement(ca, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false} ], throwOnError: false }));
+            restoreMarksAndCollectSpans();
+        }
+
+        function createOnuchedPage(num, container) {
+            const page = document.createElement('div'); page.className = `page ${num === 1 ? 'page-1' : 'page-n'}`;
+            const qrUrl = `${window.location.origin}${window.location.pathname}?parent=${currentParentID}&cat=${currentCatID}&set=${currentSetID}`; 
+            page.innerHTML = (num === 1 ? `<div class="grand-header"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(qrUrl)}" class="qr-code-print"><h1>QUESTIONZ</h1></div>` : '') + `<div class="header"><h3>অনুচ্ছেদ অনুশীলন</h3></div><div class="content-area"></div>`;
+            container.appendChild(page); return page;
+        }
+
+        function restoreMarksAndCollectSpans() {
+            window.spans = [];
+            document.querySelectorAll('#onuched-view span[data-index]').forEach(el => { let idx = parseInt(el.dataset.index); window.spans[idx] = el; el.classList.remove('marked'); });
+            window.markedRanges.forEach(r => { for(let i = r.start; i <= r.end; i++) { if (window.spans[i]) window.spans[i].classList.add('marked'); } });
+            updateBlankNumbers();
+        }
+
+        function updateBlankNumbers() {
+            let count = 1;
+            document.querySelectorAll('#onuched-view span[data-blank-num]').forEach(el => { el.removeAttribute('data-blank-num'); });
+            window.markedRanges.sort((a, b) => a.start - b.start).forEach(range => {
+                let midIndex = Math.floor((range.start + range.end) / 2); let midSpan = window.spans[midIndex];
+                if (midSpan) { midSpan.setAttribute('data-blank-num', `(${toBengaliNumber(count)})`); count++; }
+            });
+        }
+
+        window.saveMarkedWords = async function() {
+            if (!(currentParentID && currentCatID && currentSetID)) return;
+            const storageKey = `${currentParentID}_${currentCatID}_${currentSetID}`;
+            localStorage.setItem('qz_saved_ranges_' + storageKey, JSON.stringify(window.markedRanges));
+            Swal.fire({ icon: 'success', title: 'সংরক্ষিত!', text: 'এই ডিভাইসে সেভ হয়েছে।', showConfirmButton: false, timer: 1500 });
+        };
+
+        // Pointer Logic for Onuched Marking
+        document.addEventListener('pointerdown', (e) => {
+            if (activeModule !== 'onuched' || document.body.classList.contains('print-mode')) return;
+            if (e.target.tagName === 'SPAN' && e.target.hasAttribute('data-index')) {
+                let index = parseInt(e.target.dataset.index);
+                const existing = window.markedRanges.find(r => index >= r.start && index <= r.end);
+                if (existing) { window.startIndex = existing.start; window.endIndex = existing.end; window.currentMode = 'unmark'; } 
+                else {
+                    window.startIndex = index; window.endIndex = index;
+                    while (window.startIndex > 0 && !/^(\s+|[।!?]+)$/.test(window.clusters[window.startIndex - 1])) window.startIndex--;
+                    while (window.endIndex < window.clusters.length - 1 && !/^(\s+|[।!?]+)$/.test(window.clusters[window.endIndex + 1])) window.endIndex++;
+                    window.currentMode = 'mark';
+                }
+                window.spanRects = window.spans.map(span => span ? span.getBoundingClientRect() : null);
+                updateMarkUI();
+            } else if (e.target.id !== 'tooltip' && !e.target.closest('.top-nav-container')) { clearSelectionUI(); }
+        });
+
+        function updateMarkUI() {
+            if (window.startIndex === -1 || window.endIndex === -1) return;
+            const containerRect = document.body.getBoundingClientRect();
+            const startRect = window.spanRects[window.startIndex]; const endRect = window.spanRects[window.endIndex];
+            if(!startRect || !endRect) return;
+
+            highlight.classList.add('active'); highlight.style.left = (startRect.left - containerRect.left) + 'px'; highlight.style.top = (startRect.top - containerRect.top) + 'px'; highlight.style.width = (endRect.right - startRect.left) + 'px'; highlight.style.height = startRect.height + 'px';
+            tooltip.classList.add('active'); tooltip.style.left = (startRect.left - containerRect.left + (endRect.right - startRect.left) / 2) + 'px'; tooltip.style.top = (startRect.top - containerRect.top - 15) + 'px';
+            document.getElementById('tooltip-label').innerText = window.currentMode === 'mark' ? 'MARK' : 'UNMARK';
+        }
+
+        function clearSelectionUI() { highlight.classList.remove('active'); tooltip.classList.remove('active'); window.startIndex = -1; window.endIndex = -1; }
+
+        tooltip.addEventListener('click', () => {
+            if (window.startIndex === -1 || window.endIndex === -1) return;
+            if (window.currentMode === 'unmark') {
+                for (let i = window.startIndex; i <= window.endIndex; i++) if (window.spans[i]) window.spans[i].classList.remove('marked');
+                window.markedRanges = window.markedRanges.filter(r => !(r.start === window.startIndex && r.end === window.endIndex));
+            } else {
+                for (let i = window.startIndex; i <= window.endIndex; i++) if (window.spans[i]) window.spans[i].classList.add('marked');
+                window.markedRanges.push({ start: window.startIndex, end: window.endIndex });
+            }
+            updateBlankNumbers(); localStorage.setItem(`qz_saved_ranges_${currentParentID}_${currentCatID}_${currentSetID}`, JSON.stringify(window.markedRanges)); clearSelectionUI();
+        });
 
         // =====================================
         // AUTO LOAD LOGIC FOR DIRECT LINKS
         // =====================================
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const pParent = urlParams.get('parent');
-            const pCat = urlParams.get('cat');
-            const pSet = urlParams.get('set');
+            const pParent = urlParams.get('parent'); const pCat = urlParams.get('cat'); const pSet = urlParams.get('set');
             
             if (pParent && pCat && pSet) {
-                // সরাসরি টেস্ট লোড হবে যদি URL-এ প্যারামিটার থাকে
                 setTimeout(() => {
-                    startTest(pParent, pCat, pSet, "QUESTIONZ", pSet);
+                    if (pSet.toLowerCase().endsWith('_onu')) startOnuched(pParent, pCat, pSet, "QUESTIONZ", pSet);
+                    else startTest(pParent, pCat, pSet, "QUESTIONZ", pSet);
                 }, 500);
             }
         });
