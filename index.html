@@ -1,88 +1,801 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Questionz — লগইন</title>
-<meta name="theme-color" content="#0B100E" />
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Noto+Serif+Bengali:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --charcoal-950: #0B100E;
-    --charcoal-900: #121A15;
-    --charcoal-800: #1B251E;
-    --charcoal-800-hover: #223028;
-    --charcoal-border: rgba(201,164,97,0.14);
-    --cream: #F4EFE3;
-    --cream-dim: #B9B2A0;
-    --emerald-glow: rgba(53,168,131,0.20);
-    --gold: #C9A461;
-    --danger: #E17A63;
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; height: 100%; background: var(--charcoal-950); color: var(--cream); }
-  body { min-height: 100dvh; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; padding: 24px; font-family: 'Noto Serif Bengali', serif; }
-  
-  .glow { position: absolute; width: 640px; height: 640px; max-width: 140vw; border-radius: 50%; background: radial-gradient(circle, var(--emerald-glow) 0%, rgba(53,168,131,0.06) 45%, transparent 70%); top: 50%; left: 50%; transform: translate(-50%, -55%); filter: blur(10px); animation: drift 14s ease-in-out infinite; pointer-events: none; }
-  @keyframes drift { 0%, 100% { transform: translate(-52%, -57%) scale(1); } 50% { transform: translate(-48%, -53%) scale(1.08); } }
-  
-  .card { position: relative; z-index: 1; width: 100%; max-width: 380px; background: linear-gradient(180deg, rgba(27,37,30,0.90), rgba(18,26,21,0.94)); border: 1px solid var(--charcoal-border); border-radius: 20px; padding: 40px 32px 32px; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.02) inset; text-align: center; }
-  .wordmark { font-family: 'Cinzel', serif; font-size: 26px; font-weight: 600; letter-spacing: 0.14em; color: var(--cream); margin: 0; }
-  .wordmark span { color: var(--gold); }
-  .divider { width: 40px; height: 2px; margin: 18px auto 20px; background: linear-gradient(90deg, transparent, var(--gold), transparent); border: none; }
-  .tagline { font-size: 15px; color: var(--cream-dim); margin: 0 0 32px; line-height: 1.7; }
-  
-  .google-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 14px 20px; background: var(--charcoal-800); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; color: var(--cream); font-family: 'Noto Serif Bengali', serif; font-size: 15.5px; font-weight: 500; cursor: pointer; transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease; }
-  .google-btn:hover:not(:disabled) { background: var(--charcoal-800-hover); border-color: rgba(201,164,97,0.35); }
-  .google-btn:active:not(:disabled) { transform: scale(0.98); }
-  .google-btn:disabled { opacity: 0.65; cursor: default; }
-  .google-icon { width: 20px; height: 20px; flex-shrink: 0; background: #fff; border-radius: 50%; padding: 2px; }
-  
-  .spinner { width: 18px; height: 18px; flex-shrink: 0; border: 2px solid rgba(244,239,227,0.25); border-top-color: var(--cream); border-radius: 50%; animation: spin 0.75s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  
-  .error-box { margin-top: 18px; padding: 12px 14px; background: rgba(225,122,99,0.12); border: 1px solid rgba(225,122,99,0.35); border-radius: 10px; color: var(--danger); font-size: 14px; line-height: 1.6; display: none; }
-  .error-box.visible { display: block; }
-  .footnote { margin-top: 28px; font-size: 12.5px; color: var(--cream-dim); opacity: 0.7; line-height: 1.6; }
-  .status-text { margin-top: 14px; font-size: 12px; color: var(--gold); opacity: 0.85; line-height: 1.6; min-height: 1.6em; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionz - Dashboard & Test</title>
+    
+    <!-- Dashboard Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Coming+Soon&family=Indie+Flower&family=Montserrat:wght@700;900&family=Poppins:wght@400;600&family=Segoe+UI:wght@400;600&family=Cutive+Mono&family=Cuprum:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.maateen.me/bensen/font.css" rel="stylesheet">
+    <link href="https://fonts.maateen.me/hoogly/font.css" rel="stylesheet">
+    
+    <!-- Test Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Hind+Siliguri:wght@300;400;500;600;700&family=Lora:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <style>
+        /* ==========================================
+           DASHBOARD STYLES
+           ========================================== */
+        :root {
+            --primary-color: #1B251E; --secondary-color: #C9A461; --bg-color: #0B100E;
+            --card-bg: #1B251E; --text-color: #F4EFE3; --gold-accent: #C9A461;
+            --gold-gradient: linear-gradient(135deg, #C9A461, #fcf6ba);
+            --charcoal-800-hover: #223028; --charcoal-border: rgba(201,164,97,0.14); --cream-dim: #B9B2A0;
+            
+            /* Test Tokens */
+            --q-font-size: 15px; --opt-font-size: 13px;
+            --primary: #4F46E5; --primary-light: #A5B4FC; --primary-dim: rgba(79, 70, 229, 0.10); --primary-glow: rgba(79, 70, 229, 0.22);
+            --bg-page: #FFFFFF; --bg-desktop: #D4D7EE; --bg-print: #4A4B68;
+            --shadow-page: 0 2px 6px rgba(0,0,0,0.06), 0 10px 28px rgba(0,0,0,0.08), 0 28px 56px rgba(79,70,229,0.05);
+            --shadow-nav: 0 1px 0 rgba(255,255,255,0.9) inset, 0 4px 16px rgba(0,0,0,0.07), 0 8px 40px rgba(79,70,229,0.10);
+            --spring: cubic-bezier(0.34, 1.56, 0.64, 1); --ease: cubic-bezier(0.16, 1, 0.3, 1);
+            --emerald-700: #0B3D30; --emerald-600: #0F5C46; --emerald-wash: rgba(15, 92, 70, 0.13);
+            --gold-500: #B8935A; --gold-600: #9A7A42; --danger: #B5533E; --danger-wash: rgba(181, 83, 62, 0.13); --violet: #6D28D9;
+            --print-margin-top: 8mm; --print-margin-right: 6mm; --print-margin-bottom: 8mm; --print-margin-left: 6mm;
+        }
+
+        body {
+            font-family: 'Cuprum', sans-serif; font-weight: 400; background: var(--bg-color); color: var(--text-color);
+            margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+            transition: background-color 0.35s var(--ease);
+        }
+
+        /* Dashboard Specific Elements */
+        #dashboard-view { width: 100%; display: flex; flex-direction: column; align-items: center; }
+        nav.dash-nav { width: 100%; padding: 5px 5%; display: flex; justify-content: space-between; align-items: center; background: rgba(18,26,21,0.85); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--charcoal-border); box-sizing: border-box; }
+        .logo-wrapper { display: flex; align-items: center; gap: 12px; }
+        .logo-text { font-family: 'Cuprum', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 0.5px; background: var(--gold-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 0 5px rgba(201,164,97,0.5)); width: 26px; height: 26px; border: 1px solid rgba(201,164,97,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 8px rgba(201,164,97,0.2); flex-shrink: 0; }
+        header.dash-header { text-align: left; width: 90%; max-width: 900px; margin-top: 10px; margin-bottom: 5px; }
+        .breadcrumb { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 10px; }
+        .breadcrumb-item { background: var(--card-bg); border: 1px solid var(--charcoal-border); padding: 2px 7px; border-radius: 4px; font-family: 'Cuprum','Hoogly','Bensen',sans-serif; font-size: 11px; font-weight: 400; color: var(--gold-accent); cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; user-select: none; }
+        .breadcrumb-item:hover { background: var(--charcoal-800-hover); border-color: var(--gold-accent); transform: translateY(-1px); }
+        .separator { color: var(--cream-dim); font-size: 9px; font-weight: normal; }
+        .wave-text { font-family: 'Cuprum', sans-serif; font-size: 1.1rem; font-weight: 400; margin: 0; padding: 0; text-transform: uppercase; color: var(--text-color); display: inline-block; line-height: 1; letter-spacing: 0.15rem; filter: drop-shadow(0 0 8px rgba(0,0,0,0.3)); }
+        .divider { width: 90%; max-width: 900px; height: 1px; background: linear-gradient(to right,rgba(201,164,97,0),rgba(201,164,97,0.2),rgba(201,164,97,0)); margin: 15px 0 5px 0; }
+        .noun-section-wrapper { padding: 10px 0; width: 280px; max-width: 95%; box-sizing: border-box; margin-top: 5px; }
+        .grid-container { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        .noun-box { position: relative; height: 42px; padding: 0 15px; display: flex; justify-content: space-between; align-items: center; background: linear-gradient(180deg, rgba(27,37,30,0.7), rgba(18,26,21,0.9)); overflow: hidden; border-radius: 6px; text-decoration: none; border: 1px solid var(--charcoal-border); cursor: pointer; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; transition: all .3s ease; }
+        .noun-box span { position: relative; z-index: 2; font-family: 'Cuprum','Hoogly','Bensen',sans-serif; font-size: 15px; font-weight: 400; color: var(--text-color); white-space: nowrap; pointer-events: none; }
+        .progress-percent { font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 600; color: var(--text-color); background: rgba(201,164,97,0.15); padding: 3px 10px; border-radius: 20px; border: 1px solid rgba(201,164,97,0.25); box-shadow: inset 0 0 8px rgba(201,164,97,0.05), 0 2px 5px rgba(0, 0, 0, 0.3); backdrop-filter: blur(5px); display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px; transition: all 0.3s ease; }
+        .progress-percent::before { content: ''; display: inline-block; width: 6px; height: 6px; background-color: var(--gold-accent); border-radius: 50%; box-shadow: 0 0 6px var(--gold-accent), 0 0 10px var(--gold-accent); animation: pulse-dot 2s infinite ease-in-out; }
+        @keyframes pulse-dot { 0% { transform: scale(0.9); opacity: 0.7; } 50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 12px var(--gold-accent), 0 0 18px var(--gold-accent); } 100% { transform: scale(0.9); opacity: 0.7; } }
+        .progress-bar-bg { position: absolute; left: 0; bottom: 0; height: 4px; background: rgba(244,239,227,0.05); width: 100%; z-index: 1; border-radius: 0 0 6px 6px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, rgba(53,168,131,0.6), var(--gold-accent)); box-shadow: 0 -1px 8px rgba(201,164,97,0.5); border-radius: 0 4px 4px 0; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        .noun-box:hover { background: var(--charcoal-800-hover); border-color: var(--gold-accent); transform: translateY(-2px); }
+        #loading { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+        .skeleton { height: 42px; width: 100%; background: rgba(201,164,97,0.05); background-image: linear-gradient(90deg,rgba(201,164,97,0.02) 0,rgba(201,164,97,0.08) 40px,rgba(201,164,97,0.02) 80px); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; border-radius: 6px; border: 1px solid var(--charcoal-border); }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        footer.dash-footer { width: 100%; padding: 30px 0; text-align: center; margin-top: auto; color: var(--cream-dim); font-size: 10px; }
+
+        /* ==========================================
+           TEST UI STYLES (Activated by body classes)
+           ========================================== */
+        body.test-active { font-family: 'Noto Serif Bengali', 'Lora', serif; background-color: var(--bg-desktop); }
+        body.test-active #dashboard-view { display: none !important; }
+        
+        #test-view { width: 100%; display: none; flex-direction: column; align-items: center; min-height: 100vh; position: relative; }
+        body.test-active #test-view { display: flex; }
+
+        /* Test specific elements */
+        *, *::before, *::after { box-sizing: border-box; }
+        .recurring { position: relative; display: inline-block; }
+        .dot { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-weight: bold; font-size: 15px; }
+        .frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; font-size: 0.9em; line-height: 1.1; margin: 0 2px; }
+        .frac span:first-child { border-bottom: 1px solid currentColor; padding: 0 2px; }
+        .frac span:last-child { padding: 0 2px; }
+        sup { line-height: 0; font-size: 0.7em; }
+
+        .top-nav-container { position: fixed; top: 8px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 4px; flex-wrap: wrap; justify-content: center; z-index: 3000; width: max-content; max-width: 98vw; background: rgba(255, 255, 255, 0.82); backdrop-filter: blur(22px) saturate(190%); -webkit-backdrop-filter: blur(22px) saturate(190%); border: 1px solid rgba(255, 255, 255, 0.65); border-radius: 40px; padding: 5px 10px; box-shadow: var(--shadow-nav); }
+        .nav-sep { flex-shrink: 0; width: 1px; height: 16px; background: rgba(79, 70, 229, 0.16); border-radius: 1px; margin: 0 2px; }
+        .action-group { display: flex; align-items: center; gap: 2px; }
+        .floating-stats { display: flex; align-items: center; gap: 8px; padding: 0 8px; height: 22px; font-family: 'Hind Siliguri', sans-serif; font-size: 11px; font-weight: 700; color: #374151; white-space: nowrap; user-select: none; cursor: pointer; }
+        .floating-stats svg { width: 12px; height: 12px; display: block; }
+        .floating-stats .stat-timer { display: inline-flex; align-items: center; gap: 3px; color: var(--danger); }
+        .floating-stats .timer-val, .floating-stats .rem-q { font-family: 'Cutive Mono', monospace; font-weight: 700; letter-spacing: 0.2px; }
+
+        .nav-icon-btn { border: none; width: 26px; height: 22px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; background: transparent; position: relative; transition: background 0.2s var(--ease), transform 0.18s var(--spring), box-shadow 0.24s var(--ease), color 0.2s var(--ease); color:#374151; }
+        .nav-icon-btn svg { width: 15px; height: 15px; display: block; }
+        .nav-icon-btn:active { transform: scale(0.86); }
+        .nav-icon-btn.save-tone { color: var(--emerald-600); background: var(--emerald-wash); }
+        .nav-icon-btn.save-tone:hover { background: rgba(15, 92, 70, 0.22); box-shadow: 0 3px 10px rgba(15, 92, 70, 0.28); transform: translateY(-1px); }
+        .nav-icon-btn.danger-tone { color: var(--danger); background: var(--danger-wash); }
+        .nav-icon-btn.danger-tone:hover { background: rgba(181, 83, 62, 0.22); box-shadow: 0 3px 10px rgba(181, 83, 62, 0.28); transform: translateY(-1px); }
+        .nav-icon-btn.gold-tone { color: var(--gold-600); background: rgba(184, 147, 90, 0.14); }
+        .nav-icon-btn.gold-tone:hover { background: rgba(184, 147, 90, 0.26); box-shadow: 0 3px 10px rgba(184, 147, 90, 0.3); transform: translateY(-1px); }
+        .nav-icon-btn.gold-tone.is-active { background: var(--gold-500); color: #fff; box-shadow: 0 2px 8px rgba(184, 147, 90, 0.45); }
+        .nav-icon-btn.violet-tone { color: var(--violet); background: rgba(109, 40, 217, 0.10); }
+        .nav-icon-btn.violet-tone:hover { background: rgba(109, 40, 217, 0.20); box-shadow: 0 3px 10px rgba(109, 40, 217, 0.26); transform: translateY(-1px); }
+        .nav-icon-btn.violet-tone.is-active { background: var(--violet); color: #fff; box-shadow: 0 2px 8px rgba(109, 40, 217, 0.45); }
+        .back-tone { color: #fff; background: var(--danger); width: 32px; font-size:12px; font-weight:bold; }
+        .back-tone:hover { background: #9b4735; transform: translateY(-1px); }
+
+        @keyframes btn-spin { to { transform: rotate(360deg); } }
+        .btn-spin { animation: btn-spin 0.8s linear infinite; }
+
+        .view-switcher { display: flex; gap: 2px; padding: 2px; border-radius: 18px; background: var(--primary-dim); align-items: center; position: relative; }
+        .view-switcher-indicator { position: absolute; top: 2px; left: 2px; height: 22px; border-radius: 14px; background: var(--primary); box-shadow: 0 2px 8px var(--primary-glow); transition: transform 0.32s var(--spring), width 0.32s var(--spring); z-index: 0; }
+        .view-btn { border: none; padding: 0 8px; height: 22px; border-radius: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; background: transparent; color: #374151; position: relative; z-index: 1; transition: color 0.22s var(--ease), transform 0.18s var(--spring); }
+        .view-btn svg { width: 14px; height: 14px; display: block; }
+        .view-btn:not(.active):hover { color: var(--primary); }
+        .view-btn:active { transform: scale(0.88); }
+        .view-btn.active { color: white; }
+
+        .page { width: 210mm; height: 297mm; padding: 5mm 8mm 15mm 8mm; margin: 10mm auto; background: var(--bg-page); box-shadow: var(--shadow-page); box-sizing: border-box; position: relative; page-break-after: always; overflow: hidden; border-radius: 6px; display: flex; flex-direction: column; }
+        .content-columns { display: flex; flex-direction: column; flex-wrap: wrap; flex: 1 1 auto; min-height: 0; column-gap: 10mm; justify-content: flex-start; position: relative; }
+        body.print-mode .content-columns::after, body.desktop-mode .content-columns::after { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; border-left: 1px solid #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .q-card { width: calc(50% - 5mm); break-inside: avoid; margin-bottom: 5px; padding: 5px; padding-bottom: 8px; border-bottom: 1px dashed rgba(79, 70, 229, 0.18); box-sizing: border-box; border-radius: 4px; }
+
+        body.mobile-mode { background: linear-gradient(150deg, #F0F1FF 0%, #EBEEFF 100%); }
+        body.mobile-mode .page { width: 95%; height: auto; min-height: auto; margin: 55px auto 20px auto; padding: 15px; box-shadow: none; overflow: visible; border-top: 3px solid var(--primary); display: block; }
+        body.mobile-mode .content-columns { display: block; height: auto; column-gap: 0; }
+        body.mobile-mode .q-card { width: 100%; margin-bottom: 15px; padding: 14px; box-sizing: border-box; border: 1px solid rgba(79, 70, 229, 0.10); border-bottom: 1px solid rgba(79, 70, 229, 0.10); background: var(--bg-page); border-radius: 10px; box-shadow: 0 1px 3px rgba(15,23,42,0.04), 0 6px 20px rgba(79,70,229,0.06); }
+
+        .header { text-align: center; margin-top: 0; margin-bottom: 8px; border-bottom: 1px solid rgba(79, 70, 229, 0.12); padding-bottom: 4px; }
+        .header h2 { margin: 0; font-weight: 700; letter-spacing: 0.4px; font-size: 15px; text-transform: uppercase; font-family: 'Hind Siliguri', sans-serif; background: linear-gradient(118deg, var(--primary) 20%, #818CF8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .q-text { font-size: var(--q-font-size); font-weight: bold; display: block; margin-bottom: 5px; color: #1E293B; transition: font-size 0.2s; }
+        .option-container { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+        .option-btn { padding: 3px 8px; background: #F8F9FC; border: 1px solid rgba(79, 70, 229, 0.14); border-radius: 6px; cursor: pointer; font-size: var(--opt-font-size); text-align: left; color: #1E293B; transition: background 0.18s var(--ease), border-color 0.18s var(--ease), color 0.18s var(--ease), transform 0.15s var(--spring), box-shadow 0.18s var(--ease); }
+        .option-btn:hover { background: var(--primary-dim); border-color: var(--primary-light); }
+        .option-btn.blur-logic { filter: blur(5px); user-select: none; transition: filter 0.3s ease; }
+        .option-btn.selected, .option-btn.opt-correct, .option-btn.opt-wrong, .option-btn.opt-missed { filter: blur(0) !important; }
+        .option-btn.selected { background: var(--primary-dim); color: var(--primary); border-color: var(--primary-light); font-weight: bold; }
+        .option-btn.opt-correct { background: var(--emerald-wash) !important; color: var(--emerald-700) !important; border-color: var(--emerald-600) !important; font-weight: bold; }
+        .option-btn.opt-wrong { background: var(--danger-wash) !important; color: var(--danger) !important; border-color: var(--danger) !important; font-weight: bold; }
+        .option-btn.opt-missed { background: rgba(184, 147, 90, 0.16) !important; color: var(--gold-600) !important; border-color: var(--gold-500) !important; font-weight: bold; }
+        .locked-card { pointer-events: none; opacity: 0.85; }
+        .locked-card .option-btn.opt-correct { background: #E4E6F5 !important; color: #4A4B68 !important; border-color: #B7BBE0 !important; font-weight: bold; }
+
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); z-index: 4000; justify-content: center; align-items: center; }
+        .result-modal { background: var(--bg-page); padding: 26px; border-radius: 16px; width: 320px; text-align: center; font-family: 'Noto Serif Bengali', 'Lora', serif; box-shadow: var(--shadow-page); border: 1px solid rgba(79, 70, 229, 0.10); }
+        .result-modal h3 { margin-top: 0; font-family: 'Hind Siliguri', sans-serif; font-weight: 700; letter-spacing: 0.3px; background: linear-gradient(118deg, var(--primary) 20%, #818CF8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; border-bottom: 1px solid rgba(79, 70, 229, 0.12); padding-bottom: 10px; }
+        .result-modal p { font-size: 17px; margin: 10px 0; line-height: 1.6; color: #1E293B; }
+        .close-modal-btn { background: var(--primary); color: white; border: none; padding: 9px 26px; border-radius: 999px; cursor: pointer; font-size: 15px; margin-top: 14px; font-family: 'Hind Siliguri', sans-serif; font-weight: 600; box-shadow: 0 4px 14px var(--primary-glow); transition: transform 0.18s var(--spring), box-shadow 0.18s var(--ease); }
+        .close-modal-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px var(--primary-glow); }
+        .close-modal-btn:active { transform: scale(0.96); }
+
+        .footer { flex-shrink: 0; display: flex; justify-content: center; text-align: center; font-size: 11px; line-height: 1.2; word-spacing: -1.5px; border-top: 1px solid rgba(15, 23, 42, 0.25); padding-top: 5px; color: #475569; font-family: 'Cutive Mono', 'Hind Siliguri', monospace; font-weight: 300; }
+        body.mobile-mode .footer { margin-top: 20px; padding-bottom: 10px; }
+
+        .result-fab { position: fixed; bottom: 25px; right: 25px; background: linear-gradient(135deg, #0F5C46 0%, #16966F 100%); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 6px 20px rgba(11, 61, 48, 0.38), 0 2px 8px rgba(11, 61, 48, 0.22), 0 0 0 0 rgba(15, 92, 70, 0.4); border: none; z-index: 999; transition: transform 0.2s var(--spring), box-shadow 0.3s var(--ease), background 0.35s var(--ease); animation: fab-pulse 2.8s ease-in-out infinite; }
+        .result-fab.is-reset { background: linear-gradient(135deg, #4F46E5 0%, #7C72F0 100%); animation: fab-pulse-indigo 2.8s ease-in-out infinite; }
+        .result-fab:hover { transform: translateY(-3px) scale(1.05); }
+        .result-fab:active { transform: scale(0.9); }
+        .result-fab svg { width: 26px; height: 26px; fill: white; }
+        @keyframes fab-pulse { 0%, 100% { box-shadow: 0 6px 20px rgba(11,61,48,0.38), 0 2px 8px rgba(11,61,48,0.22), 0 0 0 0 rgba(15,92,70,0.4); } 50% { box-shadow: 0 6px 20px rgba(11,61,48,0.38), 0 2px 8px rgba(11,61,48,0.22), 0 0 0 9px rgba(15,92,70,0); } }
+        @keyframes fab-pulse-indigo { 0%, 100% { box-shadow: 0 6px 20px rgba(79,70,229,0.38), 0 2px 8px rgba(79,70,229,0.22), 0 0 0 0 rgba(79,70,229,0.4); } 50% { box-shadow: 0 6px 20px rgba(79,70,229,0.38), 0 2px 8px rgba(79,70,229,0.22), 0 0 0 9px rgba(79,70,229,0); } }
+
+        #test-loading-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(150deg, #F0F1FF 0%, #EBEEFF 100%); display: flex; flex-direction: column; align-items: center; padding-top: 60px; z-index: 2000; }
+        .skeleton-nav { display: flex; gap: 6px; margin-bottom: 32px; align-items: center; width: max-content; background: rgba(255, 255, 255, 0.80); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.65); border-radius: 40px; padding: 6px 14px; box-shadow: var(--shadow-nav); }
+        .skeleton-pill { height: 22px; border-radius: 14px; }
+        .skeleton-container { width: 90%; max-width: 800px; display: flex; flex-direction: column; gap: 15px; }
+        .skeleton-card { background: var(--bg-page); padding: 15px; border-radius: 10px; border: 1px solid rgba(79, 70, 229, 0.08); box-shadow: 0 4px 24px rgba(79,70,229,0.07), 0 1px 4px rgba(0,0,0,0.04); }
+        .shimmer { background: #E8E9F7; background-image: linear-gradient(90deg, #E8E9F7 0px, #F2F3FF 80px, #E8E9F7 160px); background-size: 400% 100%; animation: shimmer-anim 1.7s infinite linear; border-radius: 6px; }
+        @keyframes shimmer-anim { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+        .sk-text { height: 18px; width: 80%; margin-bottom: 15px; }
+        .sk-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .sk-opt { height: 32px; width: 100%; }
+
+        .grand-header { position: relative; display: none; text-align: center; border-bottom: 1.5px solid #0F172A; padding-bottom: 8px; margin-bottom: 10px; }
+        .grand-header h1 { margin: 0; font-size: 36px; font-weight: 900; letter-spacing: 5px; font-family: 'Cinzel', serif; color: #0F172A; }
+        .grand-header h3 { margin: 6px 0; font-size: 15px; font-family: 'Cutive Mono', 'Hind Siliguri', monospace; font-weight: 500; color: #000; word-spacing: -1.5px; }
+        .grand-header .meta { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; margin-top: 5px; font-family: 'Noto Serif Bengali', serif; color: #334155; }
+        .qr-code-print { position: absolute; top: 0; right: 0; width: 75px; height: 75px; border-radius: 4px; border: 2px solid #0F172A; padding: 2px; background: #FFFFFF; box-sizing: border-box; }
+        .katex { font-size: 1.1em; }
+
+        body.print-mode { background-color: var(--bg-print); }
+        body.print-mode .page, body.desktop-mode .page { width: 210mm; height: 297mm; padding: var(--print-margin-top) var(--print-margin-right) var(--print-margin-bottom) var(--print-margin-left); margin: 20px auto; background: var(--bg-page); box-shadow: 0 8px 30px rgba(0,0,0,0.35); border: none; border-radius: 4px; }
+        body.print-mode .grand-header, body.desktop-mode .grand-header { display: block; }
+        body.print-mode .page-header, body.desktop-mode .page-header { display: none; }
+        body.print-mode .q-card, body.desktop-mode .q-card { width: calc(50% - 5mm); border: none; margin-bottom: 0px; padding: 2px 5px; }
+        body.print-mode .q-card { pointer-events: none !important; opacity: 1 !important; }
+        body.print-mode .q-text, body.desktop-mode .q-text { line-height: 1.1; margin-bottom: 2px; }
+        body.print-mode .option-container, body.desktop-mode .option-container { gap: 2px; }
+        body.print-mode .option-btn, body.desktop-mode .option-btn, body.print-mode .option-btn.selected, body.print-mode .option-btn.opt-correct, body.print-mode .option-btn.opt-wrong, body.print-mode .option-btn.opt-missed, body.print-mode .locked-card .option-btn.opt-correct { background: transparent !important; border: 1px solid transparent !important; padding: 1px 4px; color: #000 !important; font-weight: normal !important; line-height: 1.1; }
+        body.desktop-mode .option-btn.selected { background: var(--primary-dim) !important; color: var(--primary) !important; border-color: var(--primary-light) !important; font-weight: bold !important; }
+        body.desktop-mode .option-btn.opt-correct { background: var(--emerald-wash) !important; color: var(--emerald-700) !important; border-color: var(--emerald-600) !important; font-weight: bold !important; }
+        body.desktop-mode .option-btn.opt-wrong { background: var(--danger-wash) !important; color: var(--danger) !important; border-color: var(--danger) !important; font-weight: bold !important; }
+        body.desktop-mode .option-btn.opt-missed { background: rgba(184, 147, 90, 0.16) !important; color: var(--gold-600) !important; border-color: var(--gold-500) !important; font-weight: bold !important; }
+        body.desktop-mode .locked-card .option-btn.opt-correct { background: #E4E6F5 !important; color: #4A4B68 !important; border-color: #B7BBE0 !important; font-weight: bold !important; }
+        body.print-mode .footer, body.desktop-mode .footer { border-top: none; }
+
+        @media print {
+            @page { size: A4; margin: 0; }
+            .top-nav-container, .result-fab, #test-loading-screen, .modal-overlay, #dashboard-view { display: none !important; }
+            body { background: none !important; margin: 0 !important; padding: 0 !important; }
+            #test-view { display: block !important; }
+            .page { box-shadow: none !important; margin: 0 !important; padding: var(--print-margin-top) var(--print-margin-right) var(--print-margin-bottom) var(--print-margin-left) !important; width: 210mm !important; height: 297mm !important; page-break-after: always; box-sizing: border-box; }
+            .page:last-child { page-break-after: auto; }
+            .grand-header { display: block !important; }
+            .page-header { display: none !important; }
+            .q-card { border: none !important; margin-bottom: 0 !important; pointer-events: none !important; opacity: 1 !important; }
+            .q-text { line-height: 1.1 !important; margin-bottom: 2px !important; }
+            .option-container { gap: 2px !important; }
+            .option-btn, .option-btn.selected, .option-btn.opt-correct, .option-btn.opt-wrong, .option-btn.opt-missed, .locked-card .option-btn.opt-correct { background: transparent !important; border: 1px solid transparent !important; color: #000 !important; font-weight: normal !important; line-height: 1.1 !important; }
+        }
+    </style>
 </head>
 <body>
-  <div class="glow" aria-hidden="true"></div>
 
-  <main class="card">
-    <h1 class="wordmark">QUESTION<span>Z</span></h1>
-    <hr class="divider" />
-    <p class="tagline">পরীক্ষার প্রস্তুতি,<br />এক জায়গায়</p>
+    <!-- ==================== DASHBOARD VIEW ==================== -->
+    <div id="dashboard-view">
+        <nav class="dash-nav">
+            <div class="logo-wrapper">
+                <div class="logo-text">QZ</div>
+                <a href="#" onclick="location.reload()" style="text-decoration:none"><h1 class="wave-text">QUESTIONZ</h1></a>
+            </div>
+        </nav>
+        <header class="dash-header">
+            <div id="breadcrumb-container" class="breadcrumb">
+                <div class="breadcrumb-item" onclick="jumpTo(-1)">Home</div>
+            </div>
+        </header>
+        <div class="divider"></div>
+        
+        <div class="noun-section-wrapper">
+            <div id="loading">
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
+                <div class="skeleton"></div>
+            </div>
+            <div id="category-grid" class="grid-container"></div>
+        </div>
+        
+        <footer class="dash-footer">
+            <p>&copy; 2026 Questionz. All Rights Reserved.</p>
+        </footer>
+    </div>
 
-    <button id="googleSignInBtn" class="google-btn" type="button">
-      <svg id="googleIcon" class="google-icon" viewBox="0 0 48 48" aria-hidden="true">
-        <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"/>
-        <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
-        <path fill="#4CAF50" d="M24 44c5.5 0 10.4-1.9 14.2-5.1l-6.6-5.4C29.6 35.6 26.9 36.5 24 36.5c-5.2 0-9.7-3.3-11.3-7.9l-6.5 5C9.6 39.6 16.3 44 24 44z"/>
-        <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.2 5.6l6.6 5.4C41.4 35.6 44 30.2 44 24c0-1.3-.1-2.7-.4-3.5z"/>
-      </svg>
-      <span id="spinner" class="spinner" hidden></span>
-      <span id="btnText" class="btn-text">Google দিয়ে চালিয়ে যান</span>
-    </button>
+    <!-- ==================== TEST VIEW ==================== -->
+    <div id="test-view">
+        <div id="test-loading-screen" style="display: none;">
+            <div class="skeleton-nav">
+                <div class="shimmer skeleton-pill" style="width: 100px;"></div>
+                <div class="shimmer skeleton-pill" style="width: 60px;"></div>
+                <div class="shimmer skeleton-pill" style="width: 60px;"></div>
+                <div class="shimmer skeleton-pill" style="width: 80px;"></div>
+            </div>
+            <div class="skeleton-container">
+                <div class="skeleton-card"><div class="shimmer sk-text"></div><div class="sk-options"><div class="shimmer sk-opt"></div><div class="shimmer sk-opt"></div><div class="shimmer sk-opt"></div><div class="shimmer sk-opt"></div></div></div>
+                <div class="skeleton-card"><div class="shimmer sk-text"></div><div class="sk-options"><div class="shimmer sk-opt"></div><div class="shimmer sk-opt"></div><div class="shimmer sk-opt"></div><div class="shimmer sk-opt"></div></div></div>
+            </div>
+        </div>
 
-    <div id="errorBox" class="error-box" role="alert"></div>
-    <p id="statusText" class="status-text" aria-live="polite"></p>
+        <div class="top-nav-container">
+            <!-- Back Button Added -->
+            <div class="nav-icon-btn back-tone" onclick="goBackToDashboard()" title="Back">🔙</div>
+            <div class="nav-sep"></div>
+            
+            <div class="floating-stats" ondblclick="decreaseFontSize()">
+                <span>বাকি: <span class="rem-q">০</span></span>
+                <span class="stat-timer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 15,14"/></svg><span class="timer-val">০০:০০</span></span>
+            </div>
+            <div class="nav-sep"></div>
+            <div class="action-group">
+                <div id="cloud-save-btn" class="nav-icon-btn save-tone" onclick="saveProgress()" title="সেভ করুন"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="7.5,12.5 10.5,15.5 16.5,8.5"/></svg></div>
+                <div id="unlock-all-btn" class="nav-icon-btn danger-tone" onclick="unlockAllProgress()" title="আনলক করুন"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.8-1.3"/></svg></div>
+                <div id="blur-toggle-btn" class="nav-icon-btn gold-tone" onclick="toggleAllBlur()" title="অপশন ব্লার"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="9" ry="6"/><circle cx="12" cy="12" r="3"/></svg></div>
+                <div id="shuffle-toggle-btn" class="nav-icon-btn violet-tone" onclick="toggleShuffle()" title="শাফল"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="9" y2="6"/><line x1="9" y1="6" x2="19" y2="18"/><polyline points="15,6 19,6 19,10"/><line x1="3" y1="18" x2="9" y2="18"/><line x1="9" y1="18" x2="13" y2="14"/><polyline points="15,18 19,18 19,14"/></svg></div>
+            </div>
+            <div class="nav-sep"></div>
+            <div class="view-switcher">
+                <div class="view-switcher-indicator" id="view-switcher-indicator"></div>
+                <button id="mobile-view-btn" class="view-btn active" onclick="toggleView('mobile')" ondblclick="increaseFontSize()" title="Mobile View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg></button>
+                <button id="desktop-view-btn" class="view-btn" onclick="toggleView('desktop')" title="Desktop View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="18" x2="12" y2="21"/></svg></button>
+                <button id="print-view-btn" class="view-btn" onclick="toggleView('print')" title="Print View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,9 6,4 18,4 18,9"/><rect x="4" y="9" width="16" height="8" rx="1"/><rect x="8" y="15" width="8" height="6"/></svg></button>
+            </div>
+        </div>
 
-    <p class="footnote">চালিয়ে যাওয়ার মাধ্যমে আপনি Questionz-এর ব্যবহারবিধিতে সম্মত হচ্ছেন</p>
-  </main>
+        <div id="pages-container" style="width:100%; display:flex; flex-direction:column; align-items:center;"></div>
 
-  <script>
-    // বাটন ক্লিক করলে যেন পেজ লোড না নেয় বা কোথাও রিডাইরেক্ট না হয়, 
-    // তার জন্য শুধুমাত্র ডিফল্ট ইভেন্ট বন্ধ রাখা হয়েছে।
-    const btn = document.getElementById("googleSignInBtn");
+        <button id="action-btn" class="result-fab" onclick="showFinalResult()">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
 
-    btn.addEventListener("click", (e) => {
-      e.preventDefault(); 
-      // এখানে কোনো প্রসেসিং হবে না, শুধু ডিজাইনটি দেখার জন্য এভাবেই রাখা হলো।
-    });
-  </script>
+        <div id="result-overlay" class="modal-overlay">
+            <div class="result-modal">
+                <h3>--- পরীক্ষার ফলাফল ---</h3>
+                <div id="result-content"></div>
+                <button class="close-modal-btn" onclick="closeModal()">ঠিক আছে</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN SCRIPT (Dashboard + Test Logic combined) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, query, where, onSnapshot, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCcS1zWFslmbRFS5PAvNrH8TFYIbR8N7ic",
+            authDomain: "questionz-me.firebaseapp.com",
+            projectId: "questionz-me",
+            storageBucket: "questionz-me.firebasestorage.app",
+            messagingSenderId: "393630463399",
+            appId: "1:393630463399:web:825468121216445828f282",
+            databaseURL: "https://questionz-me-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // =====================================
+        // DASHBOARD LOGIC
+        // =====================================
+        let historyStack = JSON.parse(sessionStorage.getItem('qz_history')) || ["root"];
+        let breadcrumbs = JSON.parse(sessionStorage.getItem('qz_breadcrumbs')) || [];
+        let unsubscribe = null;
+        
+        const categoryCache = new Map();
+        const metadataCache = new Map();
+        const grid = document.getElementById('category-grid');
+        const loading = document.getElementById('loading');
+        const breadcrumbContainer = document.getElementById('breadcrumb-container');
+        
+        // Progress Helper using LocalStorage instead of Firestore
+        const getLocalProgress = (key) => JSON.parse(localStorage.getItem(`qz_prog_${key}`)) || { percent: 0, locked: [] };
+        const saveLocalProgress = (key, data) => localStorage.setItem(`qz_prog_${key}`, JSON.stringify(data));
+
+        renderBreadcrumbs();
+        updateUI(historyStack[historyStack.length - 1]);
+
+        async function loadSetsFromMetadata(s, c) {
+            const k = `${s}_${c}`;
+            if (metadataCache.has(k)) { renderSets(metadataCache.get(k), s, c); return; }
+            try {
+                const m = await getDoc(doc(db, s, c, 'sets', '_metadata'));
+                if (m.exists()) {
+                    const d = m.data();
+                    metadataCache.set(k, d);
+                    await renderSets(d, s, c);
+                }
+            } catch (e) { console.error("Metadata Load Error:", e); }
+        }
+
+        async function renderSets(d, s, c) {
+            if (c !== historyStack[historyStack.length - 1]) return;
+            const keys = Object.keys(d).sort();
+            const fragment = document.createDocumentFragment();
+            
+            keys.forEach(k => {
+                if (document.getElementById(`set-${k}`)) return;
+                const info = d[k];
+                const title = info.title || k;
+                const display = title.length > 30 ? title.substring(0, 30) + "..." : title;
+                
+                // Read local progress
+                const pData = getLocalProgress(`${s}_${c}_${k}`);
+                const p = pData.percent || 0;
+
+                const box = document.createElement('div');
+                box.id = `set-${k}`;
+                box.className = 'noun-box';
+                box.innerHTML = `<span>${display}</span><div class="progress-percent">${p}%</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${Math.min(100, p)}%"></div></div>`;
+                
+                box.onclick = () => {
+                    let pathText = ['Home', ...breadcrumbs, display].join(' > ');
+                    // SPA test launch function
+                    startTest(s, c, k, pathText, display);
+                };
+                fragment.appendChild(box);
+            });
+            
+            if (c === historyStack[historyStack.length - 1]) {
+                grid.appendChild(fragment);
+                loading.style.display = "none";
+            }
+        }
+
+        function renderItems(items, pId) {
+            if (pId !== historyStack[historyStack.length - 1]) return;
+            const f = document.createDocumentFragment();
+            items.forEach(cat => {
+                if (!document.getElementById(`cat-${cat.id}`)) {
+                    const display = cat.name.length > 30 ? cat.name.substring(0, 30) + "..." : cat.name;
+                    const box = document.createElement('div');
+                    box.id = `cat-${cat.id}`;
+                    box.className = 'noun-box';
+                    box.innerHTML = `<span>${display}</span>`;
+                    box.onclick = () => navigateTo(cat.id, cat.name);
+                    f.appendChild(box);
+                }
+            });
+            grid.appendChild(f);
+            loading.style.display = "none";
+        }
+
+        function loadCategories(pId) {
+            if (unsubscribe) unsubscribe();
+            grid.innerHTML = "";
+            loading.style.display = "flex";
+            const sId = historyStack[1];
+            if (pId !== "root" && sId) loadSetsFromMetadata(sId, pId);
+            
+            const q = query(collection(db, "categories"), where("parentId", "==", pId));
+            unsubscribe = onSnapshot(q, s => {
+                const items = [];
+                s.forEach(doc => { if (doc.id !== "_metadata") items.push({ id: doc.id, ...doc.data() }); });
+                items.sort((a, b) => {
+                    if (a.order !== undefined && b.order !== undefined) return a.order - b.order;
+                    return (parseInt(a.name) || 0) - (parseInt(b.name) || 0);
+                });
+                
+                if (items.length > 0) {
+                    categoryCache.set(pId, items);
+                    renderItems(items, pId);
+                } else if (pId === "root") {
+                    loading.style.display = "none";
+                    grid.innerHTML = "<p style='text-align:center;font-size:14px;color:#B9B2A0;'>কোনো ক্যাটাগরি পাওয়া যায়নি।</p>";
+                } else {
+                    setTimeout(() => {
+                        if (grid.children.length === 0 && pId === historyStack[historyStack.length - 1]) {
+                            loading.style.display = "none";
+                            grid.innerHTML = "<p style='text-align:center;font-size:14px;color:#B9B2A0;'>কিছুই পাওয়া যায়নি।</p>";
+                        }
+                    }, 6000);
+                }
+            });
+        }
+
+        function saveState() {
+            sessionStorage.setItem('qz_history', JSON.stringify(historyStack));
+            sessionStorage.setItem('qz_breadcrumbs', JSON.stringify(breadcrumbs));
+        }
+
+        function navigateTo(id, name) {
+            historyStack.push(id);
+            breadcrumbs.push(name);
+            saveState();
+            history.pushState({ id: id }, "");
+            updateUI(id);
+        }
+
+        window.jumpTo = function(i) {
+            if (i === -1) { historyStack = ["root"]; breadcrumbs = []; } 
+            else { historyStack = historyStack.slice(0, i + 2); breadcrumbs = breadcrumbs.slice(0, i + 1); }
+            saveState();
+            updateUI(historyStack[historyStack.length - 1]);
+        };
+
+        function updateUI(id) { loadCategories(id); renderBreadcrumbs(); }
+
+        function renderBreadcrumbs() {
+            while (breadcrumbContainer.children.length > 1) breadcrumbContainer.removeChild(breadcrumbContainer.lastChild);
+            breadcrumbs.forEach((name, i) => {
+                const s = document.createElement('div');
+                s.innerText = ">"; s.className = "separator";
+                breadcrumbContainer.appendChild(s);
+                const item = document.createElement('div');
+                item.className = 'breadcrumb-item';
+                item.innerText = name;
+                item.onclick = () => jumpTo(i);
+                breadcrumbContainer.appendChild(item);
+            });
+        }
+
+        window.addEventListener('popstate', () => {
+            // যদি ইউজার ব্রাউজারের ব্যাক বাটন চাপে এবং টেস্ট ভিউতে থাকে, তাহলে ড্যাশবোর্ডে ফেরত আনবো
+            if(document.body.classList.contains('test-active')){
+                window.goBackToDashboard();
+            } else if (historyStack.length > 1) {
+                historyStack.pop(); breadcrumbs.pop();
+                saveState(); updateUI(historyStack[historyStack.length - 1]);
+            }
+        });
+
+        if (!history.state) history.replaceState({ id: historyStack[historyStack.length - 1] }, "");
+
+
+        // =====================================
+        // TEST LOGIC
+        // =====================================
+        let mcqData = []; 
+        let userAnswers = {}; 
+        let lockedIds = new Set(); 
+        let totalQuestionsCount = 0; 
+        let timerInterval = null; 
+        let isShuffled = false; 
+        
+        let currentParentID, currentCatID, currentSetID, displaySetName, displayCatName, pathTextGlobal;
+        let currentQFontSize = 15; 
+        let currentOptFontSize = 13;
+
+        const ICON_EYE      = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="9" ry="6"/><circle cx="12" cy="12" r="3"/></svg>';
+        const ICON_EYE_OFF  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="9" ry="6"/><circle cx="12" cy="12" r="3"/><line x1="4" y1="4" x2="20" y2="20"/></svg>';
+        const ICON_SPINNER  = '<svg class="btn-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 3a9 9 0 1 1-9 9"/></svg>';
+        const ICON_PLAY     = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+        const ICON_REFRESH  = '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 1 2.6 6.36"/><polyline points="3,17 3,21 7,21"/></svg>';
+
+        const tempStorageKey = () => `temp_ans_${currentParentID}_${currentCatID}_${currentSetID}`; 
+        const fR = (text) => text ? text.toString().replace(/([০-৯0-9])\u0307/g, '<span class="recurring">$1<span class="dot">.</span></span>') : "";
+        const toBengaliNumber = (n) => n.toString().split('').map(d => ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'][d] || d).join('');
+
+        window.startTest = async function(parent, cat, set, pathText, setName) {
+            currentParentID = parent; currentCatID = cat; currentSetID = set;
+            displaySetName = setName; pathTextGlobal = pathText;
+            displayCatName = breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1] : cat;
+
+            // UI Switch to Test
+            document.body.classList.add('test-active', 'mobile-mode'); // default mobile
+            document.getElementById('pages-container').innerHTML = '';
+            document.getElementById('test-loading-screen').style.display = 'flex';
+            
+            // Push state for back button handling
+            history.pushState({ testView: true }, "");
+
+            try {
+                const docRef = doc(db, currentParentID, currentCatID, "sets", currentSetID); 
+                const docSnap = await getDoc(docRef); 
+                
+                if (docSnap.exists()) { 
+                    const data = docSnap.data(); 
+                    document.title = displayCatName + " - " + displaySetName + " | 𝐐𝐔𝐄𝐒𝐓𝐈𝐎𝐍𝐙 ";
+                    const rawQuestions = data.questions; 
+                    
+                    mcqData = rawQuestions.map((q, index) => { 
+                        let correctKey = q.ans; 
+                        if (q.ans && !['a','b','c','d'].includes(q.ans)) { 
+                            const idx = q.options.indexOf(q.ans); 
+                            if (idx !== -1) correctKey = ['a','b','c','d'][idx]; 
+                        } 
+                        return { id: index + 1, q: q.question, a: q.options[0], b: q.options[1], c: q.options[2], d: q.options[3], ans: correctKey, orig_a: q.options[0], orig_b: q.options[1], orig_c: q.options[2], orig_d: q.options[3], orig_ans: correctKey }; 
+                    }); 
+                    
+                    totalQuestionsCount = mcqData.length; 
+                    
+                    // Load local progress instead of Firestore auth
+                    const pData = getLocalProgress(`${currentParentID}_${currentCatID}_${currentSetID}`);
+                    lockedIds = new Set(pData.locked || []);
+                    
+                    initTestApp(); 
+                } else {
+                    document.getElementById('test-loading-screen').innerHTML = "<div style='color:#666; font-size:18px;'>ডেটা পাওয়া যায়নি!</div>";
+                }
+            } catch (error) { 
+                document.getElementById('test-loading-screen').innerHTML = "<div style='color:#d93025; font-size:18px;'>এরর: " + error.message + "</div>"; 
+            }
+        };
+
+        window.goBackToDashboard = function() {
+            if (timerInterval) clearInterval(timerInterval);
+            document.body.classList.remove('test-active', 'mobile-mode', 'desktop-mode', 'print-mode');
+            document.title = "Questionz - Dashboard";
+            
+            // Refresh category grid to update progress bar visually
+            updateUI(historyStack[historyStack.length - 1]);
+        };
+
+        function initTestApp() { 
+            document.getElementById('test-loading-screen').style.display = "none"; 
+            
+            const savedTemp = localStorage.getItem(tempStorageKey()); 
+            if (savedTemp) userAnswers = JSON.parse(savedTemp); 
+            else userAnswers = {};
+            
+            let activeQ = mcqData.filter(q => !lockedIds.has(q.id)); 
+            let lockedQ = mcqData.filter(q => lockedIds.has(q.id)); 
+            mcqData = [...activeQ, ...lockedQ]; 
+            
+            // Reset reset buttons and views
+            const btn = document.getElementById('action-btn');
+            btn.onclick = showFinalResult; btn.classList.remove('is-reset'); btn.innerHTML = ICON_PLAY;
+            
+            window.toggleView('mobile'); // initialize active view states
+            paginate(); 
+            startTimer(activeQ.length); 
+        }
+
+        window.toggleView = function(view) { 
+            document.body.classList.remove('mobile-mode', 'desktop-mode', 'print-mode'); 
+            document.getElementById('mobile-view-btn').classList.remove('active'); 
+            document.getElementById('desktop-view-btn').classList.remove('active'); 
+            document.getElementById('print-view-btn').classList.remove('active'); 
+
+            if (view === 'mobile') { document.body.classList.add('mobile-mode'); document.getElementById('mobile-view-btn').classList.add('active'); } 
+            else if (view === 'desktop') { document.body.classList.add('desktop-mode'); document.getElementById('desktop-view-btn').classList.add('active'); } 
+            else if (view === 'print') { document.body.classList.add('print-mode'); document.getElementById('print-view-btn').classList.add('active'); }
+            
+            if(mcqData.length > 0) setTimeout(() => paginate(), 10);
+            updateViewIndicator();
+        };
+
+        function updateViewIndicator() {
+            const activeBtn = document.querySelector('.view-btn.active');
+            const indicator = document.getElementById('view-switcher-indicator');
+            if (activeBtn && indicator) {
+                indicator.style.width = activeBtn.offsetWidth + 'px';
+                indicator.style.transform = `translateX(${activeBtn.offsetLeft - 2}px)`;
+            }
+        }
+
+        window.increaseFontSize = function() { 
+            currentQFontSize += 1; currentOptFontSize += 1; 
+            document.documentElement.style.setProperty('--q-font-size', currentQFontSize + 'px'); 
+            document.documentElement.style.setProperty('--opt-font-size', currentOptFontSize + 'px'); 
+            if(mcqData.length > 0) setTimeout(() => paginate(), 10);
+        }; 
+        
+        window.decreaseFontSize = function() { 
+            if (currentQFontSize > 10) { 
+                currentQFontSize -= 1; currentOptFontSize -= 1; 
+                document.documentElement.style.setProperty('--q-font-size', currentQFontSize + 'px'); 
+                document.documentElement.style.setProperty('--opt-font-size', currentOptFontSize + 'px'); 
+                if(mcqData.length > 0) setTimeout(() => paginate(), 10);
+            } 
+        };
+
+        // SAVE LOGIC - Modified for LocalStorage Only (No Auth needed)
+        window.saveProgress = async function() { 
+            const saveBtn = document.getElementById('cloud-save-btn'); 
+            const originalText = saveBtn.innerHTML; 
+            saveBtn.innerHTML = ICON_SPINNER; 
+            
+            Object.keys(userAnswers).forEach(id => { 
+                const qId = Number(id); 
+                const questionItem = mcqData.find(q => q.id === qId); 
+                if (questionItem && userAnswers[id] === questionItem[questionItem.ans]) { 
+                    lockedIds.add(qId); 
+                } 
+            }); 
+            
+            const progressPercent = totalQuestionsCount > 0 ? Math.min(100, Math.round((lockedIds.size / totalQuestionsCount) * 100)) : 0; 
+            saveLocalProgress(`${currentParentID}_${currentCatID}_${currentSetID}`, { locked: Array.from(lockedIds), percent: progressPercent });
+            
+            localStorage.removeItem(tempStorageKey()); 
+            
+            Swal.fire({ icon: 'success', title: 'সেভ সফল!', text: 'আপনার প্রগ্রেস ব্রাউজারে সেভ হয়েছে।', timer: 2000, showConfirmButton: false }); 
+            userAnswers = {}; paginate(); 
+            saveBtn.innerHTML = originalText; 
+        };
+
+        window.unlockAllProgress = async function() { 
+            const result = await Swal.fire({ title: 'সব প্রশ্ন আনলক করবেন?', text: "আপনার সংরক্ষিত সব প্রগ্রেস মুছে যাবে!", icon: 'warning', showCancelButton: true, confirmButtonColor: '#B5533E', cancelButtonColor: '#4F46E5', confirmButtonText: 'হ্যাঁ!', cancelButtonText: 'বাতিল' }); 
+            if (result.isConfirmed) { 
+                lockedIds.clear(); userAnswers = {}; localStorage.removeItem(tempStorageKey()); 
+                localStorage.removeItem(`qz_prog_${currentParentID}_${currentCatID}_${currentSetID}`);
+                Swal.fire('সফল!', 'সব প্রশ্ন আনলক করা হয়েছে।', 'success'); 
+                initTestApp(); 
+            } 
+        };
+
+        window.toggleAllBlur = function() { 
+            const btn = document.getElementById('blur-toggle-btn'); const options = document.querySelectorAll('.option-btn'); 
+            if (btn.classList.contains('is-active')) { options.forEach(opt => opt.classList.remove('blur-logic')); btn.classList.remove('is-active'); btn.innerHTML = ICON_EYE; } 
+            else { options.forEach(opt => { const card = opt.closest('.q-card'); if (!opt.classList.contains('selected') && !opt.classList.contains('opt-correct') && !(card && card.classList.contains('locked-card'))) { opt.classList.add('blur-logic'); } }); btn.classList.add('is-active'); btn.innerHTML = ICON_EYE_OFF; } 
+        };
+
+        function shuffle(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } } 
+
+        window.toggleShuffle = function() { 
+            const btn = document.getElementById('shuffle-toggle-btn'); 
+            let activeQ = mcqData.filter(q => !lockedIds.has(q.id)); let lockedQ = mcqData.filter(q => lockedIds.has(q.id)); 
+            const isPrintOrAllLocked = document.body.classList.contains('print-mode') || (lockedIds.size > 0 && lockedIds.size === totalQuestionsCount);
+            
+            if (isShuffled) { 
+                activeQ.sort((a, b) => a.id - b.id); lockedQ.sort((a, b) => a.id - b.id); 
+                mcqData.forEach(q => { q.a = q.orig_a; q.b = q.orig_b; q.c = q.orig_c; q.d = q.orig_d; q.ans = q.orig_ans; }); 
+                isShuffled = false; btn.classList.remove('is-active'); 
+            } else { 
+                shuffle(activeQ); if (isPrintOrAllLocked) shuffle(lockedQ);
+                const targetQs = isPrintOrAllLocked ? [...activeQ, ...lockedQ] : activeQ;
+                targetQs.forEach(q => { let opts = [q.a, q.b, q.c, q.d]; let correctVal = q[q.ans]; shuffle(opts); q.a = opts[0]; q.b = opts[1]; q.c = opts[2]; q.d = opts[3]; q.ans = correctVal === q.a ? 'a' : correctVal === q.b ? 'b' : correctVal === q.c ? 'c' : 'd'; }); 
+                isShuffled = true; btn.classList.add('is-active'); 
+            } 
+            mcqData = [...activeQ, ...lockedQ]; paginate(); 
+            const blurBtn = document.getElementById('blur-toggle-btn'); 
+            if (blurBtn && !blurBtn.classList.contains('is-active')) document.querySelectorAll('.option-btn').forEach(opt => opt.classList.remove('blur-logic')); 
+        };
+
+        function paginate() { 
+            const container = document.getElementById('pages-container');
+            container.innerHTML = ''; 
+            
+            let currentPageNum = 1; 
+            let currentPage = createNewPage(currentPageNum, container); 
+            let currentColumnContainer = currentPage.querySelector('.content-columns'); 
+            const isMobile = document.body.classList.contains('mobile-mode');
+            const isPrint = document.body.classList.contains('print-mode');
+
+            for (let i = 0; i < mcqData.length; i++) { 
+                const item = mcqData[i]; 
+                const card = document.createElement('div'); card.className = 'q-card'; 
+                
+                const isLocked = isPrint ? false : lockedIds.has(item.id);
+                if (isLocked) card.classList.add('locked-card'); 
+                card.id = `q-card-display-${i}`; 
+                
+                const savedText = isPrint ? null : userAnswers[item.id]; 
+                const isSelected = (optKey) => savedText && item[optKey] === savedText ? 'selected' : ''; 
+                const isLockedCorrect = (opt) => (isLocked && item.ans === opt) ? 'opt-correct' : ''; 
+                const isBlurred = (optKey) => { const bBtn = document.getElementById('blur-toggle-btn'); if(bBtn && !bBtn.classList.contains('is-active')) return ''; return (savedText && item[optKey] === savedText) || isLocked ? '' : 'blur-logic'; }; 
+                
+                card.innerHTML = `<span class="q-text">${toBengaliNumber(i + 1)}. ${fR(item.q)}</span><div class="option-container"><div class="option-btn ${isLockedCorrect('a')} ${isSelected('a')} ${isBlurred('a')}" onclick="markAnswered(this, ${i}, 'a')">ক) ${fR(item.a)}</div><div class="option-btn ${isLockedCorrect('b')} ${isSelected('b')} ${isBlurred('b')}" onclick="markAnswered(this, ${i}, 'b')">খ) ${fR(item.b)}</div><div class="option-btn ${isLockedCorrect('c')} ${isSelected('c')} ${isBlurred('c')}" onclick="markAnswered(this, ${i}, 'c')">গ) ${fR(item.c)}</div><div class="option-btn ${isLockedCorrect('d')} ${isSelected('d')} ${isBlurred('d')}" onclick="markAnswered(this, ${i}, 'd')">ঘ) ${fR(item.d)}</div></div>`; 
+                currentColumnContainer.appendChild(card); 
+
+                if (!isMobile) {
+                    if (currentColumnContainer.scrollWidth > currentColumnContainer.clientWidth + 5) { 
+                        currentColumnContainer.removeChild(card); 
+                        currentPageNum++; 
+                        currentPage = createNewPage(currentPageNum, container); 
+                        currentColumnContainer = currentPage.querySelector('.content-columns'); 
+                        currentColumnContainer.appendChild(card); 
+                    } 
+                }
+            } 
+            updateFooterStats(); 
+            
+            if (window.renderMathInElement) {
+                document.querySelectorAll('.q-card').forEach(card => {
+                    renderMathInElement(card, { delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\(', right: '\\)', display: false}, {left: '\\[', right: '\\]', display: true}], throwOnError: false });
+                });
+            }
+        }
+
+        function createNewPage(num, container) { 
+            const page = document.createElement('div'); page.className = 'page'; 
+            let grandHeaderHTML = ''; let colClass = 'content-columns';
+            
+            if (num === 1) {
+                colClass = 'content-columns first-page-columns';
+                const qrDataEncoded = encodeURIComponent(window.location.href);
+                grandHeaderHTML = `<div class="grand-header"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${qrDataEncoded}" class="qr-code-print" alt="QR Code"><h1>QUESTIONZ</h1><h3>${pathTextGlobal}</h3><div class="meta"><span>সময়: ${toBengaliNumber(totalQuestionsCount)} মিনিট</span><span>পূর্ণমান: ${toBengaliNumber(totalQuestionsCount)}</span></div></div>`;
+            }
+
+            page.innerHTML = `${grandHeaderHTML}<div class="header page-header"><h2>পেইজ - ${toBengaliNumber(num)}</h2></div><div class="${colClass}"></div><div class="footer"></div>`; 
+            container.appendChild(page); 
+            return page; 
+        }
+
+        window.markAnswered = function(btn, displayIdx, selectedOpt) { const item = mcqData[displayIdx]; if (lockedIds.has(item.id)) return; if (btn.classList.contains('blur-logic')) { btn.classList.remove('blur-logic'); return; } const parent = btn.parentElement; parent.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); userAnswers[item.id] = item[selectedOpt]; localStorage.setItem(tempStorageKey(), JSON.stringify(userAnswers)); updateFooterStats(); }; 
+        function updateFooterStats() { const answeredCount = Object.keys(userAnswers).length + lockedIds.size; const remaining = totalQuestionsCount - answeredCount; document.querySelectorAll('.rem-q').forEach(el => { el.innerText = toBengaliNumber(Math.max(0, remaining)); }); }
+
+        window.showFinalResult = async function() { 
+            let roundCorrectCount = 0; let wrongCount = 0; const letterToIndex = { 'a': 0, 'b': 1, 'c': 2, 'd': 3 }; 
+            mcqData.forEach((item, i) => { 
+                const card = document.getElementById(`q-card-display-${i}`); if(!card) return; 
+                const options = card.querySelectorAll('.option-btn'); const correctLetter = item.ans; const correctText = item[correctLetter]; const userSelectedText = userAnswers[item.id]; 
+                if (lockedIds.has(item.id)) return; 
+                if (userSelectedText) { 
+                    if (userSelectedText === correctText) { options[letterToIndex[correctLetter]].classList.add('opt-correct'); lockedIds.add(item.id); roundCorrectCount++; } 
+                    else { wrongCount++; const wrongLetter = ['a','b','c','d'].find(k => item[k] === userSelectedText); if(wrongLetter) options[letterToIndex[wrongLetter]].classList.add('opt-wrong'); options[letterToIndex[correctLetter]].classList.add('opt-correct'); } 
+                } 
+            }); 
+            localStorage.removeItem(tempStorageKey()); 
+            
+            const progressPercent = totalQuestionsCount > 0 ? Math.min(100, Math.round((lockedIds.size / totalQuestionsCount) * 100)) : 0; 
+            saveLocalProgress(`${currentParentID}_${currentCatID}_${currentSetID}`, { locked: Array.from(lockedIds), percent: progressPercent });
+            
+            let totalCorrect = lockedIds.size; let finalScore = totalCorrect - (wrongCount * 0.25); 
+            const btn = document.getElementById('action-btn'); btn.onclick = resetExam; btn.classList.add('is-reset'); btn.innerHTML = ICON_REFRESH; 
+            document.getElementById('result-content').innerHTML = `<p>এই রাউন্ডে সঠিক: ${toBengaliNumber(roundCorrectCount)} টি</p><p>সঠিক (মোট): ${toBengaliNumber(totalCorrect)} টি</p><p>ভুল (এই রাউন্ড): ${toBengaliNumber(wrongCount)} টি</p><p style="font-weight:bold; color:#B5533E;">মোট নম্বর: ${toBengaliNumber(finalScore.toFixed(2))}</p>`; 
+            document.getElementById('result-overlay').style.display = 'flex'; 
+        }; 
+
+        window.closeModal = function() { document.getElementById('result-overlay').style.display = 'none'; }; 
+        
+        window.resetExam = async function() { 
+            if (lockedIds.size === totalQuestionsCount) { Swal.fire({ icon: 'info', title: 'সবগুলো সঠিক হয়েছে!', text: 'পুনরায় পরীক্ষা দেওয়ার জন্য দয়া করে আগে সবগুলো প্রশ্ন আনলক করুন।', confirmButtonText: 'ঠিক আছে' }); return; } 
+            userAnswers = {}; localStorage.removeItem(tempStorageKey()); initTestApp(); 
+            const btn = document.getElementById('action-btn'); btn.onclick = showFinalResult; btn.classList.remove('is-reset'); btn.innerHTML = ICON_PLAY; 
+        }; 
+
+        function startTimer(mins) { 
+            if (timerInterval) clearInterval(timerInterval); 
+            let time = mins * 60; 
+            timerInterval = setInterval(() => { 
+                let m = Math.floor(time / 60); let s = time % 60; 
+                let display = `${toBengaliNumber(m.toString().padStart(2, '0'))}:${toBengaliNumber(s.toString().padStart(2, '0'))}`; 
+                document.querySelectorAll('.timer-val').forEach(el => el.innerText = display); 
+                if (time > 0) time--; else { clearInterval(timerInterval); timerInterval = null; } 
+            }, 1000); 
+        }
+    </script>
 </body>
 </html>
