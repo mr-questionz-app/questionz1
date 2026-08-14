@@ -527,8 +527,9 @@
             document.getElementById('pages-container').innerHTML = '';
             document.getElementById('test-loading-screen').style.display = 'flex';
             
-            // Push state for back button handling
-            history.pushState({ testView: true }, "");
+            // Push state for back button handling AND update the URL for direct sharing
+            const newUrl = `${window.location.pathname}?parent=${parent}&cat=${cat}&set=${set}`;
+            history.pushState({ testView: true }, "", newUrl);
 
             try {
                 const docRef = doc(db, currentParentID, currentCatID, "sets", currentSetID); 
@@ -567,6 +568,9 @@
             if (timerInterval) clearInterval(timerInterval);
             document.body.classList.remove('test-active', 'mobile-mode', 'desktop-mode', 'print-mode');
             document.title = "Questionz - Dashboard";
+            
+            // Revert URL back to normal
+            history.pushState({}, "", window.location.pathname);
             
             // Refresh category grid to update progress bar visually
             updateUI(historyStack[historyStack.length - 1]);
@@ -744,7 +748,10 @@
             
             if (num === 1) {
                 colClass = 'content-columns first-page-columns';
-                const qrDataEncoded = encodeURIComponent(window.location.href);
+                // URL for the QR code
+                const currentTestUrl = `${window.location.origin}${window.location.pathname}?parent=${currentParentID}&cat=${currentCatID}&set=${currentSetID}`;
+                const qrDataEncoded = encodeURIComponent(currentTestUrl);
+                
                 grandHeaderHTML = `<div class="grand-header"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${qrDataEncoded}" class="qr-code-print" alt="QR Code"><h1>QUESTIONZ</h1><h3>${pathTextGlobal}</h3><div class="meta"><span>সময়: ${toBengaliNumber(totalQuestionsCount)} মিনিট</span><span>পূর্ণমান: ${toBengaliNumber(totalQuestionsCount)}</span></div></div>`;
             }
 
@@ -796,6 +803,23 @@
                 if (time > 0) time--; else { clearInterval(timerInterval); timerInterval = null; } 
             }, 1000); 
         }
+
+        // =====================================
+        // AUTO LOAD LOGIC FOR DIRECT LINKS
+        // =====================================
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const pParent = urlParams.get('parent');
+            const pCat = urlParams.get('cat');
+            const pSet = urlParams.get('set');
+            
+            if (pParent && pCat && pSet) {
+                // সরাসরি টেস্ট লোড হবে যদি URL-এ প্যারামিটার থাকে
+                setTimeout(() => {
+                    startTest(pParent, pCat, pSet, "QUESTIONZ", pSet);
+                }, 500);
+            }
+        });
     </script>
 </body>
 </html>
