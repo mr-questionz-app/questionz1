@@ -1,938 +1,106 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QUESTIONZ</title>
-    
-    <!-- All Required Fonts and External Libraries -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Cutive+Mono&family=Hind+Siliguri:wght@300;400;500;600;700&family=Lora:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Coming+Soon&family=Indie+Flower&family=Montserrat:wght@700;900&family=Poppins:wght@400;600&family=Segoe+UI:wght@400;600&family=Cuprum:wght@400;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.maateen.me/bensen/font.css" rel="stylesheet">
-    <link href="https://fonts.maateen.me/hoogly/font.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-
-    <style>
-        /* ========================================================
-           GLOBAL APP STRUCTURE
-           ======================================================== */
-        body { margin: 0; padding: 0; transition: background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1); overflow-x: hidden; }
-        .app-view { display: none; width: 100%; min-height: 100vh; position: relative; }
-        .app-view.active-view { display: block; }
-        #dashboard-view.active-view { display: flex; flex-direction: column; align-items: center; }
-
-        /* ========================================================
-           DASHBOARD CSS (Unchanged, prefixed to avoid conflicts)
-           ======================================================== */
-        #dashboard-view {
-            --primary-color:#1B251E; --secondary-color:#C9A461; --bg-color:#0B100E; --card-bg:#1B251E; --text-color:#F4EFE3; --gold-accent:#C9A461; --gold-gradient:linear-gradient(135deg, #C9A461, #fcf6ba); --charcoal-800-hover:#223028; --charcoal-border:rgba(201,164,97,0.14); --cream-dim:#B9B2A0;
-            font-family:'Cuprum',sans-serif; font-weight:400; background:var(--bg-color); color:var(--text-color);
-        }
-        #dashboard-view nav { width:100%; padding:5px 5%; display:flex; justify-content:space-between; align-items:center; background:rgba(18,26,21,0.85); backdrop-filter:blur(10px); position:sticky; top:0; z-index:1000; border-bottom:1px solid var(--charcoal-border); box-sizing:border-box; }
-        #dashboard-view .logo-wrapper { display:flex; align-items:center; gap:12px; }
-        #dashboard-view .logo-text { font-family:'Cuprum',sans-serif; font-weight:700; font-size:10px; letter-spacing:0.5px; background:var(--gold-gradient); -webkit-background-clip:text; background-clip:text; color:transparent; filter:drop-shadow(0 0 5px rgba(201,164,97,0.5)); width:26px; height:26px; border:1px solid rgba(201,164,97,0.3); border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 0 8px rgba(201,164,97,0.2); flex-shrink:0; }
-        #dashboard-view header { text-align:left; width:90%; max-width:900px; margin-top:10px; margin-bottom:5px; }
-        #dashboard-view .breadcrumb { display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-bottom:10px; }
-        #dashboard-view .breadcrumb-item { background:var(--card-bg); border:1px solid var(--charcoal-border); padding:2px 7px; border-radius:4px; font-family:'Cuprum','Hoogly','Bensen',sans-serif; font-size:11px; font-weight:400; color:var(--gold-accent); cursor:pointer; transition:0.3s; display:flex; align-items:center; justify-content:center; user-select:none; }
-        #dashboard-view .breadcrumb-item:hover { background:var(--charcoal-800-hover); border-color:var(--gold-accent); transform:translateY(-1px); }
-        #dashboard-view .separator { color:var(--cream-dim); font-size:9px; font-weight:normal; }
-        #dashboard-view .wave-text { font-family:'Cuprum',sans-serif; font-size:1.1rem; font-weight:400; margin:0; padding:0; text-transform:uppercase; color:var(--text-color); display:inline-block; line-height:1; letter-spacing:0.15rem; filter:drop-shadow(0 0 8px rgba(0,0,0,0.3)); }
-        #dashboard-view .divider { width:90%; max-width:900px; height:1px; background:linear-gradient(to right,rgba(201,164,97,0),rgba(201,164,97,0.2),rgba(201,164,97,0)); margin:15px 0 5px 0; }
-        #dashboard-view .noun-section-wrapper { padding:10px 0; width:280px; max-width:95%; box-sizing:border-box; margin-top:5px; }
-        #dashboard-view .grid-container { display:grid; grid-template-columns:1fr; gap:12px; }
-        #dashboard-view .noun-box { position:relative; height:42px; padding:0 15px; display:flex; justify-content:space-between; align-items:center; background:linear-gradient(180deg, rgba(27,37,30,0.7), rgba(18,26,21,0.9)); overflow:hidden; border-radius:6px; text-decoration:none; border:1px solid var(--charcoal-border); cursor:pointer; box-sizing:border-box; user-select:none; }
-        #dashboard-view .noun-box span { position:relative; z-index:2; font-family:'Cuprum','Hoogly','Bensen',sans-serif; font-size:15px; font-weight:400; color:var(--text-color); white-space:nowrap; pointer-events:none; }
-        #dashboard-view .progress-percent { font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 600; color: var(--text-color); background: rgba(201,164,97,0.15); padding: 3px 10px; border-radius: 20px; border: 1px solid rgba(201,164,97,0.25); box-shadow: inset 0 0 8px rgba(201,164,97,0.05), 0 2px 5px rgba(0, 0, 0, 0.3); backdrop-filter: blur(5px); display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px; transition: all 0.3s ease; }
-        #dashboard-view .progress-percent::before { content: ''; display: inline-block; width: 6px; height: 6px; background-color: var(--gold-accent); border-radius: 50%; box-shadow: 0 0 6px var(--gold-accent), 0 0 10px var(--gold-accent); animation: pulse-dot 2s infinite ease-in-out; }
-        @keyframes pulse-dot { 0% { transform: scale(0.9); opacity: 0.7; } 50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 12px var(--gold-accent), 0 0 18px var(--gold-accent); } 100% { transform: scale(0.9); opacity: 0.7; } }
-        #dashboard-view .progress-bar-bg { position: absolute; left: 0; bottom: 0; height: 4px; background: rgba(244,239,227,0.05); width: 100%; z-index: 1; border-radius: 0 0 6px 6px; overflow: hidden; }
-        #dashboard-view .progress-bar-fill { height: 100%; background: linear-gradient(90deg, rgba(53,168,131,0.6), var(--gold-accent)); box-shadow: 0 -1px 8px rgba(201,164,97,0.5); border-radius: 0 4px 4px 0; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
-        #dashboard-view .noun-box:hover { background:var(--charcoal-800-hover); border-color:var(--gold-accent); transform:translateY(-2px); transition:all .3s ease; }
-        #dashboard-view #dash-loading { display:flex; flex-direction:column; gap:12px; width:100%; }
-        #dashboard-view .skeleton { height:42px; width:100%; background:rgba(201,164,97,0.05); background-image:linear-gradient(90deg,rgba(201,164,97,0.02) 0,rgba(201,164,97,0.08) 40px,rgba(201,164,97,0.02) 80px); background-size:200% 100%; animation:shimmer 1.5s infinite linear; border-radius:6px; border:1px solid var(--charcoal-border); }
-        #dashboard-view footer { width:100%; padding:30px 0; text-align:center; margin-top:auto; color:var(--cream-dim); font-size:10px; }
-        
-        /* ========================================================
-           MCQ TEST CSS (Unchanged)
-           ======================================================== */
-        #mcq-view {
-            --q-font-size: 15px; --opt-font-size: 13px;
-            --primary: #4F46E5; --primary-light: #A5B4FC; --primary-dim: rgba(79, 70, 229, 0.10); --primary-glow: rgba(79, 70, 229, 0.22);
-            --bg-page: #FFFFFF; --bg-desktop: #D4D7EE; --bg-print: #4A4B68;
-            --shadow-page: 0 2px 6px rgba(0,0,0,0.06), 0 10px 28px rgba(0,0,0,0.08), 0 28px 56px rgba(79,70,229,0.05);
-            --shadow-nav: 0 1px 0 rgba(255,255,255,0.9) inset, 0 4px 16px rgba(0,0,0,0.07), 0 8px 40px rgba(79,70,229,0.10);
-            --spring: cubic-bezier(0.34, 1.56, 0.64, 1); --ease: cubic-bezier(0.16, 1, 0.3, 1);
-            --emerald-700: #0B3D30; --emerald-600: #0F5C46; --emerald-wash: rgba(15, 92, 70, 0.13); --gold-500: #B8935A; --gold-600: #9A7A42; --charcoal: #16241F; --cream: #F5EFE0; --danger: #B5533E; --danger-wash: rgba(181, 83, 62, 0.13); --violet: #6D28D9;
-            --print-margin-top: 8mm; --print-margin-right: 6mm; --print-margin-bottom: 8mm; --print-margin-left: 6mm;
-            font-family: 'Noto Serif Bengali', 'Lora', serif;
-        }
-        #mcq-view *, #mcq-view *::before, #mcq-view *::after { box-sizing: border-box; }
-        
-        #mcq-view .recurring { position: relative; display: inline-block; }
-        #mcq-view .dot { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-weight: bold; font-size: 15px; }
-        #mcq-view .frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; font-size: 0.9em; line-height: 1.1; margin: 0 2px; }
-        #mcq-view .frac span:first-child { border-bottom: 1px solid currentColor; padding: 0 2px; }
-        #mcq-view .frac span:last-child { padding: 0 2px; }
-        #mcq-view sup { line-height: 0; font-size: 0.7em; }
-
-        #mcq-view .top-nav-container { position: fixed; top: 8px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 4px; flex-wrap: wrap; justify-content: center; z-index: 3000; width: max-content; max-width: 98vw; background: rgba(255, 255, 255, 0.82); backdrop-filter: blur(22px) saturate(190%); -webkit-backdrop-filter: blur(22px) saturate(190%); border: 1px solid rgba(255, 255, 255, 0.65); border-radius: 40px; padding: 5px 10px; box-shadow: var(--shadow-nav); }
-        #mcq-view .nav-sep { flex-shrink: 0; width: 1px; height: 16px; background: rgba(79, 70, 229, 0.16); border-radius: 1px; margin: 0 2px; }
-        #mcq-view .action-group { display: flex; align-items: center; gap: 2px; }
-        #mcq-view .floating-stats { display: flex; align-items: center; gap: 8px; padding: 0 8px; height: 22px; font-family: 'Hind Siliguri', sans-serif; font-size: 11px; font-weight: 700; color: #374151; white-space: nowrap; user-select: none; cursor: pointer; }
-        #mcq-view .floating-stats svg { width: 12px; height: 12px; display: block; }
-        #mcq-view .floating-stats .stat-timer { display: inline-flex; align-items: center; gap: 3px; color: var(--danger); }
-        #mcq-view .floating-stats .timer-val, #mcq-view .floating-stats .rem-q { font-family: 'Cutive Mono', monospace; font-weight: 700; letter-spacing: 0.2px; }
-        #mcq-view .nav-icon-btn { border: none; width: 26px; height: 22px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; background: transparent; position: relative; transition: background 0.2s var(--ease), transform 0.18s var(--spring), box-shadow 0.24s var(--ease), color 0.2s var(--ease); }
-        #mcq-view .nav-icon-btn svg { width: 15px; height: 15px; display: block; }
-        #mcq-view .nav-icon-btn:active { transform: scale(0.86); }
-        #mcq-view .nav-icon-btn.save-tone { color: var(--emerald-600); background: var(--emerald-wash); }
-        #mcq-view .nav-icon-btn.save-tone:hover { background: rgba(15, 92, 70, 0.22); box-shadow: 0 3px 10px rgba(15, 92, 70, 0.28); transform: translateY(-1px); }
-        #mcq-view .nav-icon-btn.danger-tone { color: var(--danger); background: var(--danger-wash); }
-        #mcq-view .nav-icon-btn.danger-tone:hover { background: rgba(181, 83, 62, 0.22); box-shadow: 0 3px 10px rgba(181, 83, 62, 0.28); transform: translateY(-1px); }
-        #mcq-view .nav-icon-btn.gold-tone { color: var(--gold-600); background: rgba(184, 147, 90, 0.14); }
-        #mcq-view .nav-icon-btn.gold-tone:hover { background: rgba(184, 147, 90, 0.26); box-shadow: 0 3px 10px rgba(184, 147, 90, 0.3); transform: translateY(-1px); }
-        #mcq-view .nav-icon-btn.gold-tone.is-active { background: var(--gold-500); color: #fff; box-shadow: 0 2px 8px rgba(184, 147, 90, 0.45); }
-        #mcq-view .nav-icon-btn.violet-tone { color: var(--violet); background: rgba(109, 40, 217, 0.10); }
-        #mcq-view .nav-icon-btn.violet-tone:hover { background: rgba(109, 40, 217, 0.20); box-shadow: 0 3px 10px rgba(109, 40, 217, 0.26); transform: translateY(-1px); }
-        #mcq-view .nav-icon-btn.violet-tone.is-active { background: var(--violet); color: #fff; box-shadow: 0 2px 8px rgba(109, 40, 217, 0.45); }
-        #mcq-view .view-switcher { display: flex; gap: 2px; padding: 2px; border-radius: 18px; background: var(--primary-dim); align-items: center; position: relative; }
-        #mcq-view .view-switcher-indicator { position: absolute; top: 2px; left: 2px; height: 22px; border-radius: 14px; background: var(--primary); box-shadow: 0 2px 8px var(--primary-glow); transition: transform 0.32s var(--spring), width 0.32s var(--spring); z-index: 0; }
-        #mcq-view .view-btn { border: none; padding: 0 8px; height: 22px; border-radius: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; background: transparent; color: #374151; position: relative; z-index: 1; transition: color 0.22s var(--ease), transform 0.18s var(--spring); }
-        #mcq-view .view-btn svg { width: 14px; height: 14px; display: block; }
-        #mcq-view .view-btn:not(.active):hover { color: var(--primary); }
-        #mcq-view .view-btn:active { transform: scale(0.88); }
-        #mcq-view .view-btn.active { color: white; }
-
-        #mcq-view .page { width: 210mm; height: 297mm; padding: 5mm 8mm 15mm 8mm; margin: 10mm auto; background: var(--bg-page); box-shadow: var(--shadow-page); box-sizing: border-box; position: relative; page-break-after: always; overflow: hidden; border-radius: 6px; display: flex; flex-direction: column; }
-        #mcq-view .content-columns { display: flex; flex-direction: column; flex-wrap: wrap; flex: 1 1 auto; min-height: 0; column-gap: 10mm; justify-content: flex-start; position: relative; }
-        body.mcq-print-mode #mcq-view .content-columns::after, body.mcq-desktop-mode #mcq-view .content-columns::after { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; border-left: 1px solid #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-        #mcq-view .q-card { width: calc(50% - 5mm); break-inside: avoid; margin-bottom: 5px; padding: 5px; padding-bottom: 8px; border-bottom: 1px dashed rgba(79, 70, 229, 0.18); box-sizing: border-box; border-radius: 4px; }
-        
-        body.mcq-mobile-mode #mcq-view .page { width: 95%; height: auto; min-height: auto; margin: 55px auto 20px auto; padding: 15px; box-shadow: none; overflow: visible; border-top: 3px solid var(--primary); display: block; }
-        body.mcq-mobile-mode #mcq-view .content-columns { display: block; height: auto; column-gap: 0; }
-        body.mcq-mobile-mode #mcq-view .q-card { width: 100%; margin-bottom: 15px; padding: 14px; box-sizing: border-box; border: 1px solid rgba(79, 70, 229, 0.10); border-bottom: 1px solid rgba(79, 70, 229, 0.10); background: var(--bg-page); border-radius: 10px; box-shadow: 0 1px 3px rgba(15,23,42,0.04), 0 6px 20px rgba(79,70,229,0.06); }
-        
-        #mcq-view .header { text-align: center; margin-top: 0; margin-bottom: 8px; border-bottom: 1px solid rgba(79, 70, 229, 0.12); padding-bottom: 4px; }
-        #mcq-view .header h2 { margin: 0; font-weight: 700; letter-spacing: 0.4px; font-size: 15px; text-transform: uppercase; font-family: 'Hind Siliguri', sans-serif; background: linear-gradient(118deg, var(--primary) 20%, #818CF8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        #mcq-view .q-text { font-size: var(--q-font-size); font-weight: bold; display: block; margin-bottom: 5px; color: #1E293B; transition: font-size 0.2s; }
-        #mcq-view .option-container { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
-        #mcq-view .option-btn { padding: 3px 8px; background: #F8F9FC; border: 1px solid rgba(79, 70, 229, 0.14); border-radius: 6px; cursor: pointer; font-size: var(--opt-font-size); text-align: left; color: #1E293B; transition: background 0.18s var(--ease), border-color 0.18s var(--ease), color 0.18s var(--ease), transform 0.15s var(--spring), box-shadow 0.18s var(--ease); }
-        #mcq-view .option-btn:hover { background: var(--primary-dim); border-color: var(--primary-light); }
-        #mcq-view .option-btn.blur-logic { filter: blur(5px); user-select: none; transition: filter 0.3s ease; }
-        #mcq-view .option-btn.selected, #mcq-view .option-btn.opt-correct, #mcq-view .option-btn.opt-wrong, #mcq-view .option-btn.opt-missed { filter: blur(0) !important; }
-        #mcq-view .option-btn.selected { background: var(--primary-dim); color: var(--primary); border-color: var(--primary-light); font-weight: bold; }
-        #mcq-view .option-btn.opt-correct { background: var(--emerald-wash) !important; color: var(--emerald-700) !important; border-color: var(--emerald-600) !important; font-weight: bold; }
-        #mcq-view .option-btn.opt-wrong { background: var(--danger-wash) !important; color: var(--danger) !important; border-color: var(--danger) !important; font-weight: bold; }
-        #mcq-view .option-btn.opt-missed { background: rgba(184, 147, 90, 0.16) !important; color: var(--gold-600) !important; border-color: var(--gold-500) !important; font-weight: bold; }
-        #mcq-view .locked-card { pointer-events: none; opacity: 0.85; }
-        #mcq-view .locked-card .option-btn.opt-correct { background: #E4E6F5 !important; color: #4A4B68 !important; border-color: #B7BBE0 !important; font-weight: bold; }
-
-        #mcq-view .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); z-index: 4000; justify-content: center; align-items: center; }
-        #mcq-view .result-modal { background: var(--bg-page); padding: 26px; border-radius: 16px; width: 320px; text-align: center; font-family: 'Noto Serif Bengali', 'Lora', serif; box-shadow: var(--shadow-page); border: 1px solid rgba(79, 70, 229, 0.10); }
-        #mcq-view .result-modal h3 { margin-top: 0; font-family: 'Hind Siliguri', sans-serif; font-weight: 700; letter-spacing: 0.3px; background: linear-gradient(118deg, var(--primary) 20%, #818CF8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; border-bottom: 1px solid rgba(79, 70, 229, 0.12); padding-bottom: 10px; }
-        #mcq-view .result-modal p { font-size: 17px; margin: 10px 0; line-height: 1.6; color: #1E293B; }
-        #mcq-view .close-modal-btn { background: var(--primary); color: white; border: none; padding: 9px 26px; border-radius: 999px; cursor: pointer; font-size: 15px; margin-top: 14px; font-family: 'Hind Siliguri', sans-serif; font-weight: 600; box-shadow: 0 4px 14px var(--primary-glow); transition: transform 0.18s var(--spring), box-shadow 0.18s var(--ease); }
-        #mcq-view .close-modal-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px var(--primary-glow); }
-        #mcq-view .close-modal-btn:active { transform: scale(0.96); }
-        
-        #mcq-view .footer { flex-shrink: 0; display: flex; justify-content: center; text-align: center; font-size: 11px; line-height: 1.2; word-spacing: -1.5px; border-top: 1px solid rgba(15, 23, 42, 0.25); padding-top: 5px; color: #475569; font-family: 'Cutive Mono', 'Hind Siliguri', monospace; font-weight: 300; }
-        body.mcq-mobile-mode #mcq-view .footer { margin-top: 20px; padding-bottom: 10px; }
-        
-        #mcq-view .result-fab { position: fixed; bottom: 25px; right: 25px; background: linear-gradient(135deg, #0F5C46 0%, #16966F 100%); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 6px 20px rgba(11, 61, 48, 0.38), 0 2px 8px rgba(11, 61, 48, 0.22), 0 0 0 0 rgba(15, 92, 70, 0.4); border: none; z-index: 999; transition: transform 0.2s var(--spring), box-shadow 0.3s var(--ease), background 0.35s var(--ease); animation: fab-pulse 2.8s ease-in-out infinite; }
-        #mcq-view .result-fab.is-reset { background: linear-gradient(135deg, #4F46E5 0%, #7C72F0 100%); animation: fab-pulse-indigo 2.8s ease-in-out infinite; }
-        #mcq-view .result-fab:hover { transform: translateY(-3px) scale(1.05); }
-        #mcq-view .result-fab:active { transform: scale(0.9); }
-        #mcq-view .result-fab svg { width: 26px; height: 26px; fill: white; }
-        
-        #mcq-view #mcq-loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(150deg, #F0F1FF 0%, #EBEEFF 100%); display: flex; flex-direction: column; align-items: center; padding-top: 14px; z-index: 5000; overflow: hidden; }
-        #mcq-view .skeleton-nav { display: flex; gap: 6px; margin-bottom: 32px; align-items: center; width: max-content; background: rgba(255, 255, 255, 0.80); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.65); border-radius: 40px; padding: 6px 14px; box-shadow: var(--shadow-nav); }
-        #mcq-view .skeleton-pill { height: 22px; border-radius: 14px; }
-        #mcq-view .skeleton-container { width: 90%; max-width: 800px; display: flex; flex-direction: column; gap: 15px; }
-        #mcq-view .skeleton-card { background: var(--bg-page); padding: 15px; border-radius: 10px; border: 1px solid rgba(79, 70, 229, 0.08); box-shadow: 0 4px 24px rgba(79,70,229,0.07), 0 1px 4px rgba(0,0,0,0.04); }
-        .shimmer { background: #E8E9F7; background-image: linear-gradient(90deg, #E8E9F7 0px, #F2F3FF 80px, #E8E9F7 160px); background-size: 400% 100%; animation: shimmer-anim 1.7s infinite linear; border-radius: 6px; }
-        @keyframes shimmer-anim { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
-        #mcq-view .sk-text { height: 18px; width: 80%; margin-bottom: 15px; }
-        #mcq-view .sk-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        #mcq-view .sk-opt { height: 32px; width: 100%; }
-
-        #mcq-view .grand-header { position: relative; display: none; text-align: center; border-bottom: 1.5px solid #0F172A; padding-bottom: 8px; margin-bottom: 10px; }
-        #mcq-view .grand-header h1 { margin: 0; font-size: 36px; font-weight: 900; letter-spacing: 5px; font-family: 'Cinzel', serif; color: #0F172A; }
-        #mcq-view .grand-header h3 { margin: 6px 0; font-size: 15px; font-family: 'Cutive Mono', 'Hind Siliguri', monospace; font-weight: 500; color: #000; word-spacing: -1.5px; }
-        #mcq-view .grand-header .meta { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; margin-top: 5px; font-family: 'Noto Serif Bengali', serif; color: #334155; }
-        #mcq-view .qr-code-print { position: absolute; top: 0; right: 0; width: 75px; height: 75px; border-radius: 4px; border: 2px solid #0F172A; padding: 2px; background: #FFFFFF; box-sizing: border-box; }
-        
-        body.mcq-print-mode #mcq-view .page, body.mcq-desktop-mode #mcq-view .page { width: 210mm; height: 297mm; padding: var(--print-margin-top) var(--print-margin-right) var(--print-margin-bottom) var(--print-margin-left); margin: 20px auto; background: var(--bg-page); box-shadow: 0 8px 30px rgba(0,0,0,0.35); border: none; border-radius: 4px; }
-        body.mcq-print-mode #mcq-view .grand-header, body.mcq-desktop-mode #mcq-view .grand-header { display: block; }
-        body.mcq-print-mode #mcq-view .page-header, body.mcq-desktop-mode #mcq-view .page-header { display: none; }
-        body.mcq-print-mode #mcq-view .q-card, body.mcq-desktop-mode #mcq-view .q-card { width: calc(50% - 5mm); border: none; margin-bottom: 0px; padding: 2px 5px; }
-        body.mcq-print-mode #mcq-view .q-card { pointer-events: none !important; opacity: 1 !important; }
-        body.mcq-print-mode #mcq-view .q-text, body.mcq-desktop-mode #mcq-view .q-text { line-height: 1.1; margin-bottom: 2px; }
-        body.mcq-print-mode #mcq-view .option-container, body.mcq-desktop-mode #mcq-view .option-container { gap: 2px; }
-        body.mcq-print-mode #mcq-view .option-btn, body.mcq-desktop-mode #mcq-view .option-btn, body.mcq-print-mode #mcq-view .option-btn.selected, body.mcq-print-mode #mcq-view .option-btn.opt-correct, body.mcq-print-mode #mcq-view .option-btn.opt-wrong, body.mcq-print-mode #mcq-view .option-btn.opt-missed, body.mcq-print-mode #mcq-view .locked-card .option-btn.opt-correct { background: transparent !important; border: 1px solid transparent !important; padding: 1px 4px; color: #000 !important; font-weight: normal !important; line-height: 1.1; }
-        
-        body.mcq-desktop-mode #mcq-view .option-btn.selected { background: var(--primary-dim) !important; color: var(--primary) !important; border-color: var(--primary-light) !important; font-weight: bold !important; }
-        body.mcq-desktop-mode #mcq-view .option-btn.opt-correct { background: var(--emerald-wash) !important; color: var(--emerald-700) !important; border-color: var(--emerald-600) !important; font-weight: bold !important; }
-        body.mcq-desktop-mode #mcq-view .option-btn.opt-wrong { background: var(--danger-wash) !important; color: var(--danger) !important; border-color: var(--danger) !important; font-weight: bold !important; }
-        body.mcq-desktop-mode #mcq-view .option-btn.opt-missed { background: rgba(184, 147, 90, 0.16) !important; color: var(--gold-600) !important; border-color: var(--gold-500) !important; font-weight: bold !important; }
-        body.mcq-desktop-mode #mcq-view .locked-card .option-btn.opt-correct { background: #E4E6F5 !important; color: #4A4B68 !important; border-color: #B7BBE0 !important; font-weight: bold !important; }
-        body.mcq-print-mode #mcq-view .footer, body.mcq-desktop-mode #mcq-view .footer { border-top: none; }
-
-        /* ========================================================
-           ONUCHED TEST CSS (Unchanged)
-           ======================================================== */
-        #onu-view {
-            --q-font-size: 18px;
-            --primary: #4F46E5; --primary-light: #A5B4FC; --primary-dim: rgba(79, 70, 229, 0.10); --primary-glow: rgba(79, 70, 229, 0.22);
-            --bg-page: #FFFFFF; --bg-desktop: #D4D7EE; --bg-print: #4A4B68;
-            --shadow-page: 0 2px 6px rgba(0,0,0,0.06), 0 10px 28px rgba(0,0,0,0.08), 0 28px 56px rgba(79,70,229,0.05);
-            --shadow-nav: 0 1px 0 rgba(255,255,255,0.9) inset, 0 4px 16px rgba(0,0,0,0.07), 0 8px 40px rgba(79,70,229,0.10);
-            --spring: cubic-bezier(0.34, 1.56, 0.64, 1); --ease: cubic-bezier(0.16, 1, 0.3, 1);
-            --emerald-700: #0B3D30; --emerald-600: #0F5C46; --emerald-wash: rgba(15, 92, 70, 0.13); --gold-500: #B8935A; --gold-600: #9A7A42; --charcoal: #16241F; --cream: #F5EFE0;
-            font-family: 'Noto Serif Bengali', 'Lora', serif;
-        }
-        #onu-view *, #onu-view *::before, #onu-view *::after { box-sizing: border-box; }
-        
-        #onu-view .top-nav-container { position: fixed; top: 8px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 4px; z-index: 3000; width: max-content; max-width: 98vw; background: rgba(255, 255, 255, 0.82); backdrop-filter: blur(22px) saturate(190%); -webkit-backdrop-filter: blur(22px) saturate(190%); border: 1px solid rgba(255, 255, 255, 0.65); border-radius: 40px; padding: 5px 10px; box-shadow: var(--shadow-nav); }
-        #onu-view .nav-sep { flex-shrink: 0; width: 1px; height: 16px; background: rgba(79, 70, 229, 0.16); border-radius: 1px; margin: 0 2px; }
-        #onu-view .view-switcher { display: flex; gap: 2px; padding: 2px; border-radius: 18px; background: var(--primary-dim); align-items: center; }
-        #onu-view .view-btn { border: none; padding: 0 8px; height: 22px; border-radius: 14px; cursor: pointer; font-size: 11px; display: flex; align-items: center; background: transparent; color: #374151; text-decoration: none; transition: background 0.18s, transform 0.18s var(--spring), box-shadow 0.18s; }
-        #onu-view .view-btn:hover { background: rgba(79, 70, 229, 0.12); }
-        #onu-view .view-btn.active { background: var(--primary); color: white; box-shadow: 0 2px 8px var(--primary-glow); }
-        
-        #onu-view #pages-container { display: flex; flex-direction: column; align-items: center; }
-        #onu-view .page { position: relative; width: 210mm; height: 297mm; padding: 3mm 4.5mm; margin: 12mm auto; background: var(--bg-page); box-shadow: var(--shadow-page); box-sizing: border-box; border-radius: 6px; overflow: hidden; page-break-after: always; }
-        #onu-view .content-area { font-size: var(--q-font-size); line-height: 1.45; color: #0F172A; text-align: left; column-count: 2; column-gap: 8mm; column-fill: auto; width: 100%; overflow-x: hidden; overflow-y: hidden; box-sizing: border-box; word-break: normal; overflow-wrap: break-word; hyphens: none; position: relative; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
-        #onu-view .content-area * { max-width: 100%; }
-        #onu-view .katex-display { overflow-x: auto; overflow-y: hidden; }
-        #onu-view .content-area p:empty { display: none !important; }
-        #onu-view .content-area table { width: 100% !important; max-width: 100% !important; table-layout: fixed; border-collapse: collapse; margin: 10px 0; }
-        #onu-view .content-area tr { page-break-inside: avoid; break-inside: avoid; }
-        #onu-view .content-area th, #onu-view .content-area td { border: 1px solid #CBD5E1; padding: 3px; word-wrap: break-word; overflow-wrap: break-word; word-break: normal; hyphens: none; font-size: 0.85em; line-height: 1.3; overflow: hidden; }
-        #onu-view .content-area th *, #onu-view .content-area td * { max-width: 100% !important; box-sizing: border-box; }
-        #onu-view .content-area table tr:first-child th, #onu-view .content-area table tr:first-child td { font-weight: bold; background: #F5F5FF; }
-        #onu-view .content-area td .word-group, #onu-view .content-area th .word-group { white-space: normal !important; display: inline !important; }
-
-        body.onu-desktop-mode #onu-view .page-1 .content-area, body.onu-print-mode #onu-view .page-1 .content-area { height: 265mm; }
-        body.onu-desktop-mode #onu-view .page-n .content-area, body.onu-print-mode #onu-view .page-n .content-area { height: 288mm; }
-        body.onu-print-mode #onu-view .content-area, body.onu-desktop-mode #onu-view .content-area { column-rule: none !important; }
-        body.onu-print-mode #onu-view .content-area::after, body.onu-desktop-mode #onu-view .content-area::after { content: ''; position: absolute; top: 0; bottom: 0; left: calc(50% - 0.5px); border-left: 1px solid #000000; pointer-events: none; z-index: 10; }
-        body.onu-print-mode #onu-view .content-area p, body.onu-desktop-mode #onu-view .content-area p { margin-top: 0 !important; margin-bottom: 6px !important; }
-        
-        #onu-view .content-area span[data-index] { transition: color .15s ease; cursor: text; }
-        #onu-view .content-area span.selecting { color: var(--emerald-700); }
-        #onu-view .content-area span.marked { color: var(--emerald-700); font-weight: 600; text-decoration: underline; text-decoration-color: var(--gold-500); text-decoration-thickness: 2px; text-underline-offset: 4px; }
-        
-        body.onu-print-mode #onu-view .content-area span[data-index] { pointer-events: none; }
-        body.onu-print-mode #onu-view .content-area span.marked { display: none !important; }
-        body.onu-print-mode #onu-view .content-area span.marked[data-blank-num] { display: inline-block !important; min-width: 60px; margin: 0 4px; background-color: transparent !important; color: transparent !important; border-bottom: 1.5px dashed #000 !important; pointer-events: none; position: relative; text-decoration: none; font-weight: normal; vertical-align: baseline; line-height: 1; }
-        body.onu-print-mode #onu-view .content-area span.marked[data-blank-num][data-partial-right="true"] { margin-right: 6px !important; }
-        body.onu-print-mode #onu-view .content-area span.marked[data-blank-num][data-partial-left="true"] { margin-left: 6px !important; }
-        body.onu-print-mode #onu-view .content-area span.marked[data-blank-num]::after { content: attr(data-blank-num); position: absolute; left: 50%; bottom: -1px; transform: translateX(-50%); color: #000; font-size: 14px; font-weight: normal; visibility: visible; white-space: nowrap; }
-        body.onu-print-mode #onu-view .content-area span.marked[data-blank-num][data-partial-right="true"]::before { content: "'"; position: absolute; right: -6px; bottom: 1px; color: #000; font-size: 18px; line-height: 1; visibility: visible; }
-        body.onu-print-mode #onu-view .content-area span.marked[data-blank-num][data-partial-left="true"]:not([data-partial-right="true"])::before { content: "'"; position: absolute; left: -6px; bottom: 1px; color: #000; font-size: 18px; line-height: 1; visibility: visible; }
-        
-        #onu-view #highlight { position: absolute; background: linear-gradient(180deg, rgba(15, 92, 70, 0.16), rgba(15, 92, 70, 0.09)); border-radius: 5px; box-shadow: inset 0 -3px 0 0 rgba(184, 147, 90, 0.55); opacity: 0; visibility: hidden; transform: scaleY(0.4); transform-origin: center; pointer-events: none; z-index: 1000; transition: opacity .16s ease, transform .2s cubic-bezier(.34,1.56,.64,1); }
-        #onu-view #highlight.active { opacity: 1; visibility: visible; transform: scaleY(1); }
-        #onu-view .grabber { position: absolute; width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(circle at 32% 28%, #2E8A6B, var(--emerald-600) 55%, var(--emerald-700)); box-shadow: 0 2px 6px rgba(11, 61, 48, 0.4), 0 0 0 3px rgba(184, 147, 90, 0.22); z-index: 1010; cursor: ew-resize; touch-action: none; opacity: 0; visibility: hidden; transition: opacity .16s ease, transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .15s ease; }
-        #onu-view .grabber::after { content: ''; position: absolute; width: 2px; height: 34px; left: 7px; background: linear-gradient(180deg, var(--emerald-600), var(--gold-500)); border-radius: 1px; }
-        #onu-view .grabber:active { box-shadow: 0 2px 8px rgba(11, 61, 48, 0.5), 0 0 0 5px rgba(184, 147, 90, 0.32); }
-        #onu-view #grabber-left { transform: translate(-50%, -16px) scale(0.4); }
-        #onu-view #grabber-left::after { top: 8px; }
-        #onu-view #grabber-left.active { opacity: 1; visibility: visible; transform: translate(-50%, -16px) scale(1); }
-        #onu-view #grabber-left.active:active { transform: translate(-50%, -16px) scale(1.12); }
-        #onu-view #grabber-right { transform: translate(-50%, 34px) scale(0.4); }
-        #onu-view #grabber-right::after { bottom: 8px; }
-        #onu-view #grabber-right.active { opacity: 1; visibility: visible; transform: translate(-50%, 34px) scale(1); }
-        #onu-view #grabber-right.active:active { transform: translate(-50%, 34px) scale(1.12); }
-        
-        #onu-view #tooltip, #onu-view #tooltip * { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
-        #onu-view #tooltip { position: absolute; display: flex; align-items: center; gap: 7px; background: var(--charcoal); color: var(--cream); padding: 9px 18px; border-radius: 999px; border: 1px solid rgba(184, 147, 90, 0.35); font-family: 'Hind Siliguri', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; z-index: 1020; cursor: pointer; box-shadow: 0 14px 26px -8px rgba(22, 36, 31, 0.45), 0 2px 6px rgba(22, 36, 31, 0.25); opacity: 0; visibility: hidden; pointer-events: none; transform: translate(-50%, -100%) translateY(6px) scale(0.9); transition: opacity .16s ease, transform .2s cubic-bezier(.34,1.56,.64,1); }
-        #onu-view #tooltip.active { opacity: 1; visibility: visible; pointer-events: auto; transform: translate(-50%, -100%) translateY(0) scale(1); }
-        #onu-view #tooltip.active:active { transform: translate(-50%, -100%) translateY(0) scale(0.93); }
-        #onu-view #tooltip svg { flex-shrink: 0; }
-        #onu-view #tooltip:focus-visible { outline: 2px solid var(--gold-500); outline-offset: 3px; }
-        #onu-view #tooltip.mode-unmark { border-color: rgba(181, 83, 62, 0.4); }
-        #onu-view #tooltip::after { content: ''; position: absolute; top: 100%; left: 50%; margin-left: -6px; border-width: 6px; border-style: solid; border-color: var(--charcoal) transparent transparent transparent; }
-        
-        #onu-view #toast { position: fixed; left: 50%; bottom: calc(28px + env(safe-area-inset-bottom)); transform: translate(-50%, 14px); display: flex; align-items: center; gap: 10px; background: var(--charcoal); color: var(--cream); padding: 13px 22px; border-radius: 999px; border: 1px solid rgba(184, 147, 90, 0.3); font-family: 'Hind Siliguri', sans-serif; font-size: 14.5px; font-weight: 500; box-shadow: 0 16px 34px -10px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2); opacity: 0; pointer-events: none; z-index: 6000; transition: opacity .22s ease, transform .28s cubic-bezier(.34,1.56,.64,1); }
-        #onu-view #toast.show { opacity: 1; transform: translate(-50%, 0); }
-        #onu-view #toast svg { flex-shrink: 0; }
-        #onu-view #toast strong { color: var(--gold-500); font-weight: 600; }
-        
-        #onu-view .grand-header { display: none; text-align: center; border-bottom: 1.5px solid #0F172A; padding-bottom: 5px; margin-bottom: 10px; position: relative; }
-        body.onu-print-mode #onu-view .grand-header, body.onu-desktop-mode #onu-view .grand-header { display: block; }
-        #onu-view .grand-header h1 { margin: 0; font-size: 36px; font-weight: 900; letter-spacing: 5px; font-family: 'Cinzel', serif; color: #0F172A; }
-        #onu-view .qr-code-print { position: absolute; top: 0; right: 0; width: 75px; height: 75px; border-radius: 4px; border: 2px solid #0F172A; padding: 2px; background: #FFFFFF; box-sizing: border-box; }
-        #onu-view .header { text-align: center; border-bottom: 1px solid rgba(79, 70, 229, 0.12); padding-bottom: 4px; margin-bottom: 5px; }
-        body.onu-print-mode #onu-view .header, body.onu-desktop-mode #onu-view .header { display: none; }
-        #onu-view .header h3 { margin: 0; font-weight: 600; letter-spacing: 0.4px; font-size: 15px; background: linear-gradient(118deg, var(--primary) 20%, #818CF8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        
-        body.onu-mobile-mode #onu-view { background: linear-gradient(150deg, #F0F1FF 0%, #EBEEFF 100%); }
-        body.onu-mobile-mode #onu-view .page { width: 95%; height: auto; min-height: 100vh; margin: 64px auto 24px auto; padding: 14px 13px; box-shadow: none; border-radius: 0; page-break-after: auto; border-top: 3px solid var(--primary); }
-        body.onu-mobile-mode #onu-view .content-area { column-count: 1; height: auto !important; overflow: visible; column-rule: none; }
-        body.onu-mobile-mode #onu-view .grand-header { display: none !important; }
-        body.onu-mobile-mode #onu-view .header { display: block !important; }
-        body.onu-print-mode #onu-view { background-color: var(--bg-print); }
-        body.onu-print-mode #onu-view #highlight, body.onu-print-mode #onu-view .grabber, body.onu-print-mode #onu-view #tooltip { display: none !important; }
-        
-        #onu-view #onu-loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(150deg, #F0F1FF 0%, #EBEEFF 100%); display: flex; flex-direction: column; align-items: center; padding-top: 14px; z-index: 5000; overflow: hidden; }
-        #onu-view .skeleton-nav { display: flex; gap: 6px; margin-bottom: 32px; align-items: center; background: rgba(255, 255, 255, 0.80); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.65); border-radius: 40px; padding: 6px 14px; box-shadow: var(--shadow-nav); }
-        #onu-view .skeleton-pill { height: 20px; border-radius: 10px; }
-        #onu-view .skeleton-container { width: 90%; max-width: 720px; display: flex; flex-direction: column; gap: 13px; background: #fff; padding: 28px; border-radius: 12px; box-shadow: 0 4px 24px rgba(79,70,229,0.07), 0 1px 4px rgba(0,0,0,0.04); }
-        #onu-view .sk-text { height: 15px; width: 100%; margin-bottom: 6px; }
-
-        /* General Print Media */
-        @media print {
-            @page { size: A4; margin: 0; }
-            body { background: none !important; margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            .top-nav-container, #mcq-loading-screen, #onu-loading-screen, .result-fab, .modal-overlay, #highlight, .grabber, #tooltip, #toast { display: none !important; }
-            
-            #mcq-view .page { box-shadow: none !important; margin: 0 !important; padding: var(--print-margin-top) var(--print-margin-right) var(--print-margin-bottom) var(--print-margin-left) !important; width: 210mm !important; height: 297mm !important; page-break-after: always; box-sizing: border-box; }
-            #mcq-view .page:last-child { page-break-after: auto; }
-            #mcq-view .grand-header { display: block !important; }
-            #mcq-view .page-header { display: none !important; }
-            #mcq-view .q-card { border: none !important; margin-bottom: 0 !important; pointer-events: none !important; opacity: 1 !important; }
-            #mcq-view .q-text { line-height: 1.1 !important; margin-bottom: 2px !important; }
-            #mcq-view .option-container { gap: 2px !important; }
-            #mcq-view .option-btn, #mcq-view .option-btn.selected, #mcq-view .option-btn.opt-correct, #mcq-view .option-btn.opt-wrong, #mcq-view .option-btn.opt-missed, #mcq-view .locked-card .option-btn.opt-correct { background: transparent !important; border: 1px solid transparent !important; color: #000 !important; font-weight: normal !important; line-height: 1.1 !important; }
-            
-            #onu-view .page { box-shadow: none !important; margin: 0 !important; padding: 3mm 4.5mm !important; width: 210mm !important; height: 297mm !important; box-sizing: border-box !important; border-radius: 0 !important; page-break-after: always; position: relative !important; }
-            #onu-view .page-1 .content-area { height: 265mm !important; }
-            #onu-view .page-n .content-area { height: 288mm !important; }
-            #onu-view .grand-header { display: block !important; }
-            #onu-view .header { display: none !important; }
-            #onu-view .content-area { column-rule: none !important; position: relative !important; }
-            #onu-view .content-area::after { content: ''; position: absolute; top: 0; bottom: 0; left: calc(50% - 0.5px); border-left: 1px solid #000000 !important; pointer-events: none; z-index: 10; }
-            #onu-view .content-area p { margin-top: 0 !important; margin-bottom: 6px !important; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Questionz - Category Dashboard</title>
+<!-- Fonts & Styles -->
+<link href="https://fonts.googleapis.com/css2?family=Coming+Soon&family=Indie+Flower&family=Montserrat:wght@700;900&family=Poppins:wght@400;600&family=Segoe+UI:wght@400;600&family=Cutive+Mono&family=Cuprum:wght@400;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.maateen.me/bensen/font.css" rel="stylesheet">
+<link href="https://fonts.maateen.me/hoogly/font.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+:root{--primary-color:#1B251E;--secondary-color:#C9A461;--bg-color:#0B100E;--card-bg:#1B251E;--text-color:#F4EFE3;--gold-accent:#C9A461;--gold-gradient:linear-gradient(135deg, #C9A461, #fcf6ba);--charcoal-800-hover:#223028;--charcoal-border:rgba(201,164,97,0.14);--cream-dim:#B9B2A0}
+body{font-family:'Cuprum',sans-serif;font-weight:400;background:var(--bg-color);color:var(--text-color);margin:0;padding:0;display:flex;flex-direction:column;align-items:center;min-height:100vh}
+nav{width:100%;padding:5px 5%;display:flex;justify-content:space-between;align-items:center;background:rgba(18,26,21,0.85);backdrop-filter:blur(10px);position:sticky;top:0;z-index:1000;border-bottom:1px solid var(--charcoal-border);box-sizing:border-box}
+.logo-wrapper{display:flex;align-items:center;gap:12px}
+.logo-text{font-family:'Cuprum',sans-serif;font-weight:700;font-size:10px;letter-spacing:0.5px;background:var(--gold-gradient);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 5px rgba(201,164,97,0.5));width:26px;height:26px;border:1px solid rgba(201,164,97,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 8px rgba(201,164,97,0.2);flex-shrink:0}
+header{text-align:left;width:90%;max-width:900px;margin-top:10px;margin-bottom:5px}
+.breadcrumb{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:10px}
+.breadcrumb-item{background:var(--card-bg);border:1px solid var(--charcoal-border);padding:2px 7px;border-radius:4px;font-family:'Cuprum','Hoogly','Bensen',sans-serif;font-size:11px;font-weight:400;color:var(--gold-accent);cursor:pointer;transition:0.3s;display:flex;align-items:center;justify-content:center;-webkit-user-select:none;user-select:none}
+.breadcrumb-item:hover{background:var(--charcoal-800-hover);border-color:var(--gold-accent);transform:translateY(-1px)}
+.separator{color:var(--cream-dim);font-size:9px;font-weight:normal}
+.wave-text{font-family:'Cuprum',sans-serif;font-size:1.1rem;font-weight:400;margin:0;padding:0;text-transform:uppercase;color:var(--text-color);display:inline-block;line-height:1;letter-spacing:0.15rem;filter:drop-shadow(0 0 8px rgba(0,0,0,0.3))}
+.divider{width:90%;max-width:900px;height:1px;background:linear-gradient(to right,rgba(201,164,97,0),rgba(201,164,97,0.2),rgba(201,164,97,0));margin:15px 0 5px 0}
+.noun-section-wrapper{padding:10px 0;width:280px;max-width:95%;box-sizing:border-box;margin-top:5px}
+.grid-container{display:grid;grid-template-columns:1fr;gap:12px}
+.noun-box{position:relative;height:42px;padding:0 15px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg, rgba(27,37,30,0.7), rgba(18,26,21,0.9));overflow:hidden;border-radius:6px;text-decoration:none;border:1px solid var(--charcoal-border);cursor:pointer;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+.noun-box span{position:relative;z-index:2;font-family:'Cuprum','Hoogly','Bensen',sans-serif;font-size:15px;font-weight:400;color:var(--text-color);white-space:nowrap;pointer-events:none}
+.progress-percent{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;color:var(--text-color);background:rgba(201,164,97,0.15);padding:3px 10px;border-radius:20px;border:1px solid rgba(201,164,97,0.25);box-shadow:inset 0 0 8px rgba(201,164,97,0.05),0 2px 5px rgba(0,0,0,0.3);backdrop-filter:blur(5px);display:flex;align-items:center;gap:6px;letter-spacing:0.5px}
+.progress-bar-bg{position:absolute;left:0;bottom:0;height:4px;background:rgba(244,239,227,0.05);width:100%;z-index:1;border-radius:0 0 6px 6px;overflow:hidden}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,rgba(53,168,131,0.6),var(--gold-accent));box-shadow:0 -1px 8px rgba(201,164,97,0.5);border-radius:0 4px 4px 0;transition:width 0.8s cubic-bezier(0.4,0,0.2,1)}
+.noun-box:hover{background:var(--charcoal-800-hover);border-color:var(--gold-accent);transform:translateY(-2px);transition:all .3s ease}
+#loading{display:flex;flex-direction:column;gap:12px;width:100%}
+.skeleton{height:42px;width:100%;background:rgba(201,164,97,0.05);background-image:linear-gradient(90deg,rgba(201,164,97,0.02) 0,rgba(201,164,97,0.08) 40px,rgba(201,164,97,0.02) 80px);background-size:200% 100%;animation:shimmer 1.5s infinite linear;border-radius:6px;border:1px solid var(--charcoal-border)}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+footer{width:100%;padding:30px 0;text-align:center;margin-top:auto;color:var(--cream-dim);font-size:10px}
+</style>
 </head>
-<body class="body-dashboard">
+<body>
+<nav>
+<div class="logo-wrapper">
+<div class="logo-text">QZ</div>
+<a href="index.html" style="text-decoration:none"><h1 class="wave-text">QUESTIONZ</h1></a>
+</div>
+</nav>
+<header>
+<div id="breadcrumb-container" class="breadcrumb">
+<div class="breadcrumb-item" onclick="jumpTo(-1)">Home</div>
+</div>
+</header>
+<div class="divider"></div>
+<div class="noun-section-wrapper">
+<div id="loading">
+<div class="skeleton"></div>
+<div class="skeleton"></div>
+<div class="skeleton"></div>
+<div class="skeleton"></div>
+<div class="skeleton"></div>
+</div>
+<div id="category-grid" class="grid-container"></div>
+</div>
+<footer>
+<p>&copy; 2026 Questionz. All Rights Reserved.</p>
+</footer>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, query, where, onSnapshot, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    <!-- ==========================================================
-         DASHBOARD VIEW
-         ========================================================== -->
-    <div id="dashboard-view" class="app-view active-view">
-        <nav>
-            <div class="logo-wrapper">
-                <div class="logo-text">QZ</div>
-                <a href="#" onclick="window.goBackToDash(); return false;" style="text-decoration:none"><h1 class="wave-text">QUESTIONZ</h1></a>
-            </div>
-        </nav>
-        <header>
-            <div id="breadcrumb-container" class="breadcrumb">
-                <div class="breadcrumb-item" onclick="jumpTo(-1)">Home</div>
-            </div>
-        </header>
-        <div class="divider"></div>
-        <div class="noun-section-wrapper">
-            <div id="dash-loading">
-                <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
-            </div>
-            <div id="category-grid" class="grid-container"></div>
-        </div>
-        <footer>
-            <p>&copy; 2026 Questionz. All Rights Reserved.</p>
-        </footer>
-    </div>
+const firebaseConfig={apiKey:"AIzaSyCcS1zWFslmbRFS5PAvNrH8TFYIbR8N7ic",authDomain:"questionz-me.firebaseapp.com",projectId:"questionz-me",storageBucket:"questionz-me.firebasestorage.app",messagingSenderId:"393630463399",appId:"1:393630463399:web:825468121216445828f282",databaseURL:"https://questionz-me-default-rtdb.asia-southeast1.firebasedatabase.app/"};
+const app=initializeApp(firebaseConfig),db=getFirestore(app);
+let historyStack=JSON.parse(sessionStorage.getItem('qz_history'))||["root"],breadcrumbs=JSON.parse(sessionStorage.getItem('qz_breadcrumbs'))||[],unsubscribe=null;
+const categoryCache=new Map(),metadataCache=new Map(),grid=document.getElementById('category-grid'),loading=document.getElementById('loading'),breadcrumbContainer=document.getElementById('breadcrumb-container');
 
+// Auth সরিয়ে দেওয়া হয়েছে, সরাসরি UI আপডেট কল হচ্ছে
+renderBreadcrumbs();
+updateUI(historyStack[historyStack.length-1]);
 
-    <!-- ==========================================================
-         MCQ TEST VIEW
-         ========================================================== -->
-    <div id="mcq-view" class="app-view">
-        <div id="mcq-loading-screen">
-            <div class="skeleton-nav">
-                <div class="shimmer skeleton-pill" style="width: 100px;"></div>
-                <div class="shimmer skeleton-pill" style="width: 60px;"></div>
-                <div class="shimmer skeleton-pill" style="width: 60px;"></div>
-            </div>
-            <div class="skeleton-container">
-                <div class="skeleton-card"><div class="shimmer sk-text"></div><div class="sk-options"><div class="shimmer sk-opt"></div><div class="shimmer sk-opt"></div><div class="shimmer sk-opt"></div><div class="shimmer sk-opt"></div></div></div>
-                <div class="skeleton-card"><div class="shimmer sk-text"></div><div class="sk-options"><div class="shimmer sk-opt"></div><div class="shimmer sk-opt"></div><div class="shimmer sk-opt"></div><div class="shimmer sk-opt"></div></div></div>
-            </div>
-        </div>
+async function loadSetsFromMetadata(s,c){const k=`${s}_${c}`;if(metadataCache.has(k)){renderSets(metadataCache.get(k),s,c);return}try{const m=await getDoc(doc(db,s,c,'sets','_metadata'));if(m.exists()){const d=m.data();metadataCache.set(k,d);await renderSets(d,s,c)}}catch(e){console.error("Metadata Load Error:",e)}}
+async function renderSets(d,s,c){if(c!==historyStack[historyStack.length-1])return;const keys=Object.keys(d).sort(),fragment=document.createDocumentFragment();
+const resolved=await Promise.all(keys.map(async(k)=>{if(document.getElementById(`set-${k}`))return null;
+const info=d[k],title=info.title||k,display=title.length>30?title.substring(0,30)+"...":title;const box=document.createElement('div');box.id=`set-${k}`;box.className='noun-box';box.innerHTML=`<span>${display}</span><div class="progress-percent">0%</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div>`;
+box.onclick=()=>{
+    let cid=(k||"").trim().toLowerCase(),
+    target=cid.endsWith('_ielts')?'ieltspractice.html':
+           (cid.endsWith('_cq')?'cqtest.html':
+           (cid.endsWith('_onu')?'test-onuchecced.html':
+           (cid.endsWith('_academic')?'academic-test.html':
+           'test.html')));
+           
+    localStorage.setItem('qz_current_path',['Home',...breadcrumbs,display].join(' > '));
+    window.location.href=`${target}?sub=${encodeURIComponent(s)}&cat=${encodeURIComponent(c)}&set=${encodeURIComponent(k)}&parent=${encodeURIComponent(s)}`
+};
+return box;}));resolved.forEach(box=>{if(box)fragment.appendChild(box)});if(c===historyStack[historyStack.length-1]){grid.appendChild(fragment);loading.style.display="none"}}
 
-        <div class="top-nav-container">
-            <!-- Back Button to Dash -->
-            <button class="nav-icon-btn danger-tone" onclick="window.goBackToDash()" title="Dashboard" style="margin-right:8px; font-weight:bold;">🔙</button>
-            <div class="floating-stats" ondblclick="mcqDecreaseFontSize()">
-                <span>বাকি: <span class="rem-q">০</span></span>
-                <span class="stat-timer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12,7 12,12 15,14"/></svg><span class="timer-val">০০:০০</span></span>
-            </div>
-            <div class="nav-sep"></div>
-            <div class="action-group">
-                <div id="cloud-save-btn" class="nav-icon-btn save-tone" onclick="mcqSaveProgress()" title="সেভ করুন"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="7.5,12.5 10.5,15.5 16.5,8.5"/></svg></div>
-                <div id="unlock-all-btn" class="nav-icon-btn danger-tone" onclick="mcqUnlockAllProgress()" title="আনলক করুন"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.8-1.3"/></svg></div>
-                <div id="blur-toggle-btn" class="nav-icon-btn gold-tone" onclick="mcqToggleAllBlur()" title="অপশন ব্লার"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="9" ry="6"/><circle cx="12" cy="12" r="3"/></svg></div>
-                <div id="shuffle-toggle-btn" class="nav-icon-btn violet-tone" onclick="mcqToggleShuffle()" title="শাফল"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="9" y2="6"/><line x1="9" y1="6" x2="19" y2="18"/><polyline points="15,6 19,6 19,10"/><line x1="3" y1="18" x2="9" y2="18"/><line x1="9" y1="18" x2="13" y2="14"/><polyline points="15,18 19,18 19,14"/></svg></div>
-            </div>
-            <div class="nav-sep"></div>
-            <div class="view-switcher">
-                <div class="view-switcher-indicator" id="mcq-view-switcher-indicator"></div>
-                <button id="mcq-mobile-view-btn" class="view-btn active" onclick="mcqToggleView('mcq-mobile')" ondblclick="mcqIncreaseFontSize()" title="Mobile View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg></button>
-                <button id="mcq-desktop-view-btn" class="view-btn" onclick="mcqToggleView('mcq-desktop')" title="Desktop View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="18" x2="12" y2="21"/></svg></button>
-                <button id="mcq-print-view-btn" class="view-btn" onclick="mcqToggleView('mcq-print')" title="Print View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,9 6,4 18,4 18,9"/><rect x="4" y="9" width="16" height="8" rx="1"/><rect x="8" y="15" width="8" height="6"/></svg></button>
-            </div>
-        </div>
-
-        <div id="mcq-pages-container" style="width:100%;"></div>
-
-        <button id="action-btn" class="result-fab" onclick="mcqShowFinalResult()">
-            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        </button>
-
-        <div id="result-overlay" class="modal-overlay">
-            <div class="result-modal">
-                <h3>--- পরীক্ষার ফলাফল ---</h3>
-                <div id="result-content"></div>
-                <button class="close-modal-btn" onclick="mcqCloseModal()">ঠিক আছে</button>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- ==========================================================
-         ONUCHED TEST VIEW
-         ========================================================== -->
-    <div id="onu-view" class="app-view">
-        <div id="onu-loading-screen">
-            <div class="skeleton-nav"><div class="shimmer skeleton-pill" style="width:70px;"></div><div class="shimmer skeleton-pill" style="width:76px;"></div></div>
-            <div class="skeleton-container"><div class="shimmer sk-text"></div><div class="shimmer sk-text"></div><div class="shimmer sk-text"></div></div>
-        </div>
-
-        <div class="top-nav-container">
-            <!-- Back Button to Dash -->
-            <button class="view-btn" onclick="window.goBackToDash()" title="Dashboard" style="margin-right:8px; font-weight:bold; color:var(--danger);">🔙 Back</button>
-            <div class="nav-sep"></div>
-            
-            <div class="view-switcher">
-                <button id="onu-mobile-view-btn"  class="view-btn active" onclick="onuToggleView('onu-mobile')" ondblclick="onuIncreaseFont()" title="Mobile View">📱</button>
-                <button id="onu-desktop-view-btn" class="view-btn"        onclick="onuToggleView('onu-desktop')" title="Desktop View">🖥️</button>
-                <button id="onu-print-view-btn"   class="view-btn"        onclick="onuToggleView('onu-print')" title="Print View">🖨️</button>
-                <div class="nav-sep"></div>
-                <button id="save-marks-btn"   class="view-btn"        onclick="onuSaveMarkedWords()" title="Save Marked Words">💾</button>
-                <button id="export-json-btn"  class="view-btn"        onclick="onuExportMarkedJSON()" title="Export MCQ JSON">📤</button>
-            </div>
-        </div>
-
-        <div id="onu-pages-container"></div>
-
-        <div id="highlight"></div>
-        <div id="grabber-left" class="grabber"></div>
-        <div id="grabber-right" class="grabber"></div>
-        <div id="tooltip" role="button" tabindex="0">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-                <path id="tooltip-icon-path" d="M12 2L14.9 8.6L22 9.3L16.7 14L18.2 21L12 17.3L5.8 21L7.3 14L2 9.3L9.1 8.6L12 2Z" fill="#B8935A"/>
-            </svg>
-            <span id="tooltip-label">MARK</span>
-        </div>
-
-        <div id="toast">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <circle id="toast-icon-circle" cx="12" cy="12" r="10" fill="#0F5C46"/>
-                <path id="toast-icon-path" d="M7.5 12.5L10.3 15.3L16.5 9" stroke="#F5EFE0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span id="toast-text"></span>
-        </div>
-    </div>
-
-    <!-- ==========================================================
-         COMBINED JAVASCRIPT
-         ========================================================== -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, query, where, onSnapshot, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCcS1zWFslmbRFS5PAvNrH8TFYIbR8N7ic",
-            authDomain: "questionz-me.firebaseapp.com",
-            projectId: "questionz-me",
-            storageBucket: "questionz-me.firebasestorage.app",
-            messagingSenderId: "393630463399",
-            appId: "1:393630463399:web:825468121216445828f282",
-            databaseURL: "https://questionz-me-default-rtdb.asia-southeast1.firebasedatabase.app/"
-        };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // --- GLOBAL APP STATE ---
-        window.currentExamInfo = { parent: '', cat: '', set: '', title: '' };
-
-        window.goBackToDash = function() {
-            document.getElementById('mcq-view').classList.remove('active-view');
-            document.getElementById('onu-view').classList.remove('active-view');
-            document.getElementById('dashboard-view').classList.add('active-view');
-            document.body.className = 'body-dashboard';
-        };
-
-        window.openMcqView = function() {
-            document.getElementById('dashboard-view').classList.remove('active-view');
-            document.getElementById('onu-view').classList.remove('active-view');
-            document.getElementById('mcq-view').classList.add('active-view');
-            document.body.className = 'mcq-mobile-mode'; // trigger MCQ css body class
-            mcqFetchData();
-        };
-
-        window.openOnuView = function() {
-            document.getElementById('dashboard-view').classList.remove('active-view');
-            document.getElementById('mcq-view').classList.remove('active-view');
-            document.getElementById('onu-view').classList.add('active-view');
-            document.body.className = 'onu-mobile-mode'; // trigger Onu css body class
-            onuFetchData();
-        };
-
-
-        // ==========================================
-        // DASHBOARD LOGIC
-        // ==========================================
-        let historyStack = JSON.parse(sessionStorage.getItem('qz_history')) || ["root"];
-        let breadcrumbs = JSON.parse(sessionStorage.getItem('qz_breadcrumbs')) || [];
-        let unsubscribe = null;
-        const categoryCache = new Map(), metadataCache = new Map();
-        const grid = document.getElementById('category-grid'), loading = document.getElementById('dash-loading'), breadcrumbContainer = document.getElementById('breadcrumb-container');
-
-        function updateUI(id) { loadCategories(id); renderBreadcrumbs(); }
-        function saveState() { sessionStorage.setItem('qz_history', JSON.stringify(historyStack)); sessionStorage.setItem('qz_breadcrumbs', JSON.stringify(breadcrumbs)); }
-        
-        window.jumpTo = function(i) {
-            if (i === -1) { historyStack = ["root"]; breadcrumbs = []; } 
-            else { historyStack = historyStack.slice(0, i + 1); breadcrumbs = breadcrumbs.slice(0, i + 1); } // fix slicing for breadcrumb logic
-            saveState(); updateUI(historyStack[historyStack.length - 1]);
-        };
-        
-        function renderBreadcrumbs() {
-            while (breadcrumbContainer.children.length > 1) breadcrumbContainer.removeChild(breadcrumbContainer.lastChild);
-            breadcrumbs.forEach((name, i) => {
-                const s = document.createElement('div'); s.innerText = ">"; s.className = "separator"; breadcrumbContainer.appendChild(s);
-                const item = document.createElement('div'); item.className = 'breadcrumb-item'; item.innerText = name;
-                item.onclick = () => jumpTo(i); breadcrumbContainer.appendChild(item);
-            });
-        }
-
-        async function loadSetsFromMetadata(s, c) {
-            const k = `${s}_${c}`;
-            if (metadataCache.has(k)) { renderSets(metadataCache.get(k), s, c); return; }
-            try {
-                const m = await getDoc(doc(db, s, c, 'sets', '_metadata'));
-                if (m.exists()) {
-                    const d = m.data(); metadataCache.set(k, d); await renderSets(d, s, c);
-                }
-            } catch (e) { console.error("Metadata Load Error:", e); }
-        }
-
-        async function renderSets(d, s, c) {
-            if (c !== historyStack[historyStack.length - 1]) return;
-            const keys = Object.keys(d).sort(), fragment = document.createDocumentFragment();
-            const promises = keys.map(async (k) => {
-                if (document.getElementById(`set-${k}`)) return null;
-                const info = d[k]; let p = 0;
-                try {
-                    // Check local storage for progress instead of Auth DB
-                    let localMCQProg = localStorage.getItem(`qz_prog_${s}_${c}_${k}`);
-                    if(localMCQProg) { p = JSON.parse(localMCQProg).percent || 0; }
-                } catch(e) {}
-                return { k, info, p };
-            });
-            const resolved = await Promise.all(promises);
-            resolved.forEach(item => {
-                if (!item) return;
-                const { k, info, p } = item, title = info.title || k, display = title.length > 30 ? title.substring(0, 30) + "..." : title;
-                const box = document.createElement('div'); box.id = `set-${k}`; box.className = 'noun-box';
-                box.innerHTML = `<span>${display}</span><div class="progress-percent">${p}%</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${Math.min(100, p)}%"></div></div>`;
-                box.onclick = () => {
-                    let cid = (k || "").trim().toLowerCase();
-                    window.currentExamInfo = { parent: s, cat: c, set: k, title: display };
-                    localStorage.setItem('qz_current_path', ['Home', ...breadcrumbs, display].join(' > '));
-                    
-                    if (cid.endsWith('_onu')) openOnuView();
-                    else openMcqView();
-                };
-                fragment.appendChild(box);
-            });
-            if (c === historyStack[historyStack.length - 1]) { grid.appendChild(fragment); loading.style.display = "none"; }
-        }
-
-        function renderItems(items, pId) {
-            if (pId !== historyStack[historyStack.length - 1]) return;
-            const f = document.createDocumentFragment();
-            items.forEach(cat => {
-                if (!document.getElementById(`cat-${cat.id}`)) {
-                    const display = cat.name.length > 30 ? cat.name.substring(0, 30) + "..." : cat.name;
-                    const box = document.createElement('div'); box.id = `cat-${cat.id}`; box.className = 'noun-box';
-                    box.innerHTML = `<span>${display}</span>`;
-                    box.onclick = () => {
-                        historyStack.push(cat.id); breadcrumbs.push(cat.name); saveState();
-                        updateUI(cat.id);
-                    };
-                    f.appendChild(box);
-                }
-            });
-            grid.appendChild(f); loading.style.display = "none";
-        }
-
-        function loadCategories(pId) {
-            if (unsubscribe) unsubscribe();
-            grid.innerHTML = ""; loading.style.display = "flex";
-            const sId = historyStack[1];
-            if (pId !== "root" && sId) loadSetsFromMetadata(sId, pId);
-            const q = query(collection(db, "categories"), where("parentId", "==", pId));
-            unsubscribe = onSnapshot(q, s => {
-                const items = [];
-                s.forEach(doc => { if (doc.id !== "_metadata") items.push({ id: doc.id, ...doc.data() }) });
-                items.sort((a, b) => {
-                    if (a.order !== undefined && b.order !== undefined) return a.order - b.order;
-                    return (parseInt(a.name) || 0) - (parseInt(b.name) || 0);
-                });
-                if (items.length > 0) { categoryCache.set(pId, items); renderItems(items, pId); }
-                else if (pId === "root") { loading.style.display = "none"; grid.innerHTML = "<p style='text-align:center;font-size:14px;color:#B9B2A0;font-family:\"Bensen\",sans-serif;'>কোনো ক্যাটাগরি পাওয়া যায়নি।</p>"; }
-                else { setTimeout(() => { if (grid.children.length === 0 && pId === historyStack[historyStack.length - 1]) { loading.style.display = "none"; grid.innerHTML = "<p style='text-align:center;font-size:14px;color:#B9B2A0;font-family:\"Bensen\",sans-serif;'>কিছুই পাওয়া যায়নি।</p>"; } }, 6000); }
-            });
-        }
-
-        // Initialize Dashboard
-        updateUI("root");
-
-
-        // ==========================================
-        // MCQ LOGIC
-        // ==========================================
-        let mcqData = [], mcq_userAnswers = {}, mcq_lockedIds = new Set(), mcq_totalQuestionsCount = 0;
-        let mcq_timerInterval = null, mcq_isShuffled = false, mcq_currentQFontSize = 15, mcq_currentOptFontSize = 13;
-        
-        const mcq_getProgressDocRef = () => `qz_prog_${window.currentExamInfo.parent}_${window.currentExamInfo.cat}_${window.currentExamInfo.set}`;
-        const mcq_tempStorageKey = () => `temp_ans_${window.currentExamInfo.parent}_${window.currentExamInfo.cat}_${window.currentExamInfo.set}`;
-        const fR = (text) => text ? text.toString().replace(/([০-৯0-9])\u0307/g, '<span class="recurring">$1<span class="dot">.</span></span>') : "";
-        const toBengaliNumber = (n) => n.toString().split('').map(digit => ['০','১','২','৩','৪','৫','৬','৭','৮','৯'][digit] || digit).join('');
-        const mcq_shuffle = (array) => { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } };
-
-        window.mcqIncreaseFontSize = function() { mcq_currentQFontSize += 1; mcq_currentOptFontSize += 1; document.getElementById('mcq-view').style.setProperty('--q-font-size', mcq_currentQFontSize + 'px'); document.getElementById('mcq-view').style.setProperty('--opt-font-size', mcq_currentOptFontSize + 'px'); if(mcqData.length > 0) setTimeout(() => mcq_paginate(), 10); };
-        window.mcqDecreaseFontSize = function() { if (mcq_currentQFontSize > 10) { mcq_currentQFontSize -= 1; mcq_currentOptFontSize -= 1; document.getElementById('mcq-view').style.setProperty('--q-font-size', mcq_currentQFontSize + 'px'); document.getElementById('mcq-view').style.setProperty('--opt-font-size', mcq_currentOptFontSize + 'px'); if(mcqData.length > 0) setTimeout(() => mcq_paginate(), 10); } };
-        
-        window.mcqToggleView = function(view) {
-            document.body.classList.remove('mcq-mobile-mode', 'mcq-desktop-mode', 'mcq-print-mode');
-            document.getElementById('mcq-mobile-view-btn').classList.remove('active');
-            document.getElementById('mcq-desktop-view-btn').classList.remove('active');
-            document.getElementById('mcq-print-view-btn').classList.remove('active');
-            document.body.classList.add(view + '-mode');
-            document.getElementById(view + '-btn').classList.add('active');
-            if(mcqData.length > 0) setTimeout(() => mcq_paginate(), 10);
-            mcqUpdateViewIndicator();
-        };
-
-        function mcqUpdateViewIndicator() {
-            const activeBtn = document.querySelector('#mcq-view .view-btn.active');
-            const indicator = document.getElementById('mcq-view-switcher-indicator');
-            if (activeBtn && indicator) { indicator.style.width = activeBtn.offsetWidth + 'px'; indicator.style.transform = `translateX(${activeBtn.offsetLeft - 2}px)`; }
-        }
-
-        async function mcqFetchData() {
-            document.getElementById("mcq-loading-screen").style.display = "flex";
-            document.getElementById('mcq-pages-container').innerHTML = ''; // reset
-            mcqData = []; mcq_userAnswers = {}; mcq_lockedIds.clear(); mcq_totalQuestionsCount = 0; if(mcq_timerInterval) clearInterval(mcq_timerInterval);
-            try {
-                const docRef = doc(db, window.currentExamInfo.parent, window.currentExamInfo.cat, "sets", window.currentExamInfo.set);
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    const rawQuestions = data.questions;
-                    mcqData = rawQuestions.map((q, index) => {
-                        let correctKey = q.ans;
-                        if (q.ans && !['a','b','c','d'].includes(q.ans)) { const idx = q.options.indexOf(q.ans); if (idx !== -1) correctKey = ['a','b','c','d'][idx]; }
-                        return { id: index + 1, q: q.question, a: q.options[0], b: q.options[1], c: q.options[2], d: q.options[3], ans: correctKey, orig_a: q.options[0], orig_b: q.options[1], orig_c: q.options[2], orig_d: q.options[3], orig_ans: correctKey };
-                    });
-                    mcq_totalQuestionsCount = mcqData.length;
-                    let localSaved = localStorage.getItem(mcq_getProgressDocRef());
-                    if (localSaved) { mcq_lockedIds = new Set(JSON.parse(localSaved).locked || []); }
-                    mcqInitApp();
-                } else {
-                    document.getElementById("mcq-loading-screen").innerHTML = "<div style='color:#666; font-size:18px;'>ডেটা পাওয়া যায়নি!</div>";
-                }
-            } catch (error) { document.getElementById("mcq-loading-screen").innerHTML = "<div style='color:#d93025; font-size:18px;'>এরর: " + error.message + "</div>"; }
-        }
-
-        function mcqInitApp() {
-            document.getElementById("mcq-loading-screen").style.display = "none";
-            const savedTemp = localStorage.getItem(mcq_tempStorageKey());
-            if (savedTemp) { mcq_userAnswers = JSON.parse(savedTemp); }
-            let activeQ = mcqData.filter(q => !mcq_lockedIds.has(q.id));
-            let lockedQ = mcqData.filter(q => mcq_lockedIds.has(q.id));
-            mcqData = [...activeQ, ...lockedQ];
-            mcq_paginate();
-            document.fonts.ready.then(() => { if(mcqData.length > 0) mcq_paginate(); });
-            mcqStartTimer(activeQ.length);
-        }
-
-        window.mcqSaveProgress = async function() {
-            const saveBtn = document.getElementById('cloud-save-btn'); const originalText = saveBtn.innerHTML; saveBtn.innerHTML = '<svg class="btn-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 3a9 9 0 1 1-9 9"/></svg>';
-            Object.keys(mcq_userAnswers).forEach(id => { const qId = Number(id); const questionItem = mcqData.find(q => q.id === qId); if (questionItem && mcq_userAnswers[id] === questionItem[questionItem.ans]) { mcq_lockedIds.add(qId); } });
-            const progressPercent = mcq_totalQuestionsCount > 0 ? Math.min(100, Math.round((mcq_lockedIds.size / mcq_totalQuestionsCount) * 100)) : 0;
-            localStorage.setItem(mcq_getProgressDocRef(), JSON.stringify({ locked: Array.from(mcq_lockedIds), percent: progressPercent }));
-            localStorage.removeItem(mcq_tempStorageKey());
-            Swal.fire({ icon: 'success', title: 'সেভ সফল!', text: 'আপনার প্রগ্রেস ব্রাউজারে সেভ হয়েছে।', timer: 2000, showConfirmButton: false });
-            mcq_userAnswers = {}; mcq_paginate(); saveBtn.innerHTML = originalText;
-        };
-
-        window.mcqUnlockAllProgress = async function() {
-            const result = await Swal.fire({ title: 'সব প্রশ্ন আনলক করবেন?', text: "আপনার সংরক্ষিত সব প্রগ্রেস মুছে যাবে!", icon: 'warning', showCancelButton: true, confirmButtonColor: '#B5533E', cancelButtonColor: '#4F46E5', confirmButtonText: 'হ্যাঁ, আনলক করুন!', cancelButtonText: 'বাতিল' });
-            if (result.isConfirmed) { mcq_lockedIds.clear(); mcq_userAnswers = {}; localStorage.removeItem(mcq_tempStorageKey()); localStorage.removeItem(mcq_getProgressDocRef()); Swal.fire('সফল!', 'সব আনলক করা হয়েছে।', 'success'); mcqInitApp(); }
-        };
-
-        window.mcqToggleAllBlur = function() {
-            const btn = document.getElementById('blur-toggle-btn'); const options = document.querySelectorAll('#mcq-view .option-btn');
-            if (btn.classList.contains('is-active')) { options.forEach(opt => opt.classList.remove('blur-logic')); btn.classList.remove('is-active'); btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="9" ry="6"/><circle cx="12" cy="12" r="3"/></svg>'; }
-            else { options.forEach(opt => { const card = opt.closest('.q-card'); if (!opt.classList.contains('selected') && !opt.classList.contains('opt-correct') && !(card && card.classList.contains('locked-card'))) { opt.classList.add('blur-logic'); } }); btn.classList.add('is-active'); btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="12" rx="9" ry="6"/><circle cx="12" cy="12" r="3"/><line x1="4" y1="4" x2="20" y2="20"/></svg>'; }
-        };
-
-        window.mcqToggleShuffle = function() {
-            const btn = document.getElementById('shuffle-toggle-btn');
-            let activeQ = mcqData.filter(q => !mcq_lockedIds.has(q.id)), lockedQ = mcqData.filter(q => mcq_lockedIds.has(q.id));
-            const isPrintOrAllLocked = document.body.classList.contains('mcq-print-mode') || (mcq_lockedIds.size > 0 && mcq_lockedIds.size === mcq_totalQuestionsCount);
-            if (mcq_isShuffled) {
-                activeQ.sort((a, b) => a.id - b.id); lockedQ.sort((a, b) => a.id - b.id);
-                mcqData.forEach(q => { q.a = q.orig_a; q.b = q.orig_b; q.c = q.orig_c; q.d = q.orig_d; q.ans = q.orig_ans; });
-                mcq_isShuffled = false; btn.classList.remove('is-active');
-            } else {
-                mcq_shuffle(activeQ); if (isPrintOrAllLocked) { mcq_shuffle(lockedQ); }
-                const targetQs = isPrintOrAllLocked ? [...activeQ, ...lockedQ] : activeQ;
-                targetQs.forEach(q => { let opts = [q.a, q.b, q.c, q.d]; let correctVal = q[q.ans]; mcq_shuffle(opts); q.a = opts[0]; q.b = opts[1]; q.c = opts[2]; q.d = opts[3]; q.ans = correctVal === q.a ? 'a' : correctVal === q.b ? 'b' : correctVal === q.c ? 'c' : 'd'; });
-                mcq_isShuffled = true; btn.classList.add('is-active');
-            }
-            mcqData = [...activeQ, ...lockedQ]; mcq_paginate();
-            const blurBtn = document.getElementById('blur-toggle-btn'); if (blurBtn && !blurBtn.classList.contains('is-active')) { document.querySelectorAll('#mcq-view .option-btn').forEach(opt => opt.classList.remove('blur-logic')); }
-        };
-
-        function mcq_paginate() {
-            document.getElementById('mcq-pages-container').innerHTML = '';
-            let currentPageNum = 1; let currentPage = mcq_createNewPage(currentPageNum); let currentColumnContainer = currentPage.querySelector('.content-columns');
-            const isMobile = document.body.classList.contains('mcq-mobile-mode'), isPrint = document.body.classList.contains('mcq-print-mode');
-
-            for (let i = 0; i < mcqData.length; i++) {
-                const item = mcqData[i]; const card = document.createElement('div'); card.className = 'q-card';
-                const isLocked = isPrint ? false : mcq_lockedIds.has(item.id); if (isLocked) card.classList.add('locked-card'); card.id = `q-card-display-${i}`;
-                const savedText = isPrint ? null : mcq_userAnswers[item.id];
-                const isSelected = (optKey) => savedText && item[optKey] === savedText ? 'selected' : '';
-                const isLockedCorrect = (opt) => (isLocked && item.ans === opt) ? 'opt-correct' : '';
-                const isBlurred = (optKey) => { const bBtn = document.getElementById('blur-toggle-btn'); if(bBtn && !bBtn.classList.contains('is-active')) return ''; return (savedText && item[optKey] === savedText) || isLocked ? '' : 'blur-logic'; };
-                card.innerHTML = ` <span class="q-text">${toBengaliNumber(i + 1)}. ${fR(item.q)}</span><div class="option-container"><div class="option-btn ${isLockedCorrect('a')} ${isSelected('a')} ${isBlurred('a')}" onclick="mcqMarkAnswered(this, ${i}, 'a')">ক) ${fR(item.a)}</div><div class="option-btn ${isLockedCorrect('b')} ${isSelected('b')} ${isBlurred('b')}" onclick="mcqMarkAnswered(this, ${i}, 'b')">খ) ${fR(item.b)}</div><div class="option-btn ${isLockedCorrect('c')} ${isSelected('c')} ${isBlurred('c')}" onclick="mcqMarkAnswered(this, ${i}, 'c')">গ) ${fR(item.c)}</div><div class="option-btn ${isLockedCorrect('d')} ${isSelected('d')} ${isBlurred('d')}" onclick="mcqMarkAnswered(this, ${i}, 'd')">ঘ) ${fR(item.d)}</div></div> `;
-                currentColumnContainer.appendChild(card);
-                if (!isMobile) { if (currentColumnContainer.scrollWidth > currentColumnContainer.clientWidth + 5) { currentColumnContainer.removeChild(card); currentPageNum++; currentPage = mcq_createNewPage(currentPageNum); currentColumnContainer = currentPage.querySelector('.content-columns'); currentColumnContainer.appendChild(card); } }
-            }
-            mcqUpdateFooterStats();
-            if (window.renderMathInElement) { document.querySelectorAll('#mcq-view .q-card').forEach(card => { renderMathInElement(card, { delimiters: [ {left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}, {left: '\\(', right: '\\)', display: false}, {left: '\\[', right: '\\]', display: true} ], throwOnError: false }); }); }
-        }
-
-        function mcq_createNewPage(num) {
-            const page = document.createElement('div'); page.className = 'page';
-            let pathText = window.currentExamInfo.title || 'QUESTIONZ';
-            let grandHeaderHTML = ''; let colClass = 'content-columns';
-            if (num === 1) {
-                colClass = 'content-columns first-page-columns';
-                grandHeaderHTML = `<div class="grand-header"><h1>QUESTIONZ</h1><h3>${pathText}</h3><div class="meta"><span>সময়: ${toBengaliNumber(mcq_totalQuestionsCount)} মিনিট</span><span>পূর্ণমান: ${toBengaliNumber(mcq_totalQuestionsCount)}</span></div></div>`;
-            }
-            page.innerHTML = `${grandHeaderHTML}<div class="header page-header"><h2>পেইজ - ${toBengaliNumber(num)}</h2></div><div class="${colClass}"></div><div class="footer"></div>`;
-            document.getElementById('mcq-pages-container').appendChild(page); return page;
-        }
-
-        window.mcqMarkAnswered = function(btn, displayIdx, selectedOpt) {
-            const item = mcqData[displayIdx]; if (mcq_lockedIds.has(item.id)) return;
-            if (btn.classList.contains('blur-logic')) { btn.classList.remove('blur-logic'); return; }
-            const parent = btn.parentElement; parent.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected'); mcq_userAnswers[item.id] = item[selectedOpt];
-            localStorage.setItem(mcq_tempStorageKey(), JSON.stringify(mcq_userAnswers)); mcqUpdateFooterStats();
-        };
-
-        function mcqUpdateFooterStats() {
-            const answeredCount = Object.keys(mcq_userAnswers).length + mcq_lockedIds.size; const remaining = mcq_totalQuestionsCount - answeredCount;
-            document.querySelectorAll('#mcq-view .rem-q').forEach(el => { el.innerText = toBengaliNumber(Math.max(0, remaining)); });
-        }
-
-        window.mcqShowFinalResult = async function() {
-            let roundCorrectCount = 0; let wrongCount = 0; const letterToIndex = { 'a': 0, 'b': 1, 'c': 2, 'd': 3 };
-            mcqData.forEach((item, i) => {
-                const card = document.getElementById(`q-card-display-${i}`); if(!card) return;
-                const options = card.querySelectorAll('.option-btn'); const correctLetter = item.ans; const correctText = item[correctLetter]; const userSelectedText = mcq_userAnswers[item.id];
-                if (mcq_lockedIds.has(item.id)) return;
-                if (userSelectedText) { if (userSelectedText === correctText) { options[letterToIndex[correctLetter]].classList.add('opt-correct'); mcq_lockedIds.add(item.id); roundCorrectCount++; } else { wrongCount++; const wrongLetter = ['a','b','c','d'].find(k => item[k] === userSelectedText); if(wrongLetter) options[letterToIndex[wrongLetter]].classList.add('opt-wrong'); options[letterToIndex[correctLetter]].classList.add('opt-correct'); } }
-            });
-            localStorage.removeItem(mcq_tempStorageKey());
-            const progressPercent = mcq_totalQuestionsCount > 0 ? Math.min(100, Math.round((mcq_lockedIds.size / mcq_totalQuestionsCount) * 100)) : 0;
-            localStorage.setItem(mcq_getProgressDocRef(), JSON.stringify({ locked: Array.from(mcq_lockedIds), percent: progressPercent }));
-            
-            let totalCorrect = mcq_lockedIds.size; let finalScore = totalCorrect - (wrongCount * 0.25);
-            const btn = document.getElementById('action-btn'); btn.onclick = window.mcqResetExam; btn.classList.add('is-reset'); btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 1 2.6 6.36"/><polyline points="3,17 3,21 7,21"/></svg>';
-            document.getElementById('result-content').innerHTML = ` <p>এই রাউন্ডে সঠিক: ${toBengaliNumber(roundCorrectCount)} টি</p><p>সঠিক (মোট): ${toBengaliNumber(totalCorrect)} টি</p><p>ভুল (এই রাউন্ড): ${toBengaliNumber(wrongCount)} টি</p><p style="font-weight:bold; color:#B5533E;">মোট নম্বর: ${toBengaliNumber(finalScore.toFixed(2))}</p> `;
-            document.getElementById('result-overlay').style.display = 'flex';
-        };
-
-        window.mcqCloseModal = function() { document.getElementById('result-overlay').style.display = 'none'; };
-        window.mcqResetExam = async function() {
-            if (mcq_lockedIds.size === mcq_totalQuestionsCount) { Swal.fire({ icon: 'info', title: 'সবগুলো সঠিক হয়েছে!', text: 'পুনরায় পরীক্ষা দেওয়ার জন্য আগে প্রশ্ন আনলক করুন।', confirmButtonText: 'ঠিক আছে' }); return; }
-            mcq_userAnswers = {}; localStorage.removeItem(mcq_tempStorageKey()); mcqInitApp();
-            const btn = document.getElementById('action-btn'); btn.onclick = window.mcqShowFinalResult; btn.classList.remove('is-reset'); btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
-        };
-
-        function mcqStartTimer(mins) {
-            if (mcq_timerInterval) clearInterval(mcq_timerInterval); let time = mins * 60;
-            mcq_timerInterval = setInterval(() => {
-                let m = Math.floor(time / 60); let s = time % 60; let display = `${toBengaliNumber(m.toString().padStart(2, '0'))}:${toBengaliNumber(s.toString().padStart(2, '0'))}`;
-                document.querySelectorAll('#mcq-view .timer-val').forEach(el => el.innerText = display);
-                if (time > 0) time--; else { clearInterval(mcq_timerInterval); mcq_timerInterval = null; }
-            }, 1000);
-        }
-
-        // ==========================================
-        // ONUCHED LOGIC
-        // ==========================================
-        window.onu_VOWEL_SIGNS = new Set(['\u09BE','\u09BF','\u09C0','\u09C1','\u09C2','\u09C3','\u09C4','\u09C7','\u09C8','\u09CB','\u09CC','\u09D7']);
-        window.onu_OTHER_MARKS = new Set(['\u0981','\u0982','\u0983','\u09BC']);
-        window.onu_VIRAMA = '\u09CD';
-        window.onu_isBengaliConsonant = function(ch) { const cp = ch.codePointAt(0); return cp >= 0x0995 && cp <= 0x09B9; };
-        window.onu_graphemeClusters = function(str) { const chars = Array.from(str); const result = []; let i = 0; while (i < chars.length) { let cluster = chars[i]; i++; while (i < chars.length) { const ch = chars[i]; if (window.onu_VOWEL_SIGNS.has(ch) || window.onu_OTHER_MARKS.has(ch)) { cluster += ch; i++; } else if (ch === window.onu_VIRAMA && i + 1 < chars.length && window.onu_isBengaliConsonant(chars[i + 1])) { cluster += ch + chars[i + 1]; i += 2; } else if (ch === window.onu_VIRAMA) { cluster += ch; i++; break; } else { break; } } result.push(cluster); } return result; };
-
-        let onu_currentContent = "", onu_lastFinalHTML = "", onu_clusters = [], onu_spans = [], onu_markedRanges = [];
-        let onu_startIndex = -1, onu_endIndex = -1, onu_isDragging = null, onu_wordStart = -1, onu_wordEnd = -1, onu_currentMode = 'mark', onu_spanRects = [], onu_rafPending = false, onu_lastPointerEvent = null;
-
-        const highlight = document.getElementById('highlight'), grabberLeft = document.getElementById('grabber-left'), grabberRight = document.getElementById('grabber-right'), tooltip = document.getElementById('tooltip'), tooltipIconPath = document.getElementById('tooltip-icon-path'), tooltipLabel = document.getElementById('tooltip-label'), toast = document.getElementById('toast'), toastText = document.getElementById('toast-text'), toastIconCircle = document.getElementById('toast-icon-circle'), toastIconPath = document.getElementById('toast-icon-path');
-        let onu_toastTimer = null;
-
-        window.onuToggleView = function(view) {
-            document.body.classList.remove('onu-mobile-mode', 'onu-desktop-mode', 'onu-print-mode');
-            document.getElementById('onu-mobile-view-btn').classList.remove('active');
-            document.getElementById('onu-desktop-view-btn').classList.remove('active');
-            document.getElementById('onu-print-view-btn').classList.remove('active');
-            document.body.classList.add(view + '-mode'); document.getElementById(view + '-btn').classList.add('active');
-            onu_clearSelectionUI(); if (onu_lastFinalHTML) onu_applyPagination();
-        }
-
-        let onu_fontSize = 18;
-        window.onuIncreaseFont = function() { onu_fontSize += 2; document.getElementById('onu-view').style.setProperty('--q-font-size', onu_fontSize + 'px'); onu_clearSelectionUI(); setTimeout(() => { if (onu_lastFinalHTML) onu_applyPagination(); }, 100); }
-
-        function cleanContent(raw) { return (raw || "").replace(/&nbsp;/gi, ' ').replace(/<p>\s*<\/p>/gi, '').replace(/(<br\s*\/?>\s*){2,}/gi, '<br>').replace(/\s{2,}/g, ' '); }
-
-        async function onuFetchData() {
-            document.getElementById('onu-loading-screen').style.display = 'flex';
-            document.getElementById('onu-pages-container').innerHTML = '';
-            const storageKey = `${window.currentExamInfo.parent}_${window.currentExamInfo.cat}_${window.currentExamInfo.set}`;
-            const savedMarks = localStorage.getItem('qz_saved_ranges_' + storageKey);
-            if (savedMarks) { try { onu_markedRanges = JSON.parse(savedMarks); } catch (e) { onu_markedRanges = []; } } else { onu_markedRanges = []; }
-            const cacheKey = 'qz_content_cache_' + storageKey;
-            const cached = localStorage.getItem(cacheKey);
-
-            if (cached) { onu_currentContent = cached; try { onu_renderOnuched(); } catch(e) {} finally { document.getElementById('onu-loading-screen').style.display = 'none'; } }
-            try {
-                const setDocRef = doc(db, window.currentExamInfo.parent, window.currentExamInfo.cat, "sets", window.currentExamInfo.set);
-                const docSnap = await getDoc(setDocRef);
-                if (docSnap.exists()) {
-                    const rawContent = cleanContent(docSnap.data().content || "");
-                    try { localStorage.setItem(cacheKey, rawContent); } catch (e) {}
-                    if (rawContent !== onu_currentContent) { onu_currentContent = rawContent; onu_renderOnuched(); } else { onu_restoreMarksAndCollectSpans(); }
-                } else { if (!onu_currentContent) document.getElementById('onu-pages-container').innerHTML = '<p style="text-align:center;margin-top:80px;">অনুচ্ছেদটি খুঁজে পাওয়া যায়নি।</p>'; }
-            } catch (error) { if (!onu_currentContent) document.getElementById('onu-pages-container').innerHTML = '<p style="text-align:center;margin-top:80px;">ডেটা লোড করতে সমস্যা হয়েছে।</p>'; }
-            finally { document.getElementById('onu-loading-screen').style.display = 'none'; }
-        }
-
-        window.onuAutoSaveMarks = function() { const storageKey = `${window.currentExamInfo.parent}_${window.currentExamInfo.cat}_${window.currentExamInfo.set}`; localStorage.setItem('qz_saved_ranges_' + storageKey, JSON.stringify(onu_markedRanges)); };
-        window.onuSaveMarkedWords = function() { window.onuAutoSaveMarks(); Swal.fire({ icon: 'success', title: 'সংরক্ষিত!', text: 'এই ডিভাইসে সেভ হয়েছে।', showConfirmButton: false, timer: 1500 }); };
-
-        window.onu_renderOnuched = function() {
-            onu_clusters = []; let globalIndex = 0; let finalHTML = "";
-            const chunks = onu_currentContent.split(/(<[^>]+>)/g);
-            for (let t = 0; t < chunks.length; t++) {
-                let chunk = chunks[t];
-                if (chunk.startsWith("<") && chunk.endsWith(">")) { finalHTML += chunk; if (/<\/?(td|th|tr|table|tbody|thead|p|div|br|hr|li|ul|ol|h[1-6])[^>]*>/i.test(chunk)) { onu_clusters.push(' '); globalIndex++; } continue; }
-                let mathBlocks = []; let safeChunk = chunk.replace(/(\$\$[\s\S]*?\$\$|\$[\s\S]*?\$)/g, (match) => { mathBlocks.push(match); return `__MATH_${mathBlocks.length - 1}__`; });
-                let parts = safeChunk.split(/(__MATH_\d+__)/);
-                for (let p of parts) {
-                    let m = p.match(/__MATH_(\d+)__/);
-                    if (m) { finalHTML += `<span class="qz-math">${mathBlocks[parseInt(m[1])]}</span>`; onu_clusters.push(' '); finalHTML += `<span data-index="${globalIndex}" style="display:none;"> </span>`; globalIndex++; } 
-                    else if (p) { let tokens = p.split(/(\s+|[।!?]+)/); for (let token of tokens) { if (!token) continue; let isSpaceOrPunc = /^(\s+|[।!?]+)$/.test(token); let tokenClusters = window.onu_graphemeClusters(token); let tokenHTML = ""; for (let c of tokenClusters) { onu_clusters.push(c); tokenHTML += `<span data-index="${globalIndex}">${c}</span>`; globalIndex++; } if (isSpaceOrPunc) { finalHTML += tokenHTML; } else { finalHTML += `<span class="word-group" style="white-space: nowrap; display: inline-block; cursor: text;">${tokenHTML}</span>`; } } }
-                }
-            }
-            onu_lastFinalHTML = finalHTML; onu_applyPagination();
-        }
-
-        window.onu_applyPagination = function() {
-            const container = document.getElementById('onu-pages-container'); container.innerHTML = '';
-            const isMobile = document.body.classList.contains('onu-mobile-mode');
-            if (isMobile) { const page = onu_createNewPage(1); page.querySelector('.content-area').innerHTML = onu_lastFinalHTML; if(window.renderMathInElement) { renderMathInElement(page.querySelector('.content-area'), { delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}], throwOnError: false }); } onu_restoreMarksAndCollectSpans(); return; }
-            const tempDiv = document.createElement('div'); tempDiv.innerHTML = onu_lastFinalHTML;
-            const nodes = Array.from(tempDiv.childNodes); let pageNum = 1; let currentPage = onu_createNewPage(pageNum); let contentArea = currentPage.querySelector('.content-area'); let i = 0; let batchCounter = 0;
-            while (i < nodes.length) {
-                let node = nodes[i]; if (node.nodeType === 3 && node.textContent.trim() === "") { i++; continue; }
-                contentArea.appendChild(node); batchCounter++; let isSentenceEnd = /[।!?]+/.test(node.textContent || ""); let isBlock = node.nodeType === 1 && /^(BR|P|DIV|TABLE|H[1-6]|UL|OL|LI)$/i.test(node.nodeName);
-                if (isSentenceEnd || isBlock || batchCounter >= 50 || i === nodes.length - 1) {
-                    if (contentArea.scrollWidth > contentArea.clientWidth + 5) { while (contentArea.scrollWidth > contentArea.clientWidth + 5 && contentArea.childNodes.length > 1) { contentArea.removeChild(contentArea.lastChild); i--; } pageNum++; currentPage = onu_createNewPage(pageNum); contentArea = currentPage.querySelector('.content-area'); } batchCounter = 0;
-                } i++;
-            }
-            if(window.renderMathInElement) { document.querySelectorAll('#onu-view .content-area').forEach(ca => renderMathInElement(ca, { delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}], throwOnError: false })); } onu_restoreMarksAndCollectSpans();
-        }
-
-        function onu_createNewPage(num) {
-            const page = document.createElement('div'); page.className = `page ${num === 1 ? 'page-1' : 'page-n'}`;
-            page.innerHTML = (num === 1 ? `<div class="grand-header"><h1>QUESTIONZ</h1></div>` : '') + `<div class="header"><h3>অনুচ্ছেদ অনুশীলন</h3></div><div class="content-area"></div>`;
-            document.getElementById('onu-pages-container').appendChild(page); return page;
-        }
-
-        function onu_restoreMarksAndCollectSpans() {
-            onu_spans = []; document.querySelectorAll('#onu-view span[data-index]').forEach(el => { let idx = parseInt(el.dataset.index); onu_spans[idx] = el; el.classList.remove('marked'); });
-            onu_markedRanges.forEach(r => { for(let i = r.start; i <= r.end; i++) { if (onu_spans[i]) onu_spans[i].classList.add('marked'); } });
-            onu_updateBlankNumbers();
-        }
-
-        function onu_updateBlankNumbers() {
-            let count = 1; document.querySelectorAll('#onu-view span[data-blank-num]').forEach(el => { el.removeAttribute('data-blank-num'); el.removeAttribute('data-partial'); el.removeAttribute('data-partial-right'); el.removeAttribute('data-partial-left'); });
-            onu_markedRanges.sort((a, b) => a.start - b.start).forEach(range => {
-                let midIndex = Math.floor((range.start + range.end) / 2); let midSpan = onu_spans[midIndex]; let startSpan = onu_spans[range.start]; let endSpan = onu_spans[range.end];
-                if (midSpan && startSpan && endSpan) { midSpan.setAttribute('data-blank-num', `(${toBengaliNumber(count)})`); count++; }
-            });
-        }
-
-        window.onu_refreshSpanRects = function() { onu_spanRects = onu_spans.map(span => span ? span.getBoundingClientRect() : null); };
-        window.onu_findMarkedRangeAt = function(index) { return onu_markedRanges.find(r => index >= r.start && index <= r.end); };
-        window.onu_setTooltipMode = function(mode) { if (mode === 'unmark') { tooltip.classList.add('mode-unmark'); tooltipIconPath.setAttribute('fill', 'none'); tooltipIconPath.setAttribute('stroke', '#B5533E'); tooltipIconPath.setAttribute('stroke-width', '1.6'); tooltipLabel.textContent = 'UNMARK'; } else { tooltip.classList.remove('mode-unmark'); tooltipIconPath.setAttribute('fill', '#B8935A'); tooltipIconPath.removeAttribute('stroke'); tooltipIconPath.removeAttribute('stroke-width'); tooltipLabel.textContent = 'MARK'; } };
-        window.onu_paintSelectionText = function() { onu_spans.forEach((span, i) => { if (span) { if (i >= onu_startIndex && i <= onu_endIndex) span.classList.add('selecting'); else span.classList.remove('selecting'); } }); };
-        window.onu_updateUI = function() {
-            if (onu_startIndex === -1 || onu_endIndex === -1) return; if (onu_startIndex > onu_endIndex) { let temp = onu_startIndex; onu_startIndex = onu_endIndex; onu_endIndex = temp; onu_isDragging = onu_isDragging === 'left' ? 'right' : 'left'; }
-            const containerRect = document.body.getBoundingClientRect(); const startRect = onu_spanRects[onu_startIndex]; const endRect = onu_spanRects[onu_endIndex];
-            if(!startRect || !endRect) return; highlight.classList.add('active'); highlight.style.left = (startRect.left - containerRect.left) + 'px'; highlight.style.top = (startRect.top - containerRect.top) + 'px'; highlight.style.width = (endRect.right - startRect.left) + 'px'; highlight.style.height = startRect.height + 'px'; grabberLeft.classList.toggle('active', onu_currentMode === 'mark'); grabberLeft.style.left = (startRect.left - containerRect.left) + 'px'; grabberLeft.style.top = (startRect.top - containerRect.top) + 'px'; grabberRight.classList.toggle('active', onu_currentMode === 'mark'); grabberRight.style.left = (endRect.right - containerRect.left) + 'px'; grabberRight.style.top = (startRect.top - containerRect.top) + 'px'; tooltip.classList.add('active'); tooltip.style.left = (startRect.left - containerRect.left + (endRect.right - startRect.left) / 2) + 'px'; tooltip.style.top = (startRect.top - containerRect.top - 15) + 'px'; onu_paintSelectionText();
-        };
-        window.onu_clearSelectionUI = function() { highlight.classList.remove('active'); grabberLeft.classList.remove('active'); grabberRight.classList.remove('active'); tooltip.classList.remove('active'); onu_spans.forEach(span => { if(span) span.classList.remove('selecting'); }); onu_startIndex = -1; onu_endIndex = -1; onu_wordStart = -1; onu_wordEnd = -1; onu_currentMode = 'mark'; window.onu_setTooltipMode('mark'); };
-        window.onu_showToast = function(word, mode) { if (mode === 'unmark') { toastIconCircle.setAttribute('fill', '#B5533E'); toastIconPath.setAttribute('d', 'M7 12H17'); toastText.innerHTML = `মার্ক তুলে ফেলা হয়েছে: <strong>"${word}"</strong>`; } else { toastIconCircle.setAttribute('fill', '#0F5C46'); toastIconPath.setAttribute('d', 'M7.5 12.5L10.3 15.3L16.5 9'); toastText.innerHTML = `মার্ক করা হয়েছে: <strong>"${word}"</strong>`; } toast.classList.add('show'); clearTimeout(onu_toastTimer); onu_toastTimer = setTimeout(() => toast.classList.remove('show'), 2400); };
-        window.onu_confirmMark = function() {
-            if (onu_startIndex === -1 || onu_endIndex === -1) return; const selectedText = onu_clusters.slice(onu_startIndex, onu_endIndex + 1).join('');
-            if (onu_currentMode === 'unmark') { for (let i = onu_startIndex; i <= onu_endIndex; i++) if (onu_spans[i]) onu_spans[i].classList.remove('marked'); onu_markedRanges = onu_markedRanges.filter(r => !(r.start === onu_startIndex && r.end === onu_endIndex)); window.onu_showToast(selectedText, 'unmark'); } 
-            else { for (let i = onu_startIndex; i <= onu_endIndex; i++) if (onu_spans[i]) onu_spans[i].classList.add('marked'); onu_markedRanges.push({ start: onu_startIndex, end: onu_endIndex }); window.onu_showToast(selectedText, 'mark'); }
-            onu_updateBlankNumbers(); window.onuAutoSaveMarks(); window.onu_clearSelectionUI();
-        };
-
-        document.getElementById('onu-view').addEventListener('pointerdown', (e) => {
-            if (document.body.classList.contains('onu-print-mode')) return;
-            if (e.target.tagName === 'SPAN' && e.target.hasAttribute('data-index')) {
-                let index = parseInt(e.target.dataset.index); const existing = window.onu_findMarkedRangeAt(index);
-                if (existing) { onu_startIndex = existing.start; onu_endIndex = existing.end; onu_wordStart = existing.start; onu_wordEnd = existing.end; onu_currentMode = 'unmark'; } 
-                else { onu_startIndex = index; onu_endIndex = index; while (onu_startIndex > 0 && !/^(\s+|[।!?]+)$/.test(onu_clusters[onu_startIndex - 1])) onu_startIndex--; while (onu_endIndex < onu_clusters.length - 1 && !/^(\s+|[।!?]+)$/.test(onu_clusters[onu_endIndex + 1])) onu_endIndex++; onu_wordStart = onu_startIndex; onu_wordEnd = onu_endIndex; onu_currentMode = 'mark'; }
-                window.onu_setTooltipMode(onu_currentMode); window.onu_refreshSpanRects(); window.onu_updateUI();
-            } else if (e.target.id !== 'tooltip' && e.target.closest('#tooltip') === null && !e.target.classList.contains('grabber') && !e.target.closest('.top-nav-container')) { window.onu_clearSelectionUI(); }
-        });
-
-        grabberLeft.addEventListener('pointerdown', (e) => { onu_isDragging = 'left'; window.onu_refreshSpanRects(); e.preventDefault(); e.stopPropagation(); });
-        grabberRight.addEventListener('pointerdown', (e) => { onu_isDragging = 'right'; window.onu_refreshSpanRects(); e.preventDefault(); e.stopPropagation(); });
-        window.onu_processDragFrame = function() {
-            onu_rafPending = false; if (!onu_isDragging || !onu_lastPointerEvent) return; const e = onu_lastPointerEvent; let closestIndex = -1; let minDistSq = Infinity;
-            for (let i = onu_wordStart; i <= onu_wordEnd; i++) { const rect = onu_spanRects[i]; if (!rect) continue; const centerX = rect.left + rect.width / 2; const centerY = rect.top + rect.height / 2; const dx = e.clientX - centerX; const dy = e.clientY - centerY; const distSq = dx * dx + dy * dy; if (distSq < minDistSq) { minDistSq = distSq; closestIndex = i; } }
-            if (closestIndex !== -1) { if (onu_isDragging === 'left') onu_startIndex = closestIndex; else onu_endIndex = closestIndex; window.onu_updateUI(); }
-        };
-        window.addEventListener('pointermove', (e) => { if (!onu_isDragging) return; onu_lastPointerEvent = e; if (!onu_rafPending) { onu_rafPending = true; requestAnimationFrame(window.onu_processDragFrame); } }, { passive: true });
-        window.addEventListener('pointerup', () => { onu_isDragging = null; onu_lastPointerEvent = null; });
-        tooltip.addEventListener('click', window.onu_confirmMark);
-
-        window.onuExportMarkedJSON = function() { Swal.fire('Info', 'এক্সপোর্ট কোড এখানে যুক্ত করুন।', 'info'); }; // Placeholder for export
-    </script>
+function renderItems(items,pId){if(pId!==historyStack[historyStack.length-1])return;const f=document.createDocumentFragment();items.forEach(cat=>{if(!document.getElementById(`cat-${cat.id}`)){const display=cat.name.length>30?cat.name.substring(0,30)+"...":cat.name,box=document.createElement('div');box.id=`cat-${cat.id}`;box.className='noun-box';box.innerHTML=`<span>${display}</span>`;box.onclick=()=>navigateTo(cat.id,cat.name);f.appendChild(box)}});grid.appendChild(f);loading.style.display="none"}
+function loadCategories(pId){if(unsubscribe)unsubscribe();grid.innerHTML="";loading.style.display="flex";const sId=historyStack[1];if(pId!=="root"&&sId)loadSetsFromMetadata(sId,pId);const q=query(collection(db,"categories"),where("parentId","==",pId));unsubscribe=onSnapshot(q,s=>{const items=[];s.forEach(doc=>{if(doc.id!=="_metadata")items.push({id:doc.id,...doc.data()})});items.sort((a,b)=>{if(a.order!==undefined&&b.order!==undefined)return a.order-b.order;return(parseInt(a.name)||0)-(parseInt(a.name)||0)});if(items.length>0){categoryCache.set(pId,items);renderItems(items,pId)}else if(pId==="root"){loading.style.display="none";grid.innerHTML="<p style='text-align:center;font-size:14px;color:#B9B2A0;font-family:\"Bensen\",sans-serif;'>কোনো ক্যাটাগরি পাওয়া যায়নি।</p>"}else{setTimeout(()=>{if(grid.children.length===0&&pId===historyStack[historyStack.length-1]){loading.style.display="none";grid.innerHTML="<p style='text-align:center;font-size:14px;color:#B9B2A0;font-family:\"Bensen\",sans-serif;'>কিছুই পাওয়া যায়নি।</p>"}},6000)}})}
+function saveState(){sessionStorage.setItem('qz_history',JSON.stringify(historyStack));sessionStorage.setItem('qz_breadcrumbs',JSON.stringify(breadcrumbs))}
+function navigateTo(id,name){historyStack.push(id);breadcrumbs.push(name);saveState();history.pushState({id:id},"");updateUI(id)}
+window.jumpTo=function(i){if(i===-1){historyStack=["root"];breadcrumbs=[]}else{historyStack=historyStack.slice(0,i+2);breadcrumbs=breadcrumbs.slice(0,i+1)}saveState();updateUI(historyStack[historyStack.length-1])};
+function updateUI(id){loadCategories(id);renderBreadcrumbs()}
+function renderBreadcrumbs(){while(breadcrumbContainer.children.length>1)breadcrumbContainer.removeChild(breadcrumbContainer.lastChild);breadcrumbs.forEach((name,i)=>{const s=document.createElement('div');s.innerText=">";s.className="separator";breadcrumbContainer.appendChild(s);const item=document.createElement('div');item.className='breadcrumb-item';item.innerText=name;item.onclick=()=>jumpTo(i);breadcrumbContainer.appendChild(item)})}
+window.addEventListener('popstate',()=>{if(historyStack.length>1){historyStack.pop();breadcrumbs.pop();saveState();updateUI(historyStack[historyStack.length-1])}});
+if(!history.state)history.replaceState({id:historyStack[historyStack.length-1]},"");
+</script>
 </body>
 </html>
