@@ -1,180 +1,269 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>𝐐𝐔𝐄𝐒𝐓𝐈𝐎𝐍𝐙</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Cutive+Mono&family=Hind+Siliguri:wght@300;400;500;600;700&family=Lora:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Questionz - Category Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Coming+Soon&family=Indie+Flower&family=Montserrat:wght@700;900&family=Poppins:wght@400;600&family=Segoe+UI:wght@400;600&family=Cutive+Mono&family=Cuprum:wght@400;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.maateen.me/bensen/font.css" rel="stylesheet">
+<link href="https://fonts.maateen.me/hoogly/font.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+:root{--primary-color:#1B251E;--secondary-color:#C9A461;--bg-color:#0B100E;--card-bg:#1B251E;--text-color:#F4EFE3;--gold-accent:#C9A461;--gold-gradient:linear-gradient(135deg, #C9A461, #fcf6ba);--charcoal-800-hover:#223028;--charcoal-border:rgba(201,164,97,0.14);--cream-dim:#B9B2A0}
+body{font-family:'Cuprum',sans-serif;font-weight:400;background:var(--bg-color);color:var(--text-color);margin:0;padding:0;display:flex;flex-direction:column;align-items:center;min-height:100vh}
+nav{width:100%;padding:5px 5%;display:flex;justify-content:space-between;align-items:center;background:rgba(18,26,21,0.85);backdrop-filter:blur(10px);position:sticky;top:0;z-index:1000;border-bottom:1px solid var(--charcoal-border);box-sizing:border-box}
+.logo-wrapper{display:flex;align-items:center;gap:12px}
+.logo-text{font-family:'Cuprum',sans-serif;font-weight:700;font-size:10px;letter-spacing:0.5px;background:var(--gold-gradient);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 5px rgba(201,164,97,0.5));width:26px;height:26px;border:1px solid rgba(201,164,97,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 8px rgba(201,164,97,0.2);flex-shrink:0}
+header{text-align:left;width:90%;max-width:900px;margin-top:10px;margin-bottom:5px}
+.breadcrumb{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:10px}
+.breadcrumb-item{background:var(--card-bg);border:1px solid var(--charcoal-border);padding:2px 7px;border-radius:4px;font-family:'Cuprum','Hoogly','Bensen',sans-serif;font-size:11px;font-weight:400;color:var(--gold-accent);cursor:pointer;transition:0.3s;display:flex;align-items:center;justify-content:center;-webkit-user-select:none;user-select:none}
+.breadcrumb-item:hover{background:var(--charcoal-800-hover);border-color:var(--gold-accent);transform:translateY(-1px)}
+.separator{color:var(--cream-dim);font-size:9px;font-weight:normal}
+.wave-text{font-family:'Cuprum',sans-serif;font-size:1.1rem;font-weight:400;margin:0;padding:0;text-transform:uppercase;color:var(--text-color);display:inline-block;line-height:1;letter-spacing:0.15rem;filter:drop-shadow(0 0 8px rgba(0,0,0,0.3))}
+.divider{width:90%;max-width:900px;height:1px;background:linear-gradient(to right,rgba(201,164,97,0),rgba(201,164,97,0.2),rgba(201,164,97,0));margin:15px 0 5px 0}
+.noun-section-wrapper{padding:10px 0;width:280px;max-width:95%;box-sizing:border-box;margin-top:5px}
+.grid-container{display:grid;grid-template-columns:1fr;gap:12px}
+.noun-box{position:relative;height:42px;padding:0 15px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg, rgba(27,37,30,0.7), rgba(18,26,21,0.9));overflow:hidden;border-radius:6px;text-decoration:none;border:1px solid var(--charcoal-border);cursor:pointer;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+.noun-box span{position:relative;z-index:2;font-family:'Cuprum','Hoogly','Bensen',sans-serif;font-size:15px;font-weight:400;color:var(--text-color);white-space:nowrap;pointer-events:none}
 
-    <style>
-        :root {
-            --q-font-size: 15px; --opt-font-size: 13px; --primary: #4F46E5; --primary-light: #A5B4FC;
-            --primary-dim: rgba(79, 70, 229, 0.10); --primary-glow: rgba(79, 70, 229, 0.22);
-            --bg-page: #FFFFFF; --bg-desktop: #D4D7EE; --bg-print: #4A4B68;
-            --shadow-page: 0 2px 6px rgba(0,0,0,0.06), 0 10px 28px rgba(0,0,0,0.08), 0 28px 56px rgba(79,70,229,0.05);
-            --shadow-nav: 0 1px 0 rgba(255,255,255,0.9) inset, 0 4px 16px rgba(0,0,0,0.07), 0 8px 40px rgba(79,70,229,0.10);
-            --spring: cubic-bezier(0.34, 1.56, 0.64, 1); --ease: cubic-bezier(0.16, 1, 0.3, 1);
-            --emerald-700: #0B3D30; --emerald-600: #0F5C46; --emerald-wash: rgba(15, 92, 70, 0.13);
-            --gold-500: #B8935A; --gold-600: #9A7A42; --charcoal: #16241F; --cream: #F5EFE0;
-            --danger: #B5533E; --danger-wash: rgba(181, 83, 62, 0.13); --violet: #6D28D9;
-            --print-margin-top: 8mm; --print-margin-right: 6mm; --print-margin-bottom: 8mm; --print-margin-left: 6mm;
-        }
-        *, *::before, *::after { box-sizing: border-box; }
-        body { margin: 0; padding: 0; background-color: var(--bg-desktop); font-family: 'Noto Serif Bengali', 'Lora', serif; transition: background-color 0.35s var(--ease); }
-        .recurring { position: relative; display: inline-block; }
-        .dot { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-weight: bold; font-size: 15px; }
-        .frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; font-size: 0.9em; line-height: 1.1; margin: 0 2px; }
-        .frac span:first-child { border-bottom: 1px solid currentColor; padding: 0 2px; }
-        .frac span:last-child { padding: 0 2px; }
-        sup { line-height: 0; font-size: 0.7em; }
-        .top-nav-container { position: fixed; top: 8px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 4px; flex-wrap: wrap; justify-content: center; z-index: 3000; width: max-content; max-width: 98vw; background: rgba(255, 255, 255, 0.82); backdrop-filter: blur(22px) saturate(190%); -webkit-backdrop-filter: blur(22px) saturate(190%); border: 1px solid rgba(255, 255, 255, 0.65); border-radius: 40px; padding: 5px 10px; box-shadow: var(--shadow-nav); }
-        .nav-sep { flex-shrink: 0; width: 1px; height: 16px; background: rgba(79, 70, 229, 0.16); border-radius: 1px; margin: 0 2px; }
-        .action-group { display: flex; align-items: center; gap: 2px; }
-        .floating-stats { display: flex; align-items: center; gap: 8px; padding: 0 8px; height: 22px; font-family: 'Hind Siliguri', sans-serif; font-size: 11px; font-weight: 700; color: #374151; white-space: nowrap; user-select: none; cursor: pointer; }
-        .floating-stats svg { width: 12px; height: 12px; display: block; }
-        .floating-stats .stat-timer { display: inline-flex; align-items: center; gap: 3px; color: var(--danger); }
-        .floating-stats .timer-val, .floating-stats .rem-q { font-family: 'Cutive Mono', monospace; font-weight: 700; letter-spacing: 0.2px; }
-        .nav-icon-btn { border: none; width: 26px; height: 22px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; background: transparent; position: relative; transition: background 0.2s var(--ease), transform 0.18s var(--spring), box-shadow 0.24s var(--ease), color 0.2s var(--ease); }
-        .nav-icon-btn svg { width: 15px; height: 15px; display: block; }
-        .nav-icon-btn:active { transform: scale(0.86); }
-        .nav-icon-btn.save-tone { color: var(--emerald-600); background: var(--emerald-wash); }
-        .nav-icon-btn.danger-tone { color: var(--danger); background: var(--danger-wash); }
-        .nav-icon-btn.gold-tone { color: var(--gold-600); background: rgba(184, 147, 90, 0.14); }
-        .nav-icon-btn.violet-tone { color: var(--violet); background: rgba(109, 40, 217, 0.10); }
-        .view-switcher { display: flex; gap: 2px; padding: 2px; border-radius: 18px; background: var(--primary-dim); align-items: center; position: relative; }
-        .view-switcher-indicator { position: absolute; top: 2px; left: 2px; height: 22px; border-radius: 14px; background: var(--primary); box-shadow: 0 2px 8px var(--primary-glow); transition: transform 0.32s var(--spring), width 0.32s var(--spring); z-index: 0; }
-        .view-btn { border: none; padding: 0 8px; height: 22px; border-radius: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; background: transparent; color: #374151; position: relative; z-index: 1; transition: color 0.22s var(--ease), transform 0.18s var(--spring); }
-        .view-btn.active { color: white; }
-        .page { width: 210mm; height: 297mm; padding: 5mm 8mm 15mm 8mm; margin: 10mm auto; background: var(--bg-page); box-shadow: var(--shadow-page); box-sizing: border-box; position: relative; page-break-after: always; overflow: hidden; border-radius: 6px; display: flex; flex-direction: column; }
-        .content-columns { display: flex; flex-direction: column; flex-wrap: wrap; flex: 1 1 auto; min-height: 0; column-gap: 10mm; justify-content: flex-start; position: relative; }
-        .q-card { width: calc(50% - 5mm); break-inside: avoid; margin-bottom: 5px; padding: 5px; padding-bottom: 8px; border-bottom: 1px dashed rgba(79, 70, 229, 0.18); box-sizing: border-box; border-radius: 4px; }
-        body.mobile-mode { background: linear-gradient(150deg, #F0F1FF 0%, #EBEEFF 100%); }
-        body.mobile-mode .page { width: 95%; height: auto; min-height: auto; margin: 55px auto 20px auto; padding: 15px; box-shadow: none; overflow: visible; border-top: 3px solid var(--primary); display: block; }
-        body.mobile-mode .content-columns { display: block; height: auto; column-gap: 0; }
-        body.mobile-mode .q-card { width: 100%; margin-bottom: 15px; padding: 14px; box-sizing: border-box; border: 1px solid rgba(79, 70, 229, 0.10); background: var(--bg-page); border-radius: 10px; box-shadow: 0 1px 3px rgba(15,23,42,0.04), 0 6px 20px rgba(79,70,229,0.06); }
-        .header { text-align: center; margin-top: 0; margin-bottom: 8px; border-bottom: 1px solid rgba(79, 70, 229, 0.12); padding-bottom: 4px; }
-        .header h2 { margin: 0; font-weight: 700; font-size: 15px; font-family: 'Hind Siliguri', sans-serif; background: linear-gradient(118deg, var(--primary) 20%, #818CF8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .q-text { font-size: var(--q-font-size); font-weight: bold; display: block; margin-bottom: 5px; color: #1E293B; }
-        .option-container { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
-        .option-btn { padding: 3px 8px; background: #F8F9FC; border: 1px solid rgba(79, 70, 229, 0.14); border-radius: 6px; cursor: pointer; font-size: var(--opt-font-size); text-align: left; color: #1E293B; transition: background 0.18s var(--ease), border-color 0.18s var(--ease), color 0.18s var(--ease); }
-        .option-btn.selected { background: var(--primary-dim); color: var(--primary); border-color: var(--primary-light); font-weight: bold; }
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.55); backdrop-filter: blur(3px); z-index: 4000; justify-content: center; align-items: center; }
-        .result-modal { background: var(--bg-page); padding: 26px; border-radius: 16px; width: 320px; text-align: center; font-family: 'Noto Serif Bengali', 'Lora', serif; box-shadow: var(--shadow-page); border: 1px solid rgba(79, 70, 229, 0.10); }
-        .close-modal-btn { background: var(--primary); color: white; border: none; padding: 9px 26px; border-radius: 999px; cursor: pointer; font-size: 15px; margin-top: 14px; font-family: 'Hind Siliguri', sans-serif; font-weight: 600; box-shadow: 0 4px 14px var(--primary-glow); }
-        .result-fab { position: fixed; bottom: 25px; right: 25px; background: linear-gradient(135deg, #0F5C46 0%, #16966F 100%); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; border: none; z-index: 999; }
-        #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(150deg, #F0F1FF 0%, #EBEEFF 100%); display: flex; flex-direction: column; align-items: center; padding-top: 14px; z-index: 5000; }
-    </style>
+/* -- স্মার্ট প্রোগ্রেস পার্সেন্ট ব্যাজ -- */
+.progress-percent {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-color);
+    background: rgba(201,164,97,0.15);
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(201,164,97,0.25);
+    box-shadow: inset 0 0 8px rgba(201,164,97,0.05), 0 2px 5px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+/* গ্লোয়িং ডট অ্যানিমেশন */
+.progress-percent::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background-color: var(--gold-accent);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--gold-accent), 0 0 10px var(--gold-accent);
+    animation: pulse-dot 2s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+    0% { transform: scale(0.9); opacity: 0.7; }
+    50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 12px var(--gold-accent), 0 0 18px var(--gold-accent); }
+    100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+/* -- স্মার্ট প্রোগ্রেস বার -- */
+.progress-bar-bg {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 4px;
+    background: rgba(244,239,227,0.05);
+    width: 100%;
+    z-index: 1;
+    border-radius: 0 0 6px 6px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, rgba(53,168,131,0.6), var(--gold-accent));
+    box-shadow: 0 -1px 8px rgba(201,164,97,0.5);
+    border-radius: 0 4px 4px 0;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.noun-box:hover{background:var(--charcoal-800-hover);border-color:var(--gold-accent);transform:translateY(-2px);transition:all .3s ease}
+#loading{display:flex;flex-direction:column;gap:12px;width:100%}
+.skeleton{height:42px;width:100%;background:rgba(201,164,97,0.05);background-image:linear-gradient(90deg,rgba(201,164,97,0.02) 0,rgba(201,164,97,0.08) 40px,rgba(201,164,97,0.02) 80px);background-size:200% 100%;animation:shimmer 1.5s infinite linear;border-radius:6px;border:1px solid var(--charcoal-border)}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+footer{width:100%;padding:30px 0;text-align:center;margin-top:auto;color:var(--cream-dim);font-size:10px}
+</style>
 </head>
-<body class="mobile-mode">
-    <div id="loading-screen">
-        <div style="font-size: 20px; color: #4F46E5;">লোড হচ্ছে...</div>
-    </div>
+<body>
+<nav>
+<div class="logo-wrapper">
+<div class="logo-text">QZ</div>
+<a href="/index.html" style="text-decoration:none"><h1 class="wave-text">QUESTIONZ</h1></a>
+</div>
+</nav>
+<header>
+<div id="breadcrumb-container" class="breadcrumb">
+<div class="breadcrumb-item" onclick="jumpTo(-1)">Home</div>
+</div>
+</header>
+<div class="divider"></div>
+<div class="noun-section-wrapper">
+<div id="loading">
+<div class="skeleton"></div>
+<div class="skeleton"></div>
+<div class="skeleton"></div>
+<div class="skeleton"></div>
+<div class="skeleton"></div>
+</div>
+<div id="category-grid" class="grid-container"></div>
+</div>
+<footer>
+<p>&copy; 2026 Questionz. All Rights Reserved.</p>
+</footer>
+<script type="module">
+// Auth ইমপোর্ট সরিয়ে দেওয়া হয়েছে যেন সবাই সরাসরি এক্সেস পায়
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, query, where, onSnapshot, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    <div class="top-nav-container">
-        <div class="floating-stats"><span>বাকি: <span class="rem-q">০</span></span></div>
-        <div class="nav-sep"></div>
-        <div class="action-group">
-            <div class="nav-icon-btn gold-tone" onclick="toggleAllBlur()" title="অপশন ব্লার"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="12" rx="9" ry="6"/><circle cx="12" cy="12" r="3"/></svg></div>
-        </div>
-    </div>
+const firebaseConfig={apiKey:"AIzaSyCcS1zWFslmbRFS5PAvNrH8TFYIbR8N7ic",authDomain:"questionz-me.firebaseapp.com",projectId:"questionz-me",storageBucket:"questionz-me.firebasestorage.app",messagingSenderId:"393630463399",appId:"1:393630463399:web:825468121216445828f282",databaseURL:"https://questionz-me-default-rtdb.asia-southeast1.firebasedatabase.app/"};
+const app=initializeApp(firebaseConfig),db=getFirestore(app);
+let historyStack=JSON.parse(sessionStorage.getItem('qz_history'))||["root"],breadcrumbs=JSON.parse(sessionStorage.getItem('qz_breadcrumbs'))||[],unsubscribe=null;
+const categoryCache=new Map(),metadataCache=new Map(),grid=document.getElementById('category-grid'),loading=document.getElementById('loading'),breadcrumbContainer=document.getElementById('breadcrumb-container');
 
-    <button id="action-btn" class="result-fab" onclick="showFinalResult()">
-        <svg viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M8 5v14l11-7z"/></svg>
-    </button>
+renderBreadcrumbs();
+// পেজ লোড হওয়ার সাথে সাথেই Auth চেক ছাড়াই সরাসরি UI আপডেট হবে
+updateUI(historyStack[historyStack.length-1]);
 
-    <div id="result-overlay" class="modal-overlay">
-        <div class="result-modal">
-            <h3>--- পরীক্ষার ফলাফল ---</h3>
-            <div id="result-content"></div>
-            <button class="close-modal-btn" onclick="closeModal()">ঠিক আছে</button>
-        </div>
-    </div>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        // ফায়ারবেস কনফিগ (index.html থেকে নেওয়া)
-        const firebaseConfig={apiKey:"AIzaSyCcS1zWFslmbRFS5PAvNrH8TFYIbR8N7ic",authDomain:"questionz-me.firebaseapp.com",projectId:"questionz-me",storageBucket:"questionz-me.firebasestorage.app",messagingSenderId:"393630463399",appId:"1:393630463399:web:825468121216445828f282",databaseURL:"https://questionz-me-default-rtdb.asia-southeast1.firebasedatabase.app/"};
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        let mcqData = [];
-        let userAnswers = {};
-        const urlParams = new URLSearchParams(window.location.search);
-        const parentID = urlParams.get('parent');
-        const catID = urlParams.get('cat');
-        const setID = urlParams.get('set');
-
-        // সরাসরি ডেটা ফেচিং (Auth ছাড়াই)
-        async function fetchMCQs() {
-            if (!parentID || !catID || !setID) {
-                document.getElementById("loading-screen").innerHTML = "প্যারামিটার পাওয়া যায়নি!";
-                return;
-            }
-            try {
-                const docRef = doc(db, parentID, catID, "sets", setID);
-                const docSnap = await getDoc(docRef);
-                
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    mcqData = data.questions.map((q, index) => ({
-                        id: index + 1, q: q.question, a: q.options[0], b: q.options[1], c: q.options[2], d: q.options[3], ans: q.ans
-                    }));
-                    initUI();
-                } else {
-                    document.getElementById("loading-screen").innerHTML = "কোনো প্রশ্ন পাওয়া যায়নি!";
-                }
-            } catch (error) {
-                document.getElementById("loading-screen").innerHTML = "এরর: " + error.message;
-            }
+async function loadSetsFromMetadata(s,c){
+    const k=`${s}_${c}`;
+    if(metadataCache.has(k)){renderSets(metadataCache.get(k),s,c);return}
+    try{
+        const m=await getDoc(doc(db,s,c,'sets','_metadata'));
+        if(m.exists()){
+            const d=m.data();
+            metadataCache.set(k,d);
+            await renderSets(d,s,c);
         }
+    }catch(e){
+        console.error("Metadata Load Error:",e);
+    }
+}
 
-        function initUI() {
-            document.getElementById("loading-screen").style.display = "none";
-            renderQuestions();
-        }
-
-        function renderQuestions() {
-            const container = document.createElement('div');
-            container.className = 'content-columns';
-            mcqData.forEach((item, i) => {
-                const card = document.createElement('div');
-                card.className = 'q-card';
-                card.innerHTML = `<span class="q-text">${i + 1}. ${item.q}</span>
-                    <div class="option-container">
-                        <div class="option-btn" onclick="selectOpt(this, '${item.ans}', 'a')">ক) ${item.a}</div>
-                        <div class="option-btn" onclick="selectOpt(this, '${item.ans}', 'b')">খ) ${item.b}</div>
-                        <div class="option-btn" onclick="selectOpt(this, '${item.ans}', 'c')">গ) ${item.c}</div>
-                        <div class="option-btn" onclick="selectOpt(this, '${item.ans}', 'd')">ঘ) ${item.d}</div>
-                    </div>`;
-                container.appendChild(card);
-            });
-            document.body.appendChild(container);
-        }
-
-        window.selectOpt = function(btn, correct, selected) {
-            const parent = btn.parentElement;
-            parent.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-        };
-
-        window.showFinalResult = function() {
-            document.getElementById('result-overlay').style.display = 'flex';
-            document.getElementById('result-content').innerHTML = "পরীক্ষা শেষ!";
-        };
-
-        window.closeModal = function() { document.getElementById('result-overlay').style.display = 'none'; };
+async function renderSets(d,s,c){
+    if(c!==historyStack[historyStack.length-1])return;
+    const keys=Object.keys(d).sort(),fragment=document.createDocumentFragment();
+    
+    keys.forEach((k)=>{
+        if(document.getElementById(`set-${k}`)) return;
+        const info=d[k];
+        let p=0; // সবার জন্য বাই-ডিফল্ট প্রোগ্রেস 0% দেখাবে
         
-        // সবশেষে ডেটা লোড শুরু
-        fetchMCQs();
-    </script>
+        const title=info.title||k, display=title.length>30?title.substring(0,30)+"...":title;
+        const box=document.createElement('div');
+        box.id=`set-${k}`;
+        box.className='noun-box';
+        box.innerHTML=`<span>${display}</span><div class="progress-percent">${p}%</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${Math.min(100,p)}%"></div></div>`;
+        
+        box.onclick=()=>{
+            let cid=(k||"").trim().toLowerCase(),
+            target=cid.endsWith('_ielts')?'/ieltspractice.html':
+                   (cid.endsWith('_cq')?'/cqtest.html':
+                   (cid.endsWith('_onu')?'/test-onuchecced.html':
+                   (cid.endsWith('_academic')?'/academic-test.html':
+                   '/test.html')));
+                   
+            localStorage.setItem('qz_current_path',['Home',...breadcrumbs,display].join(' > '));
+            window.location.href=`${target}?sub=${encodeURIComponent(s)}&cat=${encodeURIComponent(c)}&set=${encodeURIComponent(k)}&parent=${encodeURIComponent(s)}`
+        };
+        fragment.appendChild(box);
+    });
+
+    if(c===historyStack[historyStack.length-1]){
+        grid.appendChild(fragment);
+        loading.style.display="none";
+    }
+}
+
+function renderItems(items,pId){
+    if(pId!==historyStack[historyStack.length-1])return;
+    const f=document.createDocumentFragment();
+    items.forEach(cat=>{
+        if(!document.getElementById(`cat-${cat.id}`)){
+            const display=cat.name.length>30?cat.name.substring(0,30)+"...":cat.name,box=document.createElement('div');
+            box.id=`cat-${cat.id}`;
+            box.className='noun-box';
+            box.innerHTML=`<span>${display}</span>`;
+            box.onclick=()=>navigateTo(cat.id,cat.name);
+            f.appendChild(box);
+        }
+    });
+    grid.appendChild(f);
+    loading.style.display="none";
+}
+
+function loadCategories(pId){
+    if(unsubscribe)unsubscribe();
+    grid.innerHTML="";
+    loading.style.display="flex";
+    const sId=historyStack[1];
+    if(pId!=="root"&&sId)loadSetsFromMetadata(sId,pId);
+    const q=query(collection(db,"categories"),where("parentId","==",pId));
+    
+    unsubscribe=onSnapshot(q,s=>{
+        const items=[];
+        s.forEach(doc=>{if(doc.id!=="_metadata")items.push({id:doc.id,...doc.data()})});
+        items.sort((a,b)=>{
+            if(a.order!==undefined&&b.order!==undefined)return a.order-b.order;
+            return(parseInt(a.name)||0)-(parseInt(b.name)||0)
+        });
+        if(items.length>0){
+            categoryCache.set(pId,items);
+            renderItems(items,pId);
+        }else if(pId==="root"){
+            loading.style.display="none";
+            grid.innerHTML="<p style='text-align:center;font-size:14px;color:#B9B2A0;font-family:\"Bensen\",sans-serif;'>কোনো ক্যাটাগরি পাওয়া যায়নি।</p>";
+        }else{
+            setTimeout(()=>{
+                if(grid.children.length===0&&pId===historyStack[historyStack.length-1]){
+                    loading.style.display="none";
+                    grid.innerHTML="<p style='text-align:center;font-size:14px;color:#B9B2A0;font-family:\"Bensen\",sans-serif;'>কিছুই পাওয়া যায়নি।</p>";
+                }
+            },6000)
+        }
+    });
+}
+
+function saveState(){sessionStorage.setItem('qz_history',JSON.stringify(historyStack));sessionStorage.setItem('qz_breadcrumbs',JSON.stringify(breadcrumbs))}
+function navigateTo(id,name){historyStack.push(id);breadcrumbs.push(name);saveState();history.pushState({id:id},"");updateUI(id)}
+
+window.jumpTo=function(i){
+    if(i===-1){historyStack=["root"];breadcrumbs=[]}
+    else{historyStack=historyStack.slice(0,i+2);breadcrumbs=breadcrumbs.slice(0,i+1)}
+    saveState();
+    updateUI(historyStack[historyStack.length-1]);
+};
+
+function updateUI(id){loadCategories(id);renderBreadcrumbs()}
+
+function renderBreadcrumbs(){
+    while(breadcrumbContainer.children.length>1)breadcrumbContainer.removeChild(breadcrumbContainer.lastChild);
+    breadcrumbs.forEach((name,i)=>{
+        const s=document.createElement('div');
+        s.innerText=">";
+        s.className="separator";
+        breadcrumbContainer.appendChild(s);
+        const item=document.createElement('div');
+        item.className='breadcrumb-item';
+        item.innerText=name;
+        item.onclick=()=>jumpTo(i);
+        breadcrumbContainer.appendChild(item);
+    });
+}
+
+window.addEventListener('popstate',()=>{
+    if(historyStack.length>1){
+        historyStack.pop();breadcrumbs.pop();saveState();updateUI(historyStack[historyStack.length-1]);
+    }
+});
+
+if(!history.state)history.replaceState({id:historyStack[historyStack.length-1]},"");
+</script>
 </body>
 </html>
