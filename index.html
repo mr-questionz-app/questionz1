@@ -119,12 +119,14 @@
     <hr class="divider" />
     <p class="tagline">পরীক্ষার প্রস্তুতি,<br />এক জায়গায়</p>
 
-    <div id="initLoading" style="display:none;">
+    <!-- শুরুতে সেশন চেকিং দেখানোর জন্য display:flex করা হয়েছে -->
+    <div id="initLoading" style="display:flex;">
       <span class="spinner"></span>
       <span>সেশন যাচাই করা হচ্ছে...</span>
     </div>
 
-    <div id="authWrapper" style="display:block;">
+    <!-- শুরুতে লগইন ফর্ম হাইড রাখা হয়েছে -->
+    <div id="authWrapper" style="display:none;">
 
       <section id="emailSection">
 
@@ -362,7 +364,7 @@
             timer: 1500, 
             showConfirmButton: false 
           }).then(() => { 
-            window.location.href = "loghome4.html"; // লোকাল পাথ
+            window.location.href = "dashboard.html"; // লোকাল পাথ
           });
         } else if (status === "pending") {
           Swal.fire({ 
@@ -523,6 +525,34 @@
         showError("ইমেইলটি সঠিক নয় বা সার্ভারে সমস্যা হয়েছে।");
       } finally {
         toggleButtonLoading('forgotBtn', 'forgotSpinner', 'forgotBtnText', false);
+      }
+    });
+
+    // ==========================================
+    // --- Auto-Login (Session Persistence) Check
+    // ==========================================
+    onAuthStateChanged(auth, async (user) => {
+      const initLoading = document.getElementById('initLoading');
+      const authWrapper = document.getElementById('authWrapper');
+
+      if (user) {
+        if (user.emailVerified) {
+          // ইউজার লগইন করা আছে এবং ভেরিফাইড, সরাসরি ড্যাশবোর্ডে রিডাইরেক্ট করবে
+          initLoading.style.display = 'flex';
+          authWrapper.style.display = 'none';
+          await handlePostLogin(user);
+        } else {
+          // ইউজার লগইন করা কিন্তু ইমেইল ভেরিফাই করা নেই
+          initLoading.style.display = 'none';
+          authWrapper.style.display = 'block';
+          document.getElementById('verifyEmailLabel').textContent = user.email;
+          showPanel('verify');
+        }
+      } else {
+        // কোনো ইউজার লগইন করা নেই, লগইন ফর্ম দেখাবে
+        initLoading.style.display = 'none';
+        authWrapper.style.display = 'block';
+        showPanel('login');
       }
     });
 
