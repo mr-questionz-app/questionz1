@@ -212,7 +212,7 @@
           <button class="link-btn center-link" type="button" onclick="showPanel('login')">লগইন পেজে ফিরে যান</button>
         </div>
 
-        <!-- নতুন: ইমেইল ভেরিফাই লিংক পাঠানোর প্যানেল -->
+        <!-- ইমেইল ভেরিফাই লিংক পাঠানোর প্যানেল -->
         <div id="panel-resend-verify" class="panel">
           <p class="verify-title">ভেরিফিকেশন লিংক পাঠান</p>
           <p class="verify-body">আপনার একাউন্টের ইমেইল ও পাসওয়ার্ড দিন, আমরা নতুন করে একটি ভেরিফিকেশন লিংক পাঠিয়ে দেব।</p>
@@ -362,7 +362,7 @@
             timer: 1500, 
             showConfirmButton: false 
           }).then(() => { 
-            window.location.href = "loghome4.html"; 
+            window.location.href = "loghome4.html"; // লোকাল পাথ
           });
         } else if (status === "pending") {
           Swal.fire({ 
@@ -372,7 +372,8 @@
             confirmButtonText: 'ঠিক আছে' 
           });
         } else {
-          window.location.href = "transaction1.html";
+          // প্রিমিয়াম না হলে transaction1.html এ পাঠাবে (লোকাল পাথ)
+          window.location.href = "transaction1.html"; 
         }
       } catch (error) {
         console.error(error);
