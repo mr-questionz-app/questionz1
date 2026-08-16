@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Noto+Serif+Bengali:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- SweetAlert2 CDN for popups -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
   :root {
     --charcoal-950: #0B100E;
@@ -101,6 +103,11 @@
 
   #initLoading { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 30px 0; color: var(--cream-dim); font-size: 13px; }
   #initLoading .spinner { border: 2px solid rgba(244,239,227,0.20); border-top-color: var(--gold); width: 22px; height: 22px; }
+
+  /* SweetAlert Custom Styling for this Theme */
+  .swal2-popup { font-family: 'Noto Serif Bengali', serif !important; background: rgba(27, 37, 30, 0.95) !important; backdrop-filter: blur(15px) !important; -webkit-backdrop-filter: blur(15px) !important; border: 1px solid var(--charcoal-border) !important; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4) !important; border-radius: 15px !important; color: var(--cream) !important; }
+  .swal2-title, .swal2-html-container { color: var(--cream) !important; }
+  .swal2-confirm { background: linear-gradient(135deg, var(--gold), #a9814a) !important; color: #1B1408 !important; font-weight: 600 !important; }
 </style>
 </head>
 <body>
@@ -206,20 +213,28 @@
 
       </section>
 
-      <div id="errorBox" class="error-box" role="alert">ইমেইল অথবা পাসওয়ার্ড ভুল।</div>
-      <div id="successBox" class="success-box" role="status">ইমেইল ভেরিফাই হয়েছে ✓</div>
+      <div id="errorBox" class="error-box" role="alert"></div>
+      <div id="successBox" class="success-box" role="status"></div>
       <p id="statusText" class="status-text" aria-live="polite"></p>
     </div>
 
     <p class="footnote">চালিয়ে যাওয়ার মাধ্যমে আপনি Questionz-এর ব্যবহারবিধিতে সম্মত হচ্ছেন</p>
   </main>
 
+  <!-- UI Script -->
   <script>
     function showPanel(name) {
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
       document.getElementById('panel-' + name).classList.add('active');
-      document.getElementById('tabLogin').classList.toggle('active', name === 'login');
-      document.getElementById('tabSignup').classList.toggle('active', name === 'signup');
+      
+      const tabLogin = document.getElementById('tabLogin');
+      const tabSignup = document.getElementById('tabSignup');
+      
+      if(tabLogin) tabLogin.classList.toggle('active', name === 'login');
+      if(tabSignup) tabSignup.classList.toggle('active', name === 'signup');
+      
+      document.getElementById('errorBox').classList.remove('visible');
+      document.getElementById('successBox').classList.remove('visible');
     }
 
     document.querySelectorAll('.toggle-pass').forEach(btn => {
@@ -230,6 +245,235 @@
         btn.textContent = show ? 'লুকান' : 'দেখুন';
       });
     });
+  </script>
+
+  <!-- Firebase Script Logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getDatabase, ref, update, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    // আপনার ১ম ওয়েবসাইটের সঠিক ফায়ারবেস কনফিগারেশন
+    const firebaseConfig = {
+      apiKey: "AIzaSyCcS1zWFslmbRFS5PAvNrH8TFYIbR8N7ic",
+      authDomain: "questionz-me.firebaseapp.com",
+      projectId: "questionz-me",
+      storageBucket: "questionz-me.firebasestorage.app",
+      messagingSenderId: "393630463399",
+      appId: "1:393630463399:web:825468121216445828f282",
+      measurementId: "G-1M0RWH9Y77",
+      databaseURL: "https://questionz-me-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const rtdb = getDatabase(app);
+
+    const errorBox = document.getElementById('errorBox');
+    const successBox = document.getElementById('successBox');
+
+    function showError(message) {
+      errorBox.textContent = message;
+      errorBox.classList.add('visible');
+      successBox.classList.remove('visible');
+    }
+
+    function showSuccess(message) {
+      successBox.textContent = message;
+      successBox.classList.add('visible');
+      errorBox.classList.remove('visible');
+    }
+
+    function toggleButtonLoading(btnId, spinnerId, textId, isLoading) {
+      const btn = document.getElementById(btnId);
+      const spinner = document.getElementById(spinnerId);
+      const text = document.getElementById(textId);
+      btn.disabled = isLoading;
+      spinner.hidden = !isLoading;
+      text.style.opacity = isLoading ? '0.5' : '1';
+    }
+
+    // ১ম ওয়েবসাইটের Firestore Premium Check Function
+    const checkPremiumStatus = async (user) => {
+      const requestRef = doc(db, "premium_requests", user.uid);
+      const requestSnap = await getDoc(requestRef);
+      if (!requestSnap.exists()) return "no_request";
+      return requestSnap.data().status === 'approved' ? "approved" : "pending";
+    };
+
+    // লগইন বা ভেরিফিকেশনের পর ফায়ারবেস সেশন ও প্রিমিয়াম স্ট্যাটাস চেকিং প্রসেস
+    const handlePostLogin = async (user) => {
+      try {
+        // RTDB-তে Session ও Presence আপডেট করা
+        const newSession = Date.now().toString();
+        localStorage.setItem("my_session", newSession);
+        
+        const userStatusRef = ref(rtdb, 'active_users/' + user.uid);
+        await update(userStatusRef, {
+          email: user.email,
+          displayName: user.displayName || "User",
+          currentSession: newSession,
+          status: 'online',
+          lastSeen: serverTimestamp()
+        });
+        onDisconnect(userStatusRef).update({ status: 'offline' });
+
+        // প্রিমিয়াম স্ট্যাটাস চেকের জন্য SweetAlert লোডিং (১ম সাইটের মতো)
+        Swal.fire({
+          title: 'অপেক্ষা করুন...',
+          text: 'প্রোফাইল যাচাই করা হচ্ছে',
+          allowOutsideClick: false,
+          showConfirmButton: false,
+          didOpen: () => { Swal.showLoading(); }
+        });
+
+        const status = await checkPremiumStatus(user);
+        
+        if (status === "approved") {
+          localStorage.setItem("is_premium", "true");
+          Swal.fire({ 
+            icon: 'success', 
+            title: 'স্বাগতম!', 
+            timer: 1500, 
+            showConfirmButton: false 
+          }).then(() => { 
+            window.location.href = "loghome4.html"; 
+          });
+        } else if (status === "pending") {
+          Swal.fire({ 
+            icon: 'info', 
+            title: 'অপেক্ষা করুন!', 
+            text: 'আপনি ইতিমধ্যে রিকুয়েষ্ট পাঠিয়েছেন, এপ্রুভ করা হচ্ছে, ৫ মিনিট পর লগইন করুন', 
+            confirmButtonText: 'ঠিক আছে' 
+          });
+        } else {
+          window.location.href = "transaction1.html";
+        }
+      } catch (error) {
+        console.error(error);
+        Swal.fire({ icon: 'error', title: 'ত্রুটি', text: 'ডেটাবেস সংযুক্ত হতে সমস্যা হচ্ছে।' });
+      }
+    };
+
+    // --- Signup Logic ---
+    document.getElementById('signupBtn').addEventListener('click', async () => {
+      const email = document.getElementById('signupEmail').value;
+      const pass = document.getElementById('signupPassword').value;
+      const pass2 = document.getElementById('signupPassword2').value;
+
+      if (!email || !pass || !pass2) return showError("দয়া করে সব ফিল্ড পূরণ করুন।");
+      if (pass !== pass2) return showError("পাসওয়ার্ড দুটি মিলছে না।");
+      if (pass.length < 6) return showError("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।");
+
+      toggleButtonLoading('signupBtn', 'signupSpinner', 'signupBtnText', true);
+      
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+        const user = userCredential.user;
+        
+        // Firestore-এ বেসিক ইউজার ডেটা রাখা (ঐচ্ছিক)
+        await setDoc(doc(db, "users", user.uid), {
+          email: user.email,
+          createdAt: new Date().toISOString()
+        });
+
+        await sendEmailVerification(user);
+        
+        document.getElementById('verifyEmailLabel').textContent = user.email;
+        showPanel('verify');
+        showSuccess("একাউন্ট তৈরি হয়েছে! দয়া করে ইমেইল ভেরিফাই করুন।");
+        
+      } catch (error) {
+        if (error.code === 'auth/email-already-in-use') {
+          showError("এই ইমেইল দিয়ে ইতিমধ্যে একাউন্ট আছে।");
+        } else {
+          showError("একাউন্ট তৈরি করা যায়নি: " + error.message);
+        }
+      } finally {
+        toggleButtonLoading('signupBtn', 'signupSpinner', 'signupBtnText', false);
+      }
+    });
+
+    // --- Login Logic ---
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+      const email = document.getElementById('loginEmail').value;
+      const pass = document.getElementById('loginPassword').value;
+
+      if (!email || !pass) return showError("ইমেইল ও পাসওয়ার্ড দিন।");
+
+      toggleButtonLoading('loginBtn', 'loginSpinner', 'loginBtnText', true);
+      
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+        const user = userCredential.user;
+        
+        if (!user.emailVerified) {
+          document.getElementById('verifyEmailLabel').textContent = user.email;
+          showPanel('verify');
+          showError("একাউন্টে লগইন করতে আগে ইমেইল ভেরিফাই করুন।");
+        } else {
+          showSuccess("লগইন সফল হয়েছে!");
+          handlePostLogin(user); // কলিং প্রিমিয়াম চেক ফাংশন
+        }
+      } catch (error) {
+        showError("ইমেইল অথবা পাসওয়ার্ড ভুল।");
+      } finally {
+        toggleButtonLoading('loginBtn', 'loginSpinner', 'loginBtnText', false);
+      }
+    });
+
+    // --- Resend Verification Logic ---
+    document.getElementById('resendBtn').addEventListener('click', async () => {
+      const user = auth.currentUser;
+      if (user) {
+        try {
+          await sendEmailVerification(user);
+          showSuccess("ভেরিফিকেশন লিংক আবার পাঠানো হয়েছে!");
+        } catch (error) {
+          showError("লিংক পাঠাতে সমস্যা হয়েছে। কিছুক্ষণ পর আবার চেষ্টা করুন।");
+        }
+      } else {
+        showError("সেশন এক্সপায়ার হয়েছে। আবার লগইন করুন।");
+      }
+    });
+
+    // --- Recheck Verification Logic ---
+    document.getElementById('recheckBtn').addEventListener('click', async () => {
+      toggleButtonLoading('recheckBtn', 'recheckSpinner', 'recheckBtnText', true);
+      
+      const user = auth.currentUser;
+      if (user) {
+        await user.reload();
+        if (user.emailVerified) {
+          showSuccess("ইমেইল ভেরিফিকেশন সফল হয়েছে!");
+          handlePostLogin(user); // কলিং প্রিমিয়াম চেক ফাংশন
+        } else {
+          showError("এখনো ভেরিফাই করা হয়নি। ইমেইল চেক করুন।");
+        }
+      }
+      
+      toggleButtonLoading('recheckBtn', 'recheckSpinner', 'recheckBtnText', false);
+    });
+
+    // --- Forgot Password Logic ---
+    document.getElementById('forgotBtn').addEventListener('click', async () => {
+      const email = document.getElementById('forgotEmail').value;
+      if (!email) return showError("দয়া করে ইমেইল লিখুন।");
+
+      toggleButtonLoading('forgotBtn', 'forgotSpinner', 'forgotBtnText', true);
+
+      try {
+        await sendPasswordResetEmail(auth, email);
+        showSuccess("পাসওয়ার্ড রিসেট লিংক আপনার ইমেইলে পাঠানো হয়েছে।");
+      } catch (error) {
+        showError("ইমেইলটি সঠিক নয় বা সার্ভারে সমস্যা হয়েছে।");
+      } finally {
+        toggleButtonLoading('forgotBtn', 'forgotSpinner', 'forgotBtnText', false);
+      }
+    });
+
   </script>
 </body>
 </html>
