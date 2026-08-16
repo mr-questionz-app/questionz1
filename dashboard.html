@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Questionz - Category Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Coming+Soon&family=Indie+Flower&family=Montserrat:wght@700;900&family=Poppins:wght@400;600&family=Segoe+UI:wght@400;600&family=Cutive+Mono&family=Cuprum:wght@400;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.maateen.me/bensen/font.css" rel="stylesheet">
+<link href="https://fonts.maateen.me/hoogly/font.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+:root{--primary-color:#1B251E;--secondary-color:#C9A461;--bg-color:#0B100E;--card-bg:#1B251E;--text-color:#F4EFE3;--gold-accent:#C9A461;--gold-gradient:linear-gradient(135deg, #C9A461, #fcf6ba);--charcoal-800-hover:#223028;--charcoal-border:rgba(201,164,97,0.14);--cream-dim:#B9B2A0}
+body{font-family:'Cuprum',sans-serif;font-weight:400;background:var(--bg-color);color:var(--text-color);margin:0;padding:0;display:flex;flex-direction:column;align-items:center;min-height:100vh}
+nav{width:100%;padding:5px 5%;display:flex;justify-content:space-between;align-items:center;background:rgba(18,26,21,0.85);backdrop-filter:blur(10px);position:sticky;top:0;z-index:1000;border-bottom:1px solid var(--charcoal-border);box-sizing:border-box}
+.logo-wrapper{display:flex;align-items:center;gap:12px}
+.logo-text{font-family:'Cuprum',sans-serif;font-weight:700;font-size:10px;letter-spacing:0.5px;background:var(--gold-gradient);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 5px rgba(201,164,97,0.5));width:26px;height:26px;border:1px solid rgba(201,164,97,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 8px rgba(201,164,97,0.2);flex-shrink:0}
+header{text-align:left;width:90%;max-width:900px;margin-top:10px;margin-bottom:5px}
+.breadcrumb{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:10px}
+.breadcrumb-item{background:var(--card-bg);border:1px solid var(--charcoal-border);padding:2px 7px;border-radius:4px;font-family:'Cuprum','Hoogly','Bensen',sans-serif;font-size:11px;font-weight:400;color:var(--gold-accent);cursor:pointer;transition:0.3s;display:flex;align-items:center;justify-content:center;-webkit-user-select:none;user-select:none}
+.breadcrumb-item:hover{background:var(--charcoal-800-hover);border-color:var(--gold-accent);transform:translateY(-1px)}
+.separator{color:var(--cream-dim);font-size:9px;font-weight:normal}
+.wave-text{font-family:'Cuprum',sans-serif;font-size:1.1rem;font-weight:400;margin:0;padding:0;text-transform:uppercase;color:var(--text-color);display:inline-block;line-height:1;letter-spacing:0.15rem;filter:drop-shadow(0 0 8px rgba(0,0,0,0.3))}
+.divider{width:90%;max-width:900px;height:1px;background:linear-gradient(to right,rgba(201,164,97,0),rgba(201,164,97,0.2),rgba(201,164,97,0));margin:15px 0 5px 0}
+.noun-section-wrapper{padding:10px 0;width:280px;max-width:95%;box-sizing:border-box;margin-top:5px}
+.grid-container{display:grid;grid-template-columns:1fr;gap:12px}
+.noun-box{position:relative;height:42px;padding:0 15px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg, rgba(27,37,30,0.7), rgba(18,26,21,0.9));overflow:hidden;border-radius:6px;text-decoration:none;border:1px solid var(--charcoal-border);cursor:pointer;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+.noun-box span{position:relative;z-index:2;font-family:'Cuprum','Hoogly','Bensen',sans-serif;font-size:15px;font-weight:400;color:var(--text-color);white-space:nowrap;pointer-events:none}
+
+/* -- স্মার্ট প্রোগ্রেস পার্সেন্ট ব্যাজ -- */
+.progress-percent {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-color);
+    background: rgba(201,164,97,0.15);
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(201,164,97,0.25);
+    box-shadow: inset 0 0 8px rgba(201,164,97,0.05), 0 2px 5px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+/* গ্লোয়িং ডট অ্যানিমেশন */
+.progress-percent::before {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background-color: var(--gold-accent);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--gold-accent), 0 0 10px var(--gold-accent);
+    animation: pulse-dot 2s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+    0% { transform: scale(0.9); opacity: 0.7; }
+    50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 12px var(--gold-accent), 0 0 18px var(--gold-accent); }
+    100% { transform: scale(0.9); opacity: 0.7; }
+}
+
+/* -- স্মার্ট প্রোগ্রেস বার -- */
+.progress-bar-bg {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 4px;
+    background: rgba(244,239,227,0.05);
+    width: 100%;
+    z-index: 1;
+    border-radius: 0 0 6px 6px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, rgba(53,168,131,0.6), var(--gold-accent));
+    box-shadow: 0 -1px 8px rgba(201,164,97,0.5);
+    border-radius: 0 4px 4px 0;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.noun-box:hover{background:var(--charcoal-800-hover);border-color:var(--gold-accent);transform:translateY(-2px);transition:all .3s ease}
+#loading{display:flex;flex-direction:column;gap:12px;width:100%}
+.skeleton{height:42px;width:100%;background:rgba(201,164,97,0.05);background-image:linear-gradient(90deg,rgba(201,164,97,0.02) 0,rgba(201,164,97,0.08) 40px,rgba(201,164,97,0.02) 80px);background-size:200% 100%;animation:shimmer 1.5s infinite linear;border-radius:6px;border:1px solid var(--charcoal-border)}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+footer{width:100%;padding:30px 0;text-align:center;margin-top:auto;color:var(--cream-dim);font-size:10px}
+</style>
+</head>
+<body>
+<nav>
+<div class="logo-wrapper">
+<div class="logo-text">QZ</div>
+<a href="/index.html" style="text-decoration:none"><h1 class="wave-text">QUESTIONZ</h1></a>
+</div>
+</nav>
+<header>
+<div id="breadcrumb-container" class="breadcrumb">
+<div class="breadcrumb-item" onclick="jumpTo(-1)">Home</div>
+</div>
+</header>
+<div class="divider"></div>
+<div class="noun-section-wrapper">
+<div id="loading">
+<div class="skeleton"></div>
+<div class="skeleton"></div>
+<div class="skeleton"></div>
+<div class="skeleton"></div>
+<div class="skeleton"></div>
+</div>
+<div id="category-grid" class="grid-container"></div>
+</div>
+<footer>
+<p>&copy; 2026 Questionz. All Rights Reserved.</p>
+</footer>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, query, where, onSnapshot, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig={apiKey:"AIzaSyCcS1zWFslmbRFS5PAvNrH8TFYIbR8N7ic",authDomain:"questionz-me.firebaseapp.com",projectId:"questionz-me",storageBucket:"questionz-me.firebasestorage.app",messagingSenderId:"393630463399",appId:"1:393630463399:web:825468121216445828f282",databaseURL:"https://questionz-me-default-rtdb.asia-southeast1.firebasedatabase.app/"};
+const app=initializeApp(firebaseConfig),db=getFirestore(app),auth=getAuth(app);
+let historyStack=JSON.parse(sessionStorage.getItem('qz_history'))||["root"],breadcrumbs=JSON.parse(sessionStorage.getItem('qz_breadcrumbs'))||[],unsubscribe=null,currentUser=null;
+const categoryCache=new Map(),metadataCache=new Map(),grid=document.getElementById('category-grid'),loading=document.getElementById('loading'),breadcrumbContainer=document.getElementById('breadcrumb-container');
+renderBreadcrumbs();
+onAuthStateChanged(auth,u=>{currentUser=u;updateUI(historyStack[historyStack.length-1]);});
+async function loadSetsFromMetadata(s,c){const k=`${s}_${c}`;if(metadataCache.has(k)){renderSets(metadataCache.get(k),s,c);return}try{const m=await getDoc(doc(db,s,c,'sets','_metadata'));if(m.exists()){const d=m.data();metadataCache.set(k,d);await renderSets(d,s,c)}}catch(e){console.error("Metadata Load Error:",e)}}
+async function renderSets(d,s,c){if(c!==historyStack[historyStack.length-1])return;const keys=Object.keys(d).sort(),fragment=document.createDocumentFragment();const promises=keys.map(async(k)=>{if(document.getElementById(`set-${k}`))return null;const info=d[k];let p=0;if(currentUser){const snap=await getDoc(doc(db,"users",currentUser.uid,"exam_progress",`${s}_${c}_${k}`));if(snap.exists())p=snap.data().percent||0}return{k,info,p}});const resolved=await Promise.all(promises);resolved.forEach(item=>{if(!item)return;const{k,info,p}=item,title=info.title||k,display=title.length>30?title.substring(0,30)+"...":title;const box=document.createElement('div');box.id=`set-${k}`;box.className='noun-box';box.innerHTML=`<span>${display}</span><div class="progress-percent">${p}%</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${Math.min(100,p)}%"></div></div>`;
+box.onclick=()=>{
+    let cid=(k||"").trim().toLowerCase(),
+    // 🚨 এখানে প্রতিটি HTML ফাইলের নামের আগে '/' যুক্ত করা হয়েছে
+    target=cid.endsWith('_ielts')?'/ieltspractice.html':
+           (cid.endsWith('_cq')?'/cqtest.html':
+           (cid.endsWith('_onu')?'/test-onuchecced.html':
+           (cid.endsWith('_academic')?'/academic-test.html':
+           '/test.html')));
+           
+    localStorage.setItem('qz_current_path',['Home',...breadcrumbs,display].join(' > '));
+    window.location.href=`${target}?sub=${encodeURIComponent(s)}&cat=${encodeURIComponent(c)}&set=${encodeURIComponent(k)}&parent=${encodeURIComponent(s)}`
+};
+fragment.appendChild(box)});if(c===historyStack[historyStack.length-1]){grid.appendChild(fragment);loading.style.display="none"}}
+function renderItems(items,pId){if(pId!==historyStack[historyStack.length-1])return;const f=document.createDocumentFragment();items.forEach(cat=>{if(!document.getElementById(`cat-${cat.id}`)){const display=cat.name.length>30?cat.name.substring(0,30)+"...":cat.name,box=document.createElement('div');box.id=`cat-${cat.id}`;box.className='noun-box';box.innerHTML=`<span>${display}</span>`;box.onclick=()=>navigateTo(cat.id,cat.name);f.appendChild(box)}});grid.appendChild(f);loading.style.display="none"}
+function loadCategories(pId){if(unsubscribe)unsubscribe();grid.innerHTML="";loading.style.display="flex";const sId=historyStack[1];if(pId!=="root"&&sId)loadSetsFromMetadata(sId,pId);const q=query(collection(db,"categories"),where("parentId","==",pId));unsubscribe=onSnapshot(q,s=>{const items=[];s.forEach(doc=>{if(doc.id!=="_metadata")items.push({id:doc.id,...doc.data()})});items.sort((a,b)=>{if(a.order!==undefined&&b.order!==undefined)return a.order-b.order;return(parseInt(a.name)||0)-(parseInt(b.name)||0)});if(items.length>0){categoryCache.set(pId,items);renderItems(items,pId)}else if(pId==="root"){loading.style.display="none";grid.innerHTML="<p style='text-align:center;font-size:14px;color:#B9B2A0;font-family:\"Bensen\",sans-serif;'>কোনো ক্যাটাগরি পাওয়া যায়নি।</p>"}else{setTimeout(()=>{if(grid.children.length===0&&pId===historyStack[historyStack.length-1]){loading.style.display="none";grid.innerHTML="<p style='text-align:center;font-size:14px;color:#B9B2A0;font-family:\"Bensen\",sans-serif;'>কিছুই পাওয়া যায়নি।</p>"}},6000)}})}
+function saveState(){sessionStorage.setItem('qz_history',JSON.stringify(historyStack));sessionStorage.setItem('qz_breadcrumbs',JSON.stringify(breadcrumbs))}
+function navigateTo(id,name){historyStack.push(id);breadcrumbs.push(name);saveState();history.pushState({id:id},"");updateUI(id)}
+window.jumpTo=function(i){if(i===-1){historyStack=["root"];breadcrumbs=[]}else{historyStack=historyStack.slice(0,i+2);breadcrumbs=breadcrumbs.slice(0,i+1)}saveState();updateUI(historyStack[historyStack.length-1])};
+function updateUI(id){loadCategories(id);renderBreadcrumbs()}
+function renderBreadcrumbs(){while(breadcrumbContainer.children.length>1)breadcrumbContainer.removeChild(breadcrumbContainer.lastChild);breadcrumbs.forEach((name,i)=>{const s=document.createElement('div');s.innerText=">";s.className="separator";breadcrumbContainer.appendChild(s);const item=document.createElement('div');item.className='breadcrumb-item';item.innerText=name;item.onclick=()=>jumpTo(i);breadcrumbContainer.appendChild(item)})}
+window.addEventListener('popstate',()=>{if(historyStack.length>1){historyStack.pop();breadcrumbs.pop();saveState();updateUI(historyStack[historyStack.length-1])}});
+if(!history.state)history.replaceState({id:historyStack[historyStack.length-1]},"");
+</script>
+</body>
+</html>
