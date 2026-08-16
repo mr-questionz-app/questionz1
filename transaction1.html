@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Questionz — Premium Request</title>
+<meta name="theme-color" content="#0B100E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Noto+Serif+Bengali:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Firebase App (v8 SDK) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+  :root {
+    --charcoal-950: #0B100E;
+    --charcoal-900: #121A15;
+    --charcoal-800: #1B251E;
+    --charcoal-800-hover: #223028;
+    --charcoal-border: rgba(201,164,97,0.14);
+    --cream: #F4EFE3;
+    --cream-dim: #B9B2A0;
+    --emerald-glow: rgba(53,168,131,0.20);
+    --emerald: #2F9E77;
+    --gold: #C9A461;
+    --danger: #E17A63;
+  }
+  * { 
+    box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent; 
+  }
+  
+  html, body { margin: 0; padding: 0; height: 100%; width: 100vw; max-width: 100%; overflow-x: hidden; background: var(--charcoal-950); color: var(--cream); }
+  
+  body { min-height: 100dvh; display: flex; align-items: center; justify-content: center; position: relative; padding: 24px; font-family: 'Noto Serif Bengali', serif; }
+
+  .glow { position: absolute; width: 640px; height: 640px; max-width: 140vw; border-radius: 50%; background: radial-gradient(circle, var(--emerald-glow) 0%, rgba(53,168,131,0.06) 45%, transparent 70%); top: 50%; left: 50%; transform: translate(-50%, -55%); filter: blur(10px); animation: drift 14s ease-in-out infinite; pointer-events: none; }
+  @keyframes drift { 0%, 100% { transform: translate(-52%, -57%) scale(1); } 50% { transform: translate(-48%, -53%) scale(1.08); } }
+
+  .card { position: relative; z-index: 1; width: 100%; max-width: 380px; background: linear-gradient(180deg, rgba(27,37,30,0.90), rgba(18,26,21,0.94)); border: 1px solid var(--charcoal-border); border-radius: 20px; padding: 40px 32px 32px; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.02) inset; text-align: center; }
+  
+  /* QUESTIONZ লেখা এবং সাবটাইটেল */
+  .wordmark { font-family: 'Cinzel', serif; font-size: 26px; font-weight: 600; letter-spacing: 0.14em; color: var(--cream); margin: 0; }
+  .wordmark span { color: var(--gold); }
+  .divider { width: 40px; height: 2px; margin: 18px auto 20px; background: linear-gradient(90deg, transparent, var(--gold), transparent); border: none; }
+  
+  /* ইনস্ট্রাকশন বক্স ডিজাইন */
+  .instruction-box { font-size: 13.5px; color: var(--cream); margin-bottom: 24px; line-height: 1.6; background: rgba(201,164,97,0.1); padding: 14px; border-radius: 12px; border-left: 3px solid var(--gold); text-align: left; }
+
+  /* ফর্ম ফিল্ডস */
+  .field-group { text-align: left; margin-bottom: 15px; }
+  .field-group label { display: block; font-size: 12.5px; color: var(--cream-dim); margin-bottom: 6px; font-weight: 500; }
+  input[type=text], input[type=email] { width: 100%; padding: 13px 14px; background: var(--charcoal-800); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; color: var(--cream); font-family: 'Noto Serif Bengali', serif; font-size: 15px; outline: none; transition: border-color .2s ease, background .2s ease; }
+  input:focus { border-color: var(--gold); background: var(--charcoal-800-hover); }
+  input[readonly] { opacity: 0.7; cursor: not-allowed; }
+
+  /* বাটন ডিজাইন */
+  .auth-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 20px; border-radius: 12px; font-family: 'Noto Serif Bengali', serif; font-size: 15.5px; font-weight: 600; cursor: pointer; transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease, opacity .2s ease; background: linear-gradient(135deg, var(--gold), #a9814a); border: none; color: #1B1408; margin-top: 10px; }
+  .auth-btn:hover:not(:disabled) { filter: brightness(1.06); }
+  .auth-btn:active:not(:disabled) { transform: scale(0.98); }
+  .auth-btn:disabled { opacity: 0.6; cursor: default; }
+
+  .footnote { margin-top: 26px; font-size: 12.5px; color: var(--cream-dim); opacity: 0.7; line-height: 1.6; }
+
+  /* SweetAlert Custom Styling for this Theme */
+  .swal2-popup { font-family: 'Noto Serif Bengali', serif !important; background: rgba(27, 37, 30, 0.95) !important; backdrop-filter: blur(15px) !important; -webkit-backdrop-filter: blur(15px) !important; border: 1px solid var(--charcoal-border) !important; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4) !important; border-radius: 15px !important; color: var(--cream) !important; }
+  .swal2-title, .swal2-html-container { color: var(--cream) !important; }
+  .swal2-confirm { background: linear-gradient(135deg, var(--gold), #a9814a) !important; color: #1B1408 !important; font-weight: 600 !important; }
+</style>
+</head>
+<body>
+
+  <div class="glow" aria-hidden="true"></div>
+
+  <main class="card">
+    <h1 class="wordmark">QUESTION<span>Z</span></h1>
+    <hr class="divider" />
+    
+    <div class="instruction-box">
+      ⚠️ +8801521710509 , এই নম্বরে ৫০ টাকা BKash/Nagad/Rocket এ Send Money করবেন।<br><br>
+      ⚠️ টাকা পাঠানোর ৩০ মিনিটের মধ্যে Approve না করা হলে +8801521710509 নম্বরে WhatsApp এ মেসেজ করুন।
+    </div>
+
+    <form id="requestForm">
+      <div class="field-group">
+        <label for="senderNum">Sender Number</label>
+        <input type="text" id="senderNum" placeholder="Enter Number" minlength="11" maxlength="15" required />
+      </div>
+      <div class="field-group">
+        <label for="trxId">Transaction ID</label>
+        <input type="text" id="trxId" placeholder="Enter Trx Id" maxlength="15" required />
+      </div>
+      <div class="field-group">
+        <label for="userEmail">Gmail Address</label>
+        <input type="email" id="userEmail" placeholder="Gmail appears automatically" readonly required />
+      </div>
+      <button type="submit" class="auth-btn" id="submitBtn">Submit Request</button>
+    </form>
+
+    <p class="footnote">&copy; 2026 Questionz. All Rights Reserved.</p>
+  </main>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCcS1zWFslmbRFS5PAvNrH8TFYIbR8N7ic",
+      authDomain: "questionz-me.firebaseapp.com",
+      projectId: "questionz-me",
+      storageBucket: "questionz-me.firebasestorage.app",
+      messagingSenderId: "393630463399",
+      appId: "1:393630463399:web:825468121216445828f282",
+      measurementId: "G-1M0RWH9Y77"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        document.getElementById('userEmail').value = user.email;
+      } else {
+        document.getElementById('userEmail').value = "";
+      }
+    });
+
+    const meuPopup = (status, msg, btnText = 'ঠিক আছে') => {
+      const config = {
+        success: { icon: 'success', title: 'সফল হয়েছে!', color: '#2F9E77' }, // Theme Emerald color
+        error: { icon: 'error', title: 'দুঃখিত!', color: '#E17A63' } // Theme Danger color
+      };
+      
+      const finalBtnText = btnText === 'BACK TO HOMEPAGE' ? `<span style="font-family: 'Noto Serif Bengali', serif; font-weight: 600;">${btnText}</span>` : btnText;
+      
+      Swal.fire({
+        icon: config[status].icon,
+        title: `<span style="color: ${config[status].color};">${config[status].title}</span>`,
+        html: `<div style="font-size: 14.5px; color: var(--cream);">${msg}</div>`,
+        confirmButtonText: finalBtnText
+      }).then((result) => {
+        if (result.isConfirmed && btnText === 'BACK TO HOMEPAGE') {
+          window.location.href = 'index.html';
+        }
+      });
+    };
+
+    document.getElementById('requestForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      const user = firebase.auth().currentUser;
+      
+      if (!user) {
+        meuPopup('error', "রিকোয়েস্ট পাঠানোর আগে দয়া করে লগইন করুন।");
+        return;
+      }
+      
+      btn.disabled = true;
+      btn.innerText = "Checking...";
+      
+      try {
+        const docRef = db.collection("premium_requests").doc(user.uid);
+        const docSnap = await docRef.get();
+        
+        if (docSnap.exists) {
+          const status = docSnap.data().status;
+          if (status === "pending") {
+            Swal.fire({
+              icon: 'info',
+              title: '<span style="color: var(--gold);">অপেক্ষা করুন!</span>',
+              html: '<div style="font-size: 14.5px; color: var(--cream);">আপনি ইতিমধ্যে রিকুয়েষ্ট পাঠিয়েছেন, এপ্রুভ করা হচ্ছে, ৫ মিনিট পর লগইন করুন</div>',
+              confirmButtonText: 'ঠিক আছে'
+            });
+            btn.disabled = false;
+            btn.innerText = "Submit Request";
+            return;
+          } else if (status === "approved") {
+            meuPopup('success', "আপনি ইতিমধ্যে একজন প্রিমিয়াম সদস্য!", 'ঠিক আছে');
+            btn.disabled = false;
+            btn.innerText = "Submit Request";
+            return;
+          }
+        }
+        
+        btn.innerText = "Processing...";
+        const senderNum = document.getElementById('senderNum').value.substring(0, 15);
+        const trxId = document.getElementById('trxId').value.substring(0, 15);
+        const userEmail = document.getElementById('userEmail').value;
+        
+        await docRef.set({
+          uid: user.uid,
+          email: userEmail,
+          sender_number: senderNum,
+          transaction_id: trxId,
+          status: 'pending',
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        meuPopup('success', 'আপনার রিকোয়েস্টটি সফলভাবে পাঠানো হয়েছে! ১০ মিনিটের মধ্যে আপনার জিমেইলটি Active করা হবে। যেকোনো সমস্যায় +8801521710509 নম্বরে WhatsApp এ যোগাযোগ করুন।', 'BACK TO HOMEPAGE');
+        document.getElementById('requestForm').reset();
+        document.getElementById('userEmail').value = user.email;
+        
+      } catch (error) {
+        meuPopup('error', "ত্রুটি: " + error.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Submit Request";
+      }
+    });
+  </script>
+</body>
+</html>
