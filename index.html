@@ -1,106 +1,235 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Questionz - Category Dashboard</title>
-<!-- Fonts & Styles -->
-<link href="https://fonts.googleapis.com/css2?family=Coming+Soon&family=Indie+Flower&family=Montserrat:wght@700;900&family=Poppins:wght@400;600&family=Segoe+UI:wght@400;600&family=Cutive+Mono&family=Cuprum:wght@400;700;800&display=swap" rel="stylesheet">
-<link href="https://fonts.maateen.me/bensen/font.css" rel="stylesheet">
-<link href="https://fonts.maateen.me/hoogly/font.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Questionz — লগইন (ডিজাইন প্রিভিউ)</title>
+<meta name="theme-color" content="#0B100E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Noto+Serif+Bengali:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--primary-color:#1B251E;--secondary-color:#C9A461;--bg-color:#0B100E;--card-bg:#1B251E;--text-color:#F4EFE3;--gold-accent:#C9A461;--gold-gradient:linear-gradient(135deg, #C9A461, #fcf6ba);--charcoal-800-hover:#223028;--charcoal-border:rgba(201,164,97,0.14);--cream-dim:#B9B2A0}
-body{font-family:'Cuprum',sans-serif;font-weight:400;background:var(--bg-color);color:var(--text-color);margin:0;padding:0;display:flex;flex-direction:column;align-items:center;min-height:100vh}
-nav{width:100%;padding:5px 5%;display:flex;justify-content:space-between;align-items:center;background:rgba(18,26,21,0.85);backdrop-filter:blur(10px);position:sticky;top:0;z-index:1000;border-bottom:1px solid var(--charcoal-border);box-sizing:border-box}
-.logo-wrapper{display:flex;align-items:center;gap:12px}
-.logo-text{font-family:'Cuprum',sans-serif;font-weight:700;font-size:10px;letter-spacing:0.5px;background:var(--gold-gradient);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 5px rgba(201,164,97,0.5));width:26px;height:26px;border:1px solid rgba(201,164,97,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 8px rgba(201,164,97,0.2);flex-shrink:0}
-header{text-align:left;width:90%;max-width:900px;margin-top:10px;margin-bottom:5px}
-.breadcrumb{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:10px}
-.breadcrumb-item{background:var(--card-bg);border:1px solid var(--charcoal-border);padding:2px 7px;border-radius:4px;font-family:'Cuprum','Hoogly','Bensen',sans-serif;font-size:11px;font-weight:400;color:var(--gold-accent);cursor:pointer;transition:0.3s;display:flex;align-items:center;justify-content:center;-webkit-user-select:none;user-select:none}
-.breadcrumb-item:hover{background:var(--charcoal-800-hover);border-color:var(--gold-accent);transform:translateY(-1px)}
-.separator{color:var(--cream-dim);font-size:9px;font-weight:normal}
-.wave-text{font-family:'Cuprum',sans-serif;font-size:1.1rem;font-weight:400;margin:0;padding:0;text-transform:uppercase;color:var(--text-color);display:inline-block;line-height:1;letter-spacing:0.15rem;filter:drop-shadow(0 0 8px rgba(0,0,0,0.3))}
-.divider{width:90%;max-width:900px;height:1px;background:linear-gradient(to right,rgba(201,164,97,0),rgba(201,164,97,0.2),rgba(201,164,97,0));margin:15px 0 5px 0}
-.noun-section-wrapper{padding:10px 0;width:280px;max-width:95%;box-sizing:border-box;margin-top:5px}
-.grid-container{display:grid;grid-template-columns:1fr;gap:12px}
-.noun-box{position:relative;height:42px;padding:0 15px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg, rgba(27,37,30,0.7), rgba(18,26,21,0.9));overflow:hidden;border-radius:6px;text-decoration:none;border:1px solid var(--charcoal-border);cursor:pointer;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
-.noun-box span{position:relative;z-index:2;font-family:'Cuprum','Hoogly','Bensen',sans-serif;font-size:15px;font-weight:400;color:var(--text-color);white-space:nowrap;pointer-events:none}
-.progress-percent{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;color:var(--text-color);background:rgba(201,164,97,0.15);padding:3px 10px;border-radius:20px;border:1px solid rgba(201,164,97,0.25);box-shadow:inset 0 0 8px rgba(201,164,97,0.05),0 2px 5px rgba(0,0,0,0.3);backdrop-filter:blur(5px);display:flex;align-items:center;gap:6px;letter-spacing:0.5px}
-.progress-bar-bg{position:absolute;left:0;bottom:0;height:4px;background:rgba(244,239,227,0.05);width:100%;z-index:1;border-radius:0 0 6px 6px;overflow:hidden}
-.progress-bar-fill{height:100%;background:linear-gradient(90deg,rgba(53,168,131,0.6),var(--gold-accent));box-shadow:0 -1px 8px rgba(201,164,97,0.5);border-radius:0 4px 4px 0;transition:width 0.8s cubic-bezier(0.4,0,0.2,1)}
-.noun-box:hover{background:var(--charcoal-800-hover);border-color:var(--gold-accent);transform:translateY(-2px);transition:all .3s ease}
-#loading{display:flex;flex-direction:column;gap:12px;width:100%}
-.skeleton{height:42px;width:100%;background:rgba(201,164,97,0.05);background-image:linear-gradient(90deg,rgba(201,164,97,0.02) 0,rgba(201,164,97,0.08) 40px,rgba(201,164,97,0.02) 80px);background-size:200% 100%;animation:shimmer 1.5s infinite linear;border-radius:6px;border:1px solid var(--charcoal-border)}
-@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-footer{width:100%;padding:30px 0;text-align:center;margin-top:auto;color:var(--cream-dim);font-size:10px}
+  :root {
+    --charcoal-950: #0B100E;
+    --charcoal-900: #121A15;
+    --charcoal-800: #1B251E;
+    --charcoal-800-hover: #223028;
+    --charcoal-border: rgba(201,164,97,0.14);
+    --cream: #F4EFE3;
+    --cream-dim: #B9B2A0;
+    --emerald-glow: rgba(53,168,131,0.20);
+    --emerald: #2F9E77;
+    --gold: #C9A461;
+    --danger: #E17A63;
+  }
+  * { 
+    box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent; 
+  }
+  
+  html, body { margin: 0; padding: 0; height: 100%; width: 100vw; max-width: 100%; overflow-x: hidden; background: var(--charcoal-950); color: var(--cream); }
+  
+  body { min-height: 100dvh; display: flex; align-items: center; justify-content: center; position: relative; padding: 24px; font-family: 'Noto Serif Bengali', serif; }
+
+  .glow { position: absolute; width: 640px; height: 640px; max-width: 140vw; border-radius: 50%; background: radial-gradient(circle, var(--emerald-glow) 0%, rgba(53,168,131,0.06) 45%, transparent 70%); top: 50%; left: 50%; transform: translate(-50%, -55%); filter: blur(10px); animation: drift 14s ease-in-out infinite; pointer-events: none; }
+  @keyframes drift { 0%, 100% { transform: translate(-52%, -57%) scale(1); } 50% { transform: translate(-48%, -53%) scale(1.08); } }
+
+  .card { position: relative; z-index: 1; width: 100%; max-width: 380px; background: linear-gradient(180deg, rgba(27,37,30,0.90), rgba(18,26,21,0.94)); border: 1px solid var(--charcoal-border); border-radius: 20px; padding: 40px 32px 32px; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.02) inset; text-align: center; }
+  
+  /* QUESTIONZ লেখা এবং সাবটাইটেল - এর সাইজ আগের মতোই থাকবে */
+  .wordmark { font-family: 'Cinzel', serif; font-size: 26px; font-weight: 600; letter-spacing: 0.14em; color: var(--cream); margin: 0; }
+  .wordmark span { color: var(--gold); }
+  .divider { width: 40px; height: 2px; margin: 18px auto 20px; background: linear-gradient(90deg, transparent, var(--gold), transparent); border: none; }
+  .tagline { font-size: 15px; color: var(--cream-dim); margin: 0 0 28px; line-height: 1.7; }
+
+  /* ---- buttons ---- */
+  .auth-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 20px; border-radius: 12px; font-family: 'Noto Serif Bengali', serif; font-size: 15.5px; font-weight: 500; cursor: pointer; transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease, opacity .2s ease; }
+  .auth-btn { background: linear-gradient(135deg, var(--gold), #a9814a); border: none; color: #1B1408; font-weight: 600; margin-top: 4px; }
+  .auth-btn:hover:not(:disabled) { filter: brightness(1.06); }
+  .auth-btn:active:not(:disabled) { transform: scale(0.98); }
+  .auth-btn:disabled { opacity: 0.6; cursor: default; outline: none; }
+
+  .spinner { width: 17px; height: 17px; flex-shrink: 0; border: 2px solid rgba(0,0,0,0.18); border-top-color: currentColor; border-radius: 50%; animation: spin 0.75s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---- login/signup toggle ---- */
+  .auth-toggle { display: flex; background: var(--charcoal-800); border: 1px solid var(--charcoal-border); border-radius: 999px; padding: 4px; margin-bottom: 22px; }
+  .auth-toggle button { flex: 1; padding: 9px 0; border: none; border-radius: 999px; background: transparent; color: var(--cream-dim); font-family: 'Noto Serif Bengali', serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: background .2s ease, color .2s ease; outline: none; }
+  .auth-toggle button.active { background: linear-gradient(135deg, var(--gold), #a9814a); color: #1B1408; font-weight: 600; }
+
+  /* ---- fields (Global) ---- */
+  .field-group { text-align: left; margin-bottom: 13px; }
+  .field-group label { display: block; font-size: 12.5px; color: var(--cream-dim); margin-bottom: 6px; }
+  .field-wrap { position: relative; }
+  input[type=email], input[type=password], input[type=text] { width: 100%; padding: 13px 14px; background: var(--charcoal-800); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; color: var(--cream); font-family: 'Noto Serif Bengali', serif; font-size: 15px; outline: none; transition: border-color .2s ease, background .2s ease; }
+  input:focus { border-color: var(--gold); background: var(--charcoal-800-hover); }
+  input.has-toggle { padding-right: 54px; }
+  .toggle-pass { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--cream-dim); font-size: 12px; cursor: pointer; font-family: 'Noto Serif Bengali', serif; padding: 4px; outline: none; }
+
+  /* ======================================================================
+     ---- সাইনআপ ফর্মের জন্য স্পেশাল সাইজিং (যাতে লগইন ফর্মের সমান থাকে) ----
+     ====================================================================== */
+  #panel-signup .field-group { margin-bottom: 10px; }
+  #panel-signup .field-group label { font-size: 11.5px; margin-bottom: 4px; }
+  #panel-signup input[type=email], 
+  #panel-signup input[type=password], 
+  #panel-signup input[type=text] { padding: 10px 14px; font-size: 13.5px; }
+  #panel-signup .auth-btn { padding: 11px 20px; font-size: 14.5px; margin-top: 2px; }
+  #panel-signup .toggle-pass { font-size: 11.5px; }
+
+  /* ---- links ---- */
+  .link-row { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; font-size: 13px; }
+  .link-btn { background: none; border: none; color: var(--gold); cursor: pointer; font-family: 'Noto Serif Bengali', serif; font-size: 13px; text-decoration: underline; padding: 0; outline: none; }
+  .link-btn:disabled { color: var(--cream-dim); text-decoration: none; cursor: default; }
+  .center-link { display: block; margin: 16px auto 0; text-align: center; }
+
+  /* ---- panels ---- */
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .verify-title { font-size: 16px; font-weight: 600; color: var(--cream); margin: 0 0 10px; }
+  .verify-body { font-size: 13.5px; color: var(--cream-dim); line-height: 1.8; margin: 0 0 20px; }
+  .verify-body b { color: var(--gold); font-weight: 600; }
+  .cooldown-text { font-size: 12px; color: var(--cream-dim); margin-top: 10px; }
+
+  .error-box { margin-top: 16px; padding: 12px 14px; background: rgba(225,122,99,0.12); border: 1px solid rgba(225,122,99,0.35); border-radius: 10px; color: var(--danger); font-size: 14px; line-height: 1.6; display: none; }
+  .error-box.visible { display: block; }
+  .success-box { margin-top: 16px; padding: 12px 14px; background: rgba(53,168,131,0.12); border: 1px solid rgba(53,168,131,0.35); border-radius: 10px; color: var(--emerald); font-size: 14px; line-height: 1.6; display: none; }
+  .success-box.visible { display: block; }
+
+  .footnote { margin-top: 26px; font-size: 12.5px; color: var(--cream-dim); opacity: 0.7; line-height: 1.6; }
+  .status-text { margin-top: 14px; font-size: 12px; color: var(--gold); opacity: 0.85; line-height: 1.6; min-height: 1.6em; }
+
+  #initLoading { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 30px 0; color: var(--cream-dim); font-size: 13px; }
+  #initLoading .spinner { border: 2px solid rgba(244,239,227,0.20); border-top-color: var(--gold); width: 22px; height: 22px; }
 </style>
 </head>
 <body>
-<nav>
-<div class="logo-wrapper">
-<div class="logo-text">QZ</div>
-<a href="index.html" style="text-decoration:none"><h1 class="wave-text">QUESTIONZ</h1></a>
-</div>
-</nav>
-<header>
-<div id="breadcrumb-container" class="breadcrumb">
-<div class="breadcrumb-item" onclick="jumpTo(-1)">Home</div>
-</div>
-</header>
-<div class="divider"></div>
-<div class="noun-section-wrapper">
-<div id="loading">
-<div class="skeleton"></div>
-<div class="skeleton"></div>
-<div class="skeleton"></div>
-<div class="skeleton"></div>
-<div class="skeleton"></div>
-</div>
-<div id="category-grid" class="grid-container"></div>
-</div>
-<footer>
-<p>&copy; 2026 Questionz. All Rights Reserved.</p>
-</footer>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, query, where, onSnapshot, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const firebaseConfig={apiKey:"AIzaSyCcS1zWFslmbRFS5PAvNrH8TFYIbR8N7ic",authDomain:"questionz-me.firebaseapp.com",projectId:"questionz-me",storageBucket:"questionz-me.firebasestorage.app",messagingSenderId:"393630463399",appId:"1:393630463399:web:825468121216445828f282",databaseURL:"https://questionz-me-default-rtdb.asia-southeast1.firebasedatabase.app/"};
-const app=initializeApp(firebaseConfig),db=getFirestore(app);
-let historyStack=JSON.parse(sessionStorage.getItem('qz_history'))||["root"],breadcrumbs=JSON.parse(sessionStorage.getItem('qz_breadcrumbs'))||[],unsubscribe=null;
-const categoryCache=new Map(),metadataCache=new Map(),grid=document.getElementById('category-grid'),loading=document.getElementById('loading'),breadcrumbContainer=document.getElementById('breadcrumb-container');
+  <div class="glow" aria-hidden="true"></div>
 
-// Auth সরিয়ে দেওয়া হয়েছে, সরাসরি UI আপডেট কল হচ্ছে
-renderBreadcrumbs();
-updateUI(historyStack[historyStack.length-1]);
+  <main class="card">
+    <h1 class="wordmark">QUESTION<span>Z</span></h1>
+    <hr class="divider" />
+    <p class="tagline">পরীক্ষার প্রস্তুতি,<br />এক জায়গায়</p>
 
-async function loadSetsFromMetadata(s,c){const k=`${s}_${c}`;if(metadataCache.has(k)){renderSets(metadataCache.get(k),s,c);return}try{const m=await getDoc(doc(db,s,c,'sets','_metadata'));if(m.exists()){const d=m.data();metadataCache.set(k,d);await renderSets(d,s,c)}}catch(e){console.error("Metadata Load Error:",e)}}
-async function renderSets(d,s,c){if(c!==historyStack[historyStack.length-1])return;const keys=Object.keys(d).sort(),fragment=document.createDocumentFragment();
-const resolved=await Promise.all(keys.map(async(k)=>{if(document.getElementById(`set-${k}`))return null;
-const info=d[k],title=info.title||k,display=title.length>30?title.substring(0,30)+"...":title;const box=document.createElement('div');box.id=`set-${k}`;box.className='noun-box';box.innerHTML=`<span>${display}</span><div class="progress-percent">0%</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:0%"></div></div>`;
-box.onclick=()=>{
-    let cid=(k||"").trim().toLowerCase(),
-    target=cid.endsWith('_ielts')?'ieltspractice.html':
-           (cid.endsWith('_cq')?'cqtest.html':
-           (cid.endsWith('_onu')?'test-onuchecced.html':
-           (cid.endsWith('_academic')?'academic-test.html':
-           'test.html')));
-           
-    localStorage.setItem('qz_current_path',['Home',...breadcrumbs,display].join(' > '));
-    window.location.href=`${target}?sub=${encodeURIComponent(s)}&cat=${encodeURIComponent(c)}&set=${encodeURIComponent(k)}&parent=${encodeURIComponent(s)}`
-};
-return box;}));resolved.forEach(box=>{if(box)fragment.appendChild(box)});if(c===historyStack[historyStack.length-1]){grid.appendChild(fragment);loading.style.display="none"}}
+    <div id="initLoading" style="display:none;">
+      <span class="spinner"></span>
+      <span>সেশন যাচাই করা হচ্ছে...</span>
+    </div>
 
-function renderItems(items,pId){if(pId!==historyStack[historyStack.length-1])return;const f=document.createDocumentFragment();items.forEach(cat=>{if(!document.getElementById(`cat-${cat.id}`)){const display=cat.name.length>30?cat.name.substring(0,30)+"...":cat.name,box=document.createElement('div');box.id=`cat-${cat.id}`;box.className='noun-box';box.innerHTML=`<span>${display}</span>`;box.onclick=()=>navigateTo(cat.id,cat.name);f.appendChild(box)}});grid.appendChild(f);loading.style.display="none"}
-function loadCategories(pId){if(unsubscribe)unsubscribe();grid.innerHTML="";loading.style.display="flex";const sId=historyStack[1];if(pId!=="root"&&sId)loadSetsFromMetadata(sId,pId);const q=query(collection(db,"categories"),where("parentId","==",pId));unsubscribe=onSnapshot(q,s=>{const items=[];s.forEach(doc=>{if(doc.id!=="_metadata")items.push({id:doc.id,...doc.data()})});items.sort((a,b)=>{if(a.order!==undefined&&b.order!==undefined)return a.order-b.order;return(parseInt(a.name)||0)-(parseInt(a.name)||0)});if(items.length>0){categoryCache.set(pId,items);renderItems(items,pId)}else if(pId==="root"){loading.style.display="none";grid.innerHTML="<p style='text-align:center;font-size:14px;color:#B9B2A0;font-family:\"Bensen\",sans-serif;'>কোনো ক্যাটাগরি পাওয়া যায়নি।</p>"}else{setTimeout(()=>{if(grid.children.length===0&&pId===historyStack[historyStack.length-1]){loading.style.display="none";grid.innerHTML="<p style='text-align:center;font-size:14px;color:#B9B2A0;font-family:\"Bensen\",sans-serif;'>কিছুই পাওয়া যায়নি।</p>"}},6000)}})}
-function saveState(){sessionStorage.setItem('qz_history',JSON.stringify(historyStack));sessionStorage.setItem('qz_breadcrumbs',JSON.stringify(breadcrumbs))}
-function navigateTo(id,name){historyStack.push(id);breadcrumbs.push(name);saveState();history.pushState({id:id},"");updateUI(id)}
-window.jumpTo=function(i){if(i===-1){historyStack=["root"];breadcrumbs=[]}else{historyStack=historyStack.slice(0,i+2);breadcrumbs=breadcrumbs.slice(0,i+1)}saveState();updateUI(historyStack[historyStack.length-1])};
-function updateUI(id){loadCategories(id);renderBreadcrumbs()}
-function renderBreadcrumbs(){while(breadcrumbContainer.children.length>1)breadcrumbContainer.removeChild(breadcrumbContainer.lastChild);breadcrumbs.forEach((name,i)=>{const s=document.createElement('div');s.innerText=">";s.className="separator";breadcrumbContainer.appendChild(s);const item=document.createElement('div');item.className='breadcrumb-item';item.innerText=name;item.onclick=()=>jumpTo(i);breadcrumbContainer.appendChild(item)})}
-window.addEventListener('popstate',()=>{if(historyStack.length>1){historyStack.pop();breadcrumbs.pop();saveState();updateUI(historyStack[historyStack.length-1])}});
-if(!history.state)history.replaceState({id:historyStack[historyStack.length-1]},"");
-</script>
+    <div id="authWrapper" style="display:block;">
+
+      <section id="emailSection">
+
+        <div class="auth-toggle">
+          <button id="tabLogin" class="active" type="button" onclick="showPanel('login')">লগইন</button>
+          <button id="tabSignup" type="button" onclick="showPanel('signup')">নতুন একাউন্ট</button>
+        </div>
+
+        <!-- লগইন প্যানেল -->
+        <div id="panel-login" class="panel active">
+          <div class="field-group">
+            <label for="loginEmail">ইমেইল</label>
+            <input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email" />
+          </div>
+          <div class="field-group">
+            <label for="loginPassword">পাসওয়ার্ড</label>
+            <div class="field-wrap">
+              <input type="password" id="loginPassword" class="has-toggle" placeholder="••••••••" autocomplete="current-password" />
+              <button type="button" class="toggle-pass" data-target="loginPassword">দেখুন</button>
+            </div>
+          </div>
+          <button id="loginBtn" class="auth-btn" type="button">
+            <span id="loginSpinner" class="spinner" hidden></span>
+            <span id="loginBtnText">লগইন করুন</span>
+          </button>
+          <div class="link-row">
+            <button class="link-btn" type="button" onclick="showPanel('forgot')">পাসওয়ার্ড ভুলে গেছেন?</button>
+          </div>
+        </div>
+
+        <!-- সাইনআপ প্যানেল -->
+        <div id="panel-signup" class="panel">
+          <div class="field-group">
+            <label for="signupEmail">ইমেইল</label>
+            <input type="email" id="signupEmail" placeholder="you@example.com" autocomplete="email" />
+          </div>
+          <div class="field-group">
+            <label for="signupPassword">পাসওয়ার্ড</label>
+            <div class="field-wrap">
+              <input type="password" id="signupPassword" class="has-toggle" placeholder="কমপক্ষে ৬ অক্ষর" autocomplete="new-password" />
+              <button type="button" class="toggle-pass" data-target="signupPassword">দেখুন</button>
+            </div>
+          </div>
+          <div class="field-group">
+            <label for="signupPassword2">পাসওয়ার্ড আবার লিখুন</label>
+            <div class="field-wrap">
+              <input type="password" id="signupPassword2" class="has-toggle" placeholder="••••••••" autocomplete="new-password" />
+              <button type="button" class="toggle-pass" data-target="signupPassword2">দেখুন</button>
+            </div>
+          </div>
+          <button id="signupBtn" class="auth-btn" type="button">
+            <span id="signupSpinner" class="spinner" hidden></span>
+            <span id="signupBtnText">একাউন্ট তৈরি করুন</span>
+          </button>
+        </div>
+
+        <!-- ভেরিফিকেশন প্যানেল -->
+        <div id="panel-verify" class="panel">
+          <p class="verify-title">ইমেইল ভেরিফিকেশন প্রয়োজন</p>
+          <p class="verify-body">আমরা <b id="verifyEmailLabel">you@example.com</b> ঠিকানায় একটি ভেরিফিকেশন লিংক পাঠিয়েছি। লিংকে ক্লিক করে ইমেইল ভেরিফাই করুন, তারপর নিচের বাটনে চাপুন।</p>
+          <button id="recheckBtn" class="auth-btn" type="button">
+            <span id="recheckSpinner" class="spinner" hidden></span>
+            <span id="recheckBtnText">ভেরিফাই করেছি, আবার চেষ্টা করুন</span>
+          </button>
+          <div class="link-row" style="justify-content:center;">
+            <button id="resendBtn" class="link-btn" type="button">ভেরিফিকেশন লিংক আবার পাঠান</button>
+          </div>
+          <p id="cooldownText" class="cooldown-text">আবার পাঠাতে ৪৫ সেকেন্ড অপেক্ষা করুন</p>
+          <button class="link-btn center-link" type="button" onclick="showPanel('login')">লগইন পেজে ফিরে যান</button>
+        </div>
+
+        <!-- পাসওয়ার্ড রিসেট প্যানেল -->
+        <div id="panel-forgot" class="panel">
+          <p class="verify-title">পাসওয়ার্ড রিসেট করুন</p>
+          <p class="verify-body">আপনার একাউন্টের ইমেইল ঠিকানা দিন, আমরা একটি রিসেট লিংক পাঠিয়ে দেব।</p>
+          <div class="field-group">
+            <label for="forgotEmail">ইমেইল</label>
+            <input type="email" id="forgotEmail" placeholder="you@example.com" autocomplete="email" />
+          </div>
+          <button id="forgotBtn" class="auth-btn" type="button">
+            <span id="forgotSpinner" class="spinner" hidden></span>
+            <span id="forgotBtnText">রিসেট লিংক পাঠান</span>
+          </button>
+          <button class="link-btn center-link" type="button" onclick="showPanel('login')">লগইন পেজে ফিরে যান</button>
+        </div>
+
+      </section>
+
+      <div id="errorBox" class="error-box" role="alert">ইমেইল অথবা পাসওয়ার্ড ভুল।</div>
+      <div id="successBox" class="success-box" role="status">ইমেইল ভেরিফাই হয়েছে ✓</div>
+      <p id="statusText" class="status-text" aria-live="polite"></p>
+    </div>
+
+    <p class="footnote">চালিয়ে যাওয়ার মাধ্যমে আপনি Questionz-এর ব্যবহারবিধিতে সম্মত হচ্ছেন</p>
+  </main>
+
+  <script>
+    function showPanel(name) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-' + name).classList.add('active');
+      document.getElementById('tabLogin').classList.toggle('active', name === 'login');
+      document.getElementById('tabSignup').classList.toggle('active', name === 'signup');
+    }
+
+    document.querySelectorAll('.toggle-pass').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const input = document.getElementById(btn.dataset.target);
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        btn.textContent = show ? 'লুকান' : 'দেখুন';
+      });
+    });
+  </script>
 </body>
 </html>
