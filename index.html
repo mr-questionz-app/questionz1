@@ -373,8 +373,8 @@
         const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
         const user = userCredential.user;
         
-        // Firestore-এ বেসিক ইউজার ডেটা রাখা (ঐচ্ছিক)
-        await setDoc(doc(db, "users", user.uid), {
+        // Firestore-এ 'email_method_users' কালেকশনে ইউজার ডেটা রাখা হচ্ছে
+        await setDoc(doc(db, "email_method_users", user.uid), {
           email: user.email,
           createdAt: new Date().toISOString()
         });
