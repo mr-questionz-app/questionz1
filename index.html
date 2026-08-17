@@ -1,1 +1,649 @@
-<!DOCTYPE html> <html lang="bn"> <head> <meta charset="UTF-8" /> <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" /> <title>Questionz — লগইন (ডিজাইন প্রিভিউ)</title> <meta name="theme-color" content="#0B100E" /> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Noto+Serif+Bengali:wght@400;500;600&display=swap" rel="stylesheet"> <!-- SweetAlert2 CDN for popups --> <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <style> :root { --charcoal-950: #0B100E; --charcoal-900: #121A15; --charcoal-800: #1B251E; --charcoal-800-hover: #223028; --charcoal-border: rgba(201,164,97,0.14); --cream: #F4EFE3; --cream-dim: #B9B2A0; --emerald-glow: rgba(53,168,131,0.20); --emerald: #2F9E77; --gold: #C9A461; --danger: #E17A63; } * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; } html, body { margin: 0; padding: 0; height: 100%; width: 100vw; max-width: 100%; overflow-x: hidden; background: var(--charcoal-950); color: var(--cream); } body { min-height: 100dvh; display: flex; align-items: center; justify-content: center; position: relative; padding: 24px; font-family: 'Noto Serif Bengali', serif; } .glow { position: absolute; width: 640px; height: 640px; max-width: 140vw; border-radius: 50%; background: radial-gradient(circle, var(--emerald-glow) 0%, rgba(53,168,131,0.06) 45%, transparent 70%); top: 50%; left: 50%; transform: translate(-50%, -55%); filter: blur(10px); animation: drift 14s ease-in-out infinite; pointer-events: none; } @keyframes drift { 0%, 100% { transform: translate(-52%, -57%) scale(1); } 50% { transform: translate(-48%, -53%) scale(1.08); } } .card { position: relative; z-index: 1; width: 100%; max-width: 380px; background: linear-gradient(180deg, rgba(27,37,30,0.90), rgba(18,26,21,0.94)); border: 1px solid var(--charcoal-border); border-radius: 20px; padding: 40px 32px 32px; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.02) inset; text-align: center; } /* QUESTIONZ লেখা এবং সাবটাইটেল - এর সাইজ আগের মতোই থাকবে */ .wordmark { font-family: 'Cinzel', serif; font-size: 26px; font-weight: 600; letter-spacing: 0.14em; color: var(--cream); margin: 0; } .wordmark span { color: var(--gold); } .divider { width: 40px; height: 2px; margin: 18px auto 20px; background: linear-gradient(90deg, transparent, var(--gold), transparent); border: none; } .tagline { font-size: 15px; color: var(--cream-dim); margin: 0 0 28px; line-height: 1.7; } /* ---- buttons ---- */ .auth-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 20px; border-radius: 12px; font-family: 'Noto Serif Bengali', serif; font-size: 15.5px; font-weight: 500; cursor: pointer; transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease, opacity .2s ease; } .auth-btn { background: linear-gradient(135deg, var(--gold), #a9814a); border: none; color: #1B1408; font-weight: 600; margin-top: 4px; } .auth-btn:hover:not(:disabled) { filter: brightness(1.06); } .auth-btn:active:not(:disabled) { transform: scale(0.98); } .auth-btn:disabled { opacity: 0.6; cursor: default; outline: none; } .spinner { width: 17px; height: 17px; flex-shrink: 0; border: 2px solid rgba(0,0,0,0.18); border-top-color: currentColor; border-radius: 50%; animation: spin 0.75s linear infinite; } @keyframes spin { to { transform: rotate(360deg); } } /* ---- login/signup toggle ---- */ .auth-toggle { display: flex; background: var(--charcoal-800); border: 1px solid var(--charcoal-border); border-radius: 999px; padding: 4px; margin-bottom: 22px; } .auth-toggle button { flex: 1; padding: 9px 0; border: none; border-radius: 999px; background: transparent; color: var(--cream-dim); font-family: 'Noto Serif Bengali', serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: background .2s ease, color .2s ease; outline: none; } .auth-toggle button.active { background: linear-gradient(135deg, var(--gold), #a9814a); color: #1B1408; font-weight: 600; } /* ---- fields (Global) ---- */ .field-group { text-align: left; margin-bottom: 13px; } .field-group label { display: block; font-size: 12.5px; color: var(--cream-dim); margin-bottom: 6px; } .field-wrap { position: relative; } input[type=email], input[type=password], input[type=text] { width: 100%; padding: 13px 14px; background: var(--charcoal-800); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; color: var(--cream); font-family: 'Noto Serif Bengali', serif; font-size: 15px; outline: none; transition: border-color .2s ease, background .2s ease; } input:focus { border-color: var(--gold); background: var(--charcoal-800-hover); } input.has-toggle { padding-right: 54px; } .toggle-pass { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--cream-dim); font-size: 12px; cursor: pointer; font-family: 'Noto Serif Bengali', serif; padding: 4px; outline: none; } /* ====================================================================== ---- সাইনআপ ফর্মের জন্য স্পেশাল সাইজিং (যাতে লগইন ফর্মের সমান থাকে) ---- ====================================================================== */ #panel-signup .field-group { margin-bottom: 10px; } #panel-signup .field-group label { font-size: 11.5px; margin-bottom: 4px; } #panel-signup input[type=email], #panel-signup input[type=password], #panel-signup input[type=text] { padding: 10px 14px; font-size: 13.5px; } #panel-signup .auth-btn { padding: 11px 20px; font-size: 14.5px; margin-top: 2px; } #panel-signup .toggle-pass { font-size: 11.5px; } /* ---- links ---- */ .link-row { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; font-size: 13px; } .link-btn { background: none; border: none; color: var(--gold); cursor: pointer; font-family: 'Noto Serif Bengali', serif; font-size: 13px; text-decoration: underline; padding: 0; outline: none; } .link-btn:disabled { color: var(--cream-dim); text-decoration: none; cursor: default; } .center-link { display: block; margin: 16px auto 0; text-align: center; } /* ---- panels ---- */ .panel { display: none; } .panel.active { display: block; } .verify-title { font-size: 16px; font-weight: 600; color: var(--cream); margin: 0 0 10px; } .verify-body { font-size: 13.5px; color: var(--cream-dim); line-height: 1.8; margin: 0 0 20px; } .verify-body b { color: var(--gold); font-weight: 600; } .cooldown-text { font-size: 12px; color: var(--cream-dim); margin-top: 10px; } .error-box { margin-top: 16px; padding: 12px 14px; background: rgba(225,122,99,0.12); border: 1px solid rgba(225,122,99,0.35); border-radius: 10px; color: var(--danger); font-size: 14px; line-height: 1.6; display: none; } .error-box.visible { display: block; } .success-box { margin-top: 16px; padding: 12px 14px; background: rgba(53,168,131,0.12); border: 1px solid rgba(53,168,131,0.35); border-radius: 10px; color: var(--emerald); font-size: 14px; line-height: 1.6; display: none; } .success-box.visible { display: block; } .footnote { margin-top: 26px; font-size: 12.5px; color: var(--cream-dim); opacity: 0.7; line-height: 1.6; } .status-text { margin-top: 14px; font-size: 12px; color: var(--gold); opacity: 0.85; line-height: 1.6; min-height: 1.6em; } #initLoading { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 30px 0; color: var(--cream-dim); font-size: 13px; } #initLoading .spinner { border: 2px solid rgba(244,239,227,0.20); border-top-color: var(--gold); width: 22px; height: 22px; } /* SweetAlert Custom Styling for this Theme */ .swal2-popup { font-family: 'Noto Serif Bengali', serif !important; background: rgba(27, 37, 30, 0.95) !important; backdrop-filter: blur(15px) !important; -webkit-backdrop-filter: blur(15px) !important; border: 1px solid var(--charcoal-border) !important; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4) !important; border-radius: 15px !important; color: var(--cream) !important; } .swal2-title, .swal2-html-container { color: var(--cream) !important; } .swal2-confirm { background: linear-gradient(135deg, var(--gold), #a9814a) !important; color: #1B1408 !important; font-weight: 600 !important; } /* ========================================================================== ---- প্রিমিয়াম ওয়েলকাম সিল (লগইনের পর দেখানো নোটিশের জন্য কাস্টম চিহ্ন) ---- এখানে ডিফল্ট SweetAlert চেকমার্কের বদলে একটি অক্টাগন-আকৃতির গোল্ড সিল/মেডেল ব্যবহার করা হয়েছে — সার্টিফিকেশন/ভেরিফিকেশনের অনুভূতি দেয়, যা এক্সাম-প্রেপ অ্যাপের সাথে থিম্যাটিকভাবে মানানসই। ========================================================================== */ .wm-popup { padding: 38px 30px 32px !important; } .wm-seal { position: relative; width: 88px; height: 88px; margin: 2px auto 22px; } .wm-seal-ring { position: absolute; inset: 0; clip-path: polygon(30% 2%, 70% 2%, 98% 30%, 98% 70%, 70% 98%, 30% 98%, 2% 70%, 2% 30%); background: linear-gradient(135deg, var(--gold), rgba(201,164,97,0.18) 50%, var(--gold)); animation: wm-seal-spin 18s linear infinite; } .wm-seal-ring::after { content: ''; position: absolute; inset: 3px; clip-path: polygon(30% 2%, 70% 2%, 98% 30%, 98% 70%, 70% 98%, 30% 98%, 2% 70%, 2% 30%); background: linear-gradient(160deg, #1B251E, #10160F); } .wm-seal-mark { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; } .wm-seal-mark svg { width: 28px; height: 28px; } @keyframes wm-seal-spin { to { transform: rotate(360deg); } } @media (prefers-reduced-motion: reduce) { .wm-seal-ring { animation: none; } } .wm-kicker { font-family: 'Noto Serif Bengali', serif; font-size: 12px; letter-spacing: 0.06em; color: var(--gold); opacity: 0.85; margin: 0 0 8px; } .wm-title { font-family: 'Noto Serif Bengali', serif; font-size: 23px; font-weight: 600; letter-spacing: 0.02em; color: var(--cream); margin: 0; } </style> </head> <body> <div class="glow" aria-hidden="true"></div> <main class="card"> <h1 class="wordmark">QUESTION<span>Z</span></h1> <hr class="divider" /> <p class="tagline">পরীক্ষার প্রস্তুতি,<br />এক জায়গায়</p> <!-- শুরুতে সেশন চেকিং দেখানোর জন্য display:flex করা হয়েছে --> <div id="initLoading" style="display:flex;"> <span class="spinner"></span> <span>সেশন যাচাই করা হচ্ছে...</span> </div> <!-- শুরুতে লগইন ফর্ম হাইড রাখা হয়েছে --> <div id="authWrapper" style="display:none;"> <section id="emailSection"> <div class="auth-toggle"> <button id="tabLogin" class="active" type="button" onclick="showPanel('login')">লগইন</button> <button id="tabSignup" type="button" onclick="showPanel('signup')">নতুন একাউন্ট</button> </div> <!-- লগইন প্যানেল --> <div id="panel-login" class="panel active"> <div class="field-group"> <label for="loginEmail">ইমেইল</label> <input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email" /> </div> <div class="field-group"> <label for="loginPassword">পাসওয়ার্ড</label> <div class="field-wrap"> <input type="password" id="loginPassword" class="has-toggle" placeholder="••••••••" autocomplete="current-password" /> <button type="button" class="toggle-pass" data-target="loginPassword">দেখুন</button> </div> </div> <button id="loginBtn" class="auth-btn" type="button"> <span id="loginSpinner" class="spinner" hidden></span> <span id="loginBtnText">লগইন করুন</span> </button> <div class="link-row"> <button class="link-btn" type="button" onclick="showPanel('forgot')">পাসওয়ার্ড ভুলে গেছেন?</button> <button class="link-btn" type="button" onclick="showPanel('resend-verify')">ইমেইল ভেরিফাই করুন</button> </div> </div> <!-- সাইনআপ প্যানেল --> <div id="panel-signup" class="panel"> <div class="field-group"> <label for="signupEmail">ইমেইল</label> <input type="email" id="signupEmail" placeholder="you@example.com" autocomplete="email" /> </div> <div class="field-group"> <label for="signupPassword">পাসওয়ার্ড</label> <div class="field-wrap"> <input type="password" id="signupPassword" class="has-toggle" placeholder="কমপক্ষে ৬ অক্ষর" autocomplete="new-password" /> <button type="button" class="toggle-pass" data-target="signupPassword">দেখুন</button> </div> </div> <div class="field-group"> <label for="signupPassword2">পাসওয়ার্ড আবার লিখুন</label> <div class="field-wrap"> <input type="password" id="signupPassword2" class="has-toggle" placeholder="••••••••" autocomplete="new-password" /> <button type="button" class="toggle-pass" data-target="signupPassword2">দেখুন</button> </div> </div> <button id="signupBtn" class="auth-btn" type="button"> <span id="signupSpinner" class="spinner" hidden></span> <span id="signupBtnText">একাউন্ট তৈরি করুন</span> </button> </div> <!-- ভেরিফিকেশন প্যানেল --> <div id="panel-verify" class="panel"> <p class="verify-title">ইমেইল ভেরিফিকেশন প্রয়োজন</p> <p class="verify-body">আমরা <b id="verifyEmailLabel">you@example.com</b> ঠিকানায় একটি ভেরিফিকেশন লিংক পাঠিয়েছি। লিংকে ক্লিক করে ইমেইল ভেরিফাই করুন, তারপর নিচের বাটনে চাপুন।</p> <button id="recheckBtn" class="auth-btn" type="button"> <span id="recheckSpinner" class="spinner" hidden></span> <span id="recheckBtnText">ভেরিফাই করেছি, আবার চেষ্টা করুন</span> </button> <div class="link-row" style="justify-content:center;"> <button id="resendBtn" class="link-btn" type="button">ভেরিফিকেশন লিংক আবার পাঠান</button> </div> <p id="cooldownText" class="cooldown-text">আবার পাঠাতে ৪৫ সেকেন্ড অপেক্ষা করুন</p> <button class="link-btn center-link" type="button" onclick="showPanel('login')">লগইন পেজে ফিরে যান</button> </div> <!-- পাসওয়ার্ড রিসেট প্যানেল --> <div id="panel-forgot" class="panel"> <p class="verify-title">পাসওয়ার্ড রিসেট করুন</p> <p class="verify-body">আপনার একাউন্টের ইমেইল ঠিকানা দিন, আমরা একটি রিসেট লিংক পাঠিয়ে দেব।</p> <div class="field-group"> <label for="forgotEmail">ইমেইল</label> <input type="email" id="forgotEmail" placeholder="you@example.com" autocomplete="email" /> </div> <button id="forgotBtn" class="auth-btn" type="button"> <span id="forgotSpinner" class="spinner" hidden></span> <span id="forgotBtnText">রিসেট লিংক পাঠান</span> </button> <button class="link-btn center-link" type="button" onclick="showPanel('login')">লগইন পেজে ফিরে যান</button> </div> <!-- ইমেইল ভেরিফাই লিংক পাঠানোর প্যানেল --> <div id="panel-resend-verify" class="panel"> <p class="verify-title">ভেরিফিকেশন লিংক পাঠান</p> <p class="verify-body">আপনার একাউন্টের ইমেইল ও পাসওয়ার্ড দিন, আমরা নতুন করে একটি ভেরিফিকেশন লিংক পাঠিয়ে দেব।</p> <div class="field-group"> <label for="resendVerifyEmail">ইমেইল</label> <input type="email" id="resendVerifyEmail" placeholder="you@example.com" autocomplete="email" /> </div> <div class="field-group"> <label for="resendVerifyPassword">পাসওয়ার্ড</label> <div class="field-wrap"> <input type="password" id="resendVerifyPassword" class="has-toggle" placeholder="••••••••" autocomplete="current-password" /> <button type="button" class="toggle-pass" data-target="resendVerifyPassword">দেখুন</button> </div> </div> <button id="resendVerifyLinkBtn" class="auth-btn" type="button"> <span id="resendVerifyLinkSpinner" class="spinner" hidden></span> <span id="resendVerifyLinkBtnText">ভেরিফাই লিংক পাঠান</span> </button> <button class="link-btn center-link" type="button" onclick="showPanel('login')">লগইন পেজে ফিরে যান</button> </div> </section> <div id="errorBox" class="error-box" role="alert"></div> <div id="successBox" class="success-box" role="status"></div> <p id="statusText" class="status-text" aria-live="polite"></p> </div> <p class="footnote">চালিয়ে যাওয়ার মাধ্যমে আপনি Questionz-এর ব্যবহারবিধিতে সম্মত হচ্ছেন</p> </main> <!-- UI Script --> <script> function showPanel(name) { document.querySelectorAll('.panel').forEach(p => p.classList.remove('active')); document.getElementById('panel-' + name).classList.add('active'); const tabLogin = document.getElementById('tabLogin'); const tabSignup = document.getElementById('tabSignup'); if(tabLogin) tabLogin.classList.toggle('active', name === 'login'); if(tabSignup) tabSignup.classList.toggle('active', name === 'signup'); document.getElementById('errorBox').classList.remove('visible'); document.getElementById('successBox').classList.remove('visible'); } document.querySelectorAll('.toggle-pass').forEach(btn => { btn.addEventListener('click', () => { const input = document.getElementById(btn.dataset.target); const show = input.type === 'password'; input.type = show ? 'text' : 'password'; btn.textContent = show ? 'লুকান' : 'দেখুন'; }); }); </script> <!-- Firebase Script Logic --> <script type="module"> import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"; import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"; import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"; import { getDatabase, ref, update, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"; // আপনার ১ম ওয়েবসাইটের সঠিক ফায়ারবেস কনফিগারেশন const firebaseConfig = { apiKey: "AIzaSyCcS1zWFslmbRFS5PAvNrH8TFYIbR8N7ic", authDomain: "questionz-me.firebaseapp.com", projectId: "questionz-me", storageBucket: "questionz-me.firebasestorage.app", messagingSenderId: "393630463399", appId: "1:393630463399:web:825468121216445828f282", measurementId: "G-1M0RWH9Y77", databaseURL: "https://questionz-me-default-rtdb.asia-southeast1.firebasedatabase.app/" }; const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app); const rtdb = getDatabase(app); const errorBox = document.getElementById('errorBox'); const successBox = document.getElementById('successBox'); function showError(message) { errorBox.textContent = message; errorBox.classList.add('visible'); successBox.classList.remove('visible'); } function showSuccess(message) { successBox.textContent = message; successBox.classList.add('visible'); errorBox.classList.remove('visible'); } function toggleButtonLoading(btnId, spinnerId, textId, isLoading) { const btn = document.getElementById(btnId); const spinner = document.getElementById(spinnerId); const text = document.getElementById(textId); btn.disabled = isLoading; spinner.hidden = !isLoading; text.style.opacity = isLoading ? '0.5' : '1'; } // প্রিমিয়াম ওয়েলকাম সিল দেখানোর হেল্পার — ডিফল্ট SweetAlert চেকমার্কের বদলে // একটি ঘূর্ণায়মান গোল্ড অক্টাগন সিল দেখায় function fireWelcomeSeal() { return Swal.fire({ html: ` <div class="wm-seal"> <div class="wm-seal-ring"></div> <div class="wm-seal-mark"> <svg viewBox="0 0 24 24" fill="none"> <path d="M4 12.5L9.5 18L20 6" stroke="#C9A461" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/> </svg> </div> </div> <p class="wm-kicker">যাচাই সম্পন্ন হয়েছে</p> <h2 class="wm-title">স্বাগতম</h2> `, showConfirmButton: false, timer: 1500, customClass: { popup: 'wm-popup' } }); } // ১ম ওয়েবসাইটের Firestore Premium Check Function const checkPremiumStatus = async (user) => { const requestRef = doc(db, "premium_requests", user.uid); const requestSnap = await getDoc(requestRef); if (!requestSnap.exists()) return "no_request"; return requestSnap.data().status === 'approved' ? "approved" : "pending"; }; // লগইন বা ভেরিফিকেশনের পর ফায়ারবেস সেশন ও প্রিমিয়াম স্ট্যাটাস চেকিং প্রসেস const handlePostLogin = async (user) => { try { // RTDB-তে Session ও Presence আপডেট করা const newSession = Date.now().toString(); localStorage.setItem("my_session", newSession); const userStatusRef = ref(rtdb, 'active_users/' + user.uid); await update(userStatusRef, { email: user.email, displayName: user.displayName || "User", currentSession: newSession, status: 'online', lastSeen: serverTimestamp() }); onDisconnect(userStatusRef).update({ status: 'offline' }); // প্রিমিয়াম স্ট্যাটাস চেকের জন্য SweetAlert লোডিং Swal.fire({ title: 'অপেক্ষা করুন...', text: 'প্রোফাইল যাচাই করা হচ্ছে', allowOutsideClick: false, showConfirmButton: false, didOpen: () => { Swal.showLoading(); } }); const status = await checkPremiumStatus(user); if (status === "approved") { localStorage.setItem("is_premium", "true"); fireWelcomeSeal().then(() => { window.location.href = "dashboard.html"; // লোকাল পাথ }); } else if (status === "pending") { Swal.fire({ icon: 'info', title: 'অপেক্ষা করুন!', text: 'আপনি ইতিমধ্যে রিকুয়েষ্ট পাঠিয়েছেন, এপ্রুভ করা হচ্ছে, ৫ মিনিট পর লগইন করুন', confirmButtonText: 'ঠিক আছে' }); } else { // প্রিমিয়াম না হলে transaction1.html এ পাঠাবে (লোকাল পাথ) window.location.href = "transaction1.html"; } } catch (error) { console.error(error); Swal.fire({ icon: 'error', title: 'ত্রুটি', text: 'ডেটাবেস সংযুক্ত হতে সমস্যা হচ্ছে।' }); } }; // --- Signup Logic --- document.getElementById('signupBtn').addEventListener('click', async () => { const email = document.getElementById('signupEmail').value; const pass = document.getElementById('signupPassword').value; const pass2 = document.getElementById('signupPassword2').value; if (!email || !pass || !pass2) return showError("দয়া করে সব ফিল্ড পূরণ করুন।"); if (pass !== pass2) return showError("পাসওয়ার্ড দুটি মিলছে না।"); if (pass.length < 6) return showError("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।"); toggleButtonLoading('signupBtn', 'signupSpinner', 'signupBtnText', true); try { const userCredential = await createUserWithEmailAndPassword(auth, email, pass); const user = userCredential.user; // Firestore-এ 'email_method_users' কালেকশনে ইউজার ডেটা রাখা হচ্ছে await setDoc(doc(db, "email_method_users", user.uid), { email: user.email, createdAt: new Date().toISOString() }); await sendEmailVerification(user); document.getElementById('verifyEmailLabel').textContent = user.email; showPanel('verify'); showSuccess("একাউন্ট তৈরি হয়েছে! দয়া করে ইমেইল ভেরিফাই করুন।"); } catch (error) { if (error.code === 'auth/email-already-in-use') { showError("এই ইমেইল দিয়ে ইতিমধ্যে একাউন্ট আছে।"); } else { showError("একাউন্ট তৈরি করা যায়নি: " + error.message); } } finally { toggleButtonLoading('signupBtn', 'signupSpinner', 'signupBtnText', false); } }); // --- Login Logic --- document.getElementById('loginBtn').addEventListener('click', async () => { const email = document.getElementById('loginEmail').value; const pass = document.getElementById('loginPassword').value; if (!email || !pass) return showError("ইমেইল ও পাসওয়ার্ড দিন।"); toggleButtonLoading('loginBtn', 'loginSpinner', 'loginBtnText', true); try { const userCredential = await signInWithEmailAndPassword(auth, email, pass); const user = userCredential.user; if (!user.emailVerified) { document.getElementById('verifyEmailLabel').textContent = user.email; showPanel('verify'); showError("একাউন্টে লগইন করতে আগে ইমেইল ভেরিফাই করুন।"); } else { showSuccess("লগইন সফল হয়েছে!"); handlePostLogin(user); } } catch (error) { showError("ইমেইল অথবা পাসওয়ার্ড ভুল।"); } finally { toggleButtonLoading('loginBtn', 'loginSpinner', 'loginBtnText', false); } }); // --- Resend Verification Logic (from Verify Panel) --- document.getElementById('resendBtn').addEventListener('click', async () => { const user = auth.currentUser; if (user) { try { await sendEmailVerification(user); showSuccess("ভেরিফিকেশন লিংক আবার পাঠানো হয়েছে!"); } catch (error) { showError("লিংক পাঠাতে সমস্যা হয়েছে। কিছুক্ষণ পর আবার চেষ্টা করুন।"); } } else { showError("সেশন এক্সপায়ার হয়েছে। আবার লগইন করুন।"); } }); // --- Custom Verify Link Sender Logic (নতুন প্যানেলের জন্য) --- document.getElementById('resendVerifyLinkBtn').addEventListener('click', async () => { const email = document.getElementById('resendVerifyEmail').value; const pass = document.getElementById('resendVerifyPassword').value; if (!email || !pass) return showError("দয়া করে ইমেইল ও পাসওয়ার্ড দিন।"); toggleButtonLoading('resendVerifyLinkBtn', 'resendVerifyLinkSpinner', 'resendVerifyLinkBtnText', true); try { const userCredential = await signInWithEmailAndPassword(auth, email, pass); const user = userCredential.user; if (user.emailVerified) { showSuccess("আপনার ইমেইলটি ইতিমধ্যে ভেরিফাই করা আছে! আপনি লগইন করতে পারেন।"); await auth.signOut(); // কাজ শেষ, তাই সেশন ক্লিয়ার করে দিলাম } else { await sendEmailVerification(user); showSuccess("নতুন ভেরিফিকেশন লিংক আপনার ইমেইলে পাঠানো হয়েছে।"); await auth.signOut(); // লিংক পাঠানোর পর লগআউট করে দিলাম } } catch (error) { showError("ইমেইল অথবা পাসওয়ার্ড ভুল।"); } finally { toggleButtonLoading('resendVerifyLinkBtn', 'resendVerifyLinkSpinner', 'resendVerifyLinkBtnText', false); } }); // --- Recheck Verification Logic --- document.getElementById('recheckBtn').addEventListener('click', async () => { toggleButtonLoading('recheckBtn', 'recheckSpinner', 'recheckBtnText', true); const user = auth.currentUser; if (user) { await user.reload(); if (user.emailVerified) { showSuccess("ইমেইল ভেরিফিকেশন সফল হয়েছে!"); handlePostLogin(user); } else { showError("এখনো ভেরিফাই করা হয়নি। ইমেইল চেক করুন।"); } } toggleButtonLoading('recheckBtn', 'recheckSpinner', 'recheckBtnText', false); }); // --- Forgot Password Logic --- document.getElementById('forgotBtn').addEventListener('click', async () => { const email = document.getElementById('forgotEmail').value; if (!email) return showError("দয়া করে ইমেইল লিখুন।"); toggleButtonLoading('forgotBtn', 'forgotSpinner', 'forgotBtnText', true); try { await sendPasswordResetEmail(auth, email); showSuccess("পাসওয়ার্ড রিসেট লিংক আপনার ইমেইলে পাঠানো হয়েছে।"); } catch (error) { showError("ইমেইলটি সঠিক নয় বা সার্ভারে সমস্যা হয়েছে।"); } finally { toggleButtonLoading('forgotBtn', 'forgotSpinner', 'forgotBtnText', false); } }); // ========================================== // --- Auto-Login (Session Persistence) Check // ========================================== onAuthStateChanged(auth, async (user) => { const initLoading = document.getElementById('initLoading'); const authWrapper = document.getElementById('authWrapper'); if (user) { if (user.emailVerified) { // ইউজার লগইন করা আছে এবং ভেরিফাইড, সরাসরি ড্যাশবোর্ডে রিডাইরেক্ট করবে initLoading.style.display = 'flex'; authWrapper.style.display = 'none'; await handlePostLogin(user); } else { // ইউজার লগইন করা কিন্তু ইমেইল ভেরিফাই করা নেই initLoading.style.display = 'none'; authWrapper.style.display = 'block'; document.getElementById('verifyEmailLabel').textContent = user.email; showPanel('verify'); } } else { // কোনো ইউজার লগইন করা নেই, লগইন ফর্ম দেখাবে initLoading.style.display = 'none'; authWrapper.style.display = 'block'; showPanel('login'); } }); </script> </body> </html>
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Questionz — লগইন (ডিজাইন প্রিভিউ)</title>
+<meta name="theme-color" content="#0B100E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Noto+Serif+Bengali:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- SweetAlert2 CDN for popups -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+  :root {
+    --charcoal-950: #0B100E;
+    --charcoal-900: #121A15;
+    --charcoal-800: #1B251E;
+    --charcoal-800-hover: #223028;
+    --charcoal-border: rgba(201,164,97,0.14);
+    --cream: #F4EFE3;
+    --cream-dim: #B9B2A0;
+    --emerald-glow: rgba(53,168,131,0.20);
+    --emerald: #2F9E77;
+    --gold: #C9A461;
+    --danger: #E17A63;
+  }
+  * { 
+    box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent; 
+  }
+  
+  html, body { margin: 0; padding: 0; height: 100%; width: 100vw; max-width: 100%; overflow-x: hidden; background: var(--charcoal-950); color: var(--cream); }
+  
+  body { min-height: 100dvh; display: flex; align-items: center; justify-content: center; position: relative; padding: 24px; font-family: 'Noto Serif Bengali', serif; }
+
+  .glow { position: absolute; width: 640px; height: 640px; max-width: 140vw; border-radius: 50%; background: radial-gradient(circle, var(--emerald-glow) 0%, rgba(53,168,131,0.06) 45%, transparent 70%); top: 50%; left: 50%; transform: translate(-50%, -55%); filter: blur(10px); animation: drift 14s ease-in-out infinite; pointer-events: none; }
+  @keyframes drift { 0%, 100% { transform: translate(-52%, -57%) scale(1); } 50% { transform: translate(-48%, -53%) scale(1.08); } }
+
+  .card { position: relative; z-index: 1; width: 100%; max-width: 380px; background: linear-gradient(180deg, rgba(27,37,30,0.90), rgba(18,26,21,0.94)); border: 1px solid var(--charcoal-border); border-radius: 20px; padding: 40px 32px 32px; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.02) inset; text-align: center; }
+  
+  /* QUESTIONZ লেখা এবং সাবটাইটেল - এর সাইজ আগের মতোই থাকবে */
+  .wordmark { font-family: 'Cinzel', serif; font-size: 26px; font-weight: 600; letter-spacing: 0.14em; color: var(--cream); margin: 0; }
+  .wordmark span { color: var(--gold); }
+  .divider { width: 40px; height: 2px; margin: 18px auto 20px; background: linear-gradient(90deg, transparent, var(--gold), transparent); border: none; }
+  .tagline { font-size: 15px; color: var(--cream-dim); margin: 0 0 28px; line-height: 1.7; }
+
+  /* ---- buttons ---- */
+  .auth-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 20px; border-radius: 12px; font-family: 'Noto Serif Bengali', serif; font-size: 15.5px; font-weight: 500; cursor: pointer; transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease, opacity .2s ease; }
+  .auth-btn { background: linear-gradient(135deg, var(--gold), #a9814a); border: none; color: #1B1408; font-weight: 600; margin-top: 4px; }
+  .auth-btn:hover:not(:disabled) { filter: brightness(1.06); }
+  .auth-btn:active:not(:disabled) { transform: scale(0.98); }
+  .auth-btn:disabled { opacity: 0.6; cursor: default; outline: none; }
+
+  .spinner { width: 17px; height: 17px; flex-shrink: 0; border: 2px solid rgba(0,0,0,0.18); border-top-color: currentColor; border-radius: 50%; animation: spin 0.75s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---- login/signup toggle ---- */
+  .auth-toggle { display: flex; background: var(--charcoal-800); border: 1px solid var(--charcoal-border); border-radius: 999px; padding: 4px; margin-bottom: 22px; }
+  .auth-toggle button { flex: 1; padding: 9px 0; border: none; border-radius: 999px; background: transparent; color: var(--cream-dim); font-family: 'Noto Serif Bengali', serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: background .2s ease, color .2s ease; outline: none; }
+  .auth-toggle button.active { background: linear-gradient(135deg, var(--gold), #a9814a); color: #1B1408; font-weight: 600; }
+
+  /* ---- fields (Global) ---- */
+  .field-group { text-align: left; margin-bottom: 13px; }
+  .field-group label { display: block; font-size: 12.5px; color: var(--cream-dim); margin-bottom: 6px; }
+  .field-wrap { position: relative; }
+  input[type=email], input[type=password], input[type=text] { width: 100%; padding: 13px 14px; background: var(--charcoal-800); border: 1px solid rgba(255,255,255,0.10); border-radius: 12px; color: var(--cream); font-family: 'Noto Serif Bengali', serif; font-size: 15px; outline: none; transition: border-color .2s ease, background .2s ease; }
+  input:focus { border-color: var(--gold); background: var(--charcoal-800-hover); }
+  input.has-toggle { padding-right: 54px; }
+  .toggle-pass { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--cream-dim); font-size: 12px; cursor: pointer; font-family: 'Noto Serif Bengali', serif; padding: 4px; outline: none; }
+
+  /* ======================================================================
+     ---- সাইনআপ ফর্মের জন্য স্পেশাল সাইজিং (যাতে লগইন ফর্মের সমান থাকে) ----
+     ====================================================================== */
+  #panel-signup .field-group { margin-bottom: 10px; }
+  #panel-signup .field-group label { font-size: 11.5px; margin-bottom: 4px; }
+  #panel-signup input[type=email], 
+  #panel-signup input[type=password], 
+  #panel-signup input[type=text] { padding: 10px 14px; font-size: 13.5px; }
+  #panel-signup .auth-btn { padding: 11px 20px; font-size: 14.5px; margin-top: 2px; }
+  #panel-signup .toggle-pass { font-size: 11.5px; }
+
+  /* ---- links ---- */
+  .link-row { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; font-size: 13px; }
+  .link-btn { background: none; border: none; color: var(--gold); cursor: pointer; font-family: 'Noto Serif Bengali', serif; font-size: 13px; text-decoration: underline; padding: 0; outline: none; }
+  .link-btn:disabled { color: var(--cream-dim); text-decoration: none; cursor: default; }
+  .center-link { display: block; margin: 16px auto 0; text-align: center; }
+
+  /* ---- panels ---- */
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .verify-title { font-size: 16px; font-weight: 600; color: var(--cream); margin: 0 0 10px; }
+  .verify-body { font-size: 13.5px; color: var(--cream-dim); line-height: 1.8; margin: 0 0 20px; }
+  .verify-body b { color: var(--gold); font-weight: 600; }
+  .cooldown-text { font-size: 12px; color: var(--cream-dim); margin-top: 10px; }
+
+  .error-box { margin-top: 16px; padding: 12px 14px; background: rgba(225,122,99,0.12); border: 1px solid rgba(225,122,99,0.35); border-radius: 10px; color: var(--danger); font-size: 14px; line-height: 1.6; display: none; }
+  .error-box.visible { display: block; }
+  .success-box { margin-top: 16px; padding: 12px 14px; background: rgba(53,168,131,0.12); border: 1px solid rgba(53,168,131,0.35); border-radius: 10px; color: var(--emerald); font-size: 14px; line-height: 1.6; display: none; }
+  .success-box.visible { display: block; }
+
+  .footnote { margin-top: 26px; font-size: 12.5px; color: var(--cream-dim); opacity: 0.7; line-height: 1.6; }
+  .status-text { margin-top: 14px; font-size: 12px; color: var(--gold); opacity: 0.85; line-height: 1.6; min-height: 1.6em; }
+
+  #initLoading { display: flex; flex-direction: column; align-items: center; gap: 0; padding: 34px 0 26px; color: var(--cream-dim); font-size: 13px; }
+
+  /* ---- সেশন-চেক লোডার: ৫ সেকেন্ডে সম্পূর্ণ আঁকা হয় এমন একটি অক্টাগন রিং ----
+     রিংটা লিটারেলি ৫ সেকেন্ডের চেক-টাইমের প্রোগ্রেস দেখায়, তাই অপেক্ষাটা
+     উদ্দেশ্যহীন স্পিনারের বদলে অর্থবহ মনে হয়। */
+  .wm-loader { position: relative; width: 84px; height: 84px; margin-bottom: 18px; }
+  .wm-loader-ring { width: 100%; height: 100%; transform: rotate(-90deg); overflow: visible; }
+  .wm-loader-track, .wm-loader-draw { fill: none; stroke-linecap: round; }
+  .wm-loader-track { stroke: rgba(201,164,97,0.16); stroke-width: 3; }
+  .wm-loader-draw { stroke: var(--gold); stroke-width: 3; stroke-dasharray: 100; stroke-dashoffset: 100; animation: wm-draw 5s linear forwards; filter: drop-shadow(0 0 4px rgba(201,164,97,0.45)); }
+  @keyframes wm-draw { to { stroke-dashoffset: 0; } }
+
+  .wm-loader-dot { position: absolute; inset: 0; margin: auto; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); animation: wm-pulse 1.4s ease-in-out infinite; box-shadow: 0 0 10px rgba(201,164,97,0.7); }
+  @keyframes wm-pulse { 0%, 100% { opacity: 0.5; transform: scale(0.85); } 50% { opacity: 1; transform: scale(1.15); } }
+
+  .wm-loader-text { font-size: 14px; color: var(--cream); margin: 0; }
+  .wm-loader-sub { font-size: 11.5px; color: var(--cream-dim); opacity: 0.75; margin: 5px 0 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wm-loader-draw { animation: none; stroke-dashoffset: 0; }
+    .wm-loader-dot { animation: none; }
+  }
+
+  /* SweetAlert Custom Styling for this Theme */
+  .swal2-popup { font-family: 'Noto Serif Bengali', serif !important; background: rgba(27, 37, 30, 0.95) !important; backdrop-filter: blur(15px) !important; -webkit-backdrop-filter: blur(15px) !important; border: 1px solid var(--charcoal-border) !important; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4) !important; border-radius: 15px !important; color: var(--cream) !important; }
+  .swal2-title, .swal2-html-container { color: var(--cream) !important; }
+  .swal2-confirm { background: linear-gradient(135deg, var(--gold), #a9814a) !important; color: #1B1408 !important; font-weight: 600 !important; }
+
+  /* ==========================================================================
+     ---- প্রিমিয়াম ওয়েলকাম সিল (লগইনের পর দেখানো নোটিশের জন্য কাস্টম চিহ্ন) ----
+     এখানে ডিফল্ট SweetAlert চেকমার্কের বদলে একটি অক্টাগন-আকৃতির গোল্ড সিল/মেডেল
+     ব্যবহার করা হয়েছে — সার্টিফিকেশন/ভেরিফিকেশনের অনুভূতি দেয়, যা এক্সাম-প্রেপ
+     অ্যাপের সাথে থিম্যাটিকভাবে মানানসই।
+     ========================================================================== */
+  .wm-popup { padding: 38px 30px 32px !important; }
+
+  .wm-seal { position: relative; width: 88px; height: 88px; margin: 2px auto 22px; }
+  .wm-seal-ring {
+    position: absolute; inset: 0;
+    clip-path: polygon(30% 2%, 70% 2%, 98% 30%, 98% 70%, 70% 98%, 30% 98%, 2% 70%, 2% 30%);
+    background: linear-gradient(135deg, var(--gold), rgba(201,164,97,0.18) 50%, var(--gold));
+    animation: wm-seal-spin 18s linear infinite;
+  }
+  .wm-seal-ring::after {
+    content: '';
+    position: absolute; inset: 3px;
+    clip-path: polygon(30% 2%, 70% 2%, 98% 30%, 98% 70%, 70% 98%, 30% 98%, 2% 70%, 2% 30%);
+    background: linear-gradient(160deg, #1B251E, #10160F);
+  }
+  .wm-seal-mark { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+  .wm-seal-mark svg { width: 28px; height: 28px; }
+  @keyframes wm-seal-spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .wm-seal-ring { animation: none; } }
+
+  .wm-kicker { font-family: 'Noto Serif Bengali', serif; font-size: 12px; letter-spacing: 0.06em; color: var(--gold); opacity: 0.85; margin: 0 0 8px; }
+  .wm-title { font-family: 'Noto Serif Bengali', serif; font-size: 23px; font-weight: 600; letter-spacing: 0.02em; color: var(--cream); margin: 0; }
+</style>
+</head>
+<body>
+
+  <div class="glow" aria-hidden="true"></div>
+
+  <main class="card">
+    <h1 class="wordmark">QUESTION<span>Z</span></h1>
+    <hr class="divider" />
+    <p class="tagline">পরীক্ষার প্রস্তুতি,<br />এক জায়গায়</p>
+
+    <!-- শুরুতে সেশন চেকিং দেখানোর জন্য display:flex করা হয়েছে -->
+    <div id="initLoading" style="display:flex;">
+      <div class="wm-loader">
+        <svg class="wm-loader-ring" viewBox="0 0 100 100" aria-hidden="true">
+          <polygon class="wm-loader-track" points="30,2 70,2 98,30 98,70 70,98 30,98 2,70 2,30" pathLength="100" />
+          <polygon class="wm-loader-draw" points="30,2 70,2 98,30 98,70 70,98 30,98 2,70 2,30" pathLength="100" />
+        </svg>
+        <div class="wm-loader-dot"></div>
+      </div>
+      <p class="wm-loader-text">সেশন যাচাই করা হচ্ছে</p>
+      <p class="wm-loader-sub">সর্বোচ্চ ৫ সেকেন্ড অপেক্ষা করুন</p>
+    </div>
+
+    <!-- শুরুতে লগইন ফর্ম হাইড রাখা হয়েছে -->
+    <div id="authWrapper" style="display:none;">
+
+      <section id="emailSection">
+
+        <div class="auth-toggle">
+          <button id="tabLogin" class="active" type="button" onclick="showPanel('login')">লগইন</button>
+          <button id="tabSignup" type="button" onclick="showPanel('signup')">নতুন একাউন্ট</button>
+        </div>
+
+        <!-- লগইন প্যানেল -->
+        <div id="panel-login" class="panel active">
+          <div class="field-group">
+            <label for="loginEmail">ইমেইল</label>
+            <input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email" />
+          </div>
+          <div class="field-group">
+            <label for="loginPassword">পাসওয়ার্ড</label>
+            <div class="field-wrap">
+              <input type="password" id="loginPassword" class="has-toggle" placeholder="••••••••" autocomplete="current-password" />
+              <button type="button" class="toggle-pass" data-target="loginPassword">দেখুন</button>
+            </div>
+          </div>
+          <button id="loginBtn" class="auth-btn" type="button">
+            <span id="loginSpinner" class="spinner" hidden></span>
+            <span id="loginBtnText">লগইন করুন</span>
+          </button>
+          <div class="link-row">
+            <button class="link-btn" type="button" onclick="showPanel('forgot')">পাসওয়ার্ড ভুলে গেছেন?</button>
+            <button class="link-btn" type="button" onclick="showPanel('resend-verify')">ইমেইল ভেরিফাই করুন</button>
+          </div>
+        </div>
+
+        <!-- সাইনআপ প্যানেল -->
+        <div id="panel-signup" class="panel">
+          <div class="field-group">
+            <label for="signupEmail">ইমেইল</label>
+            <input type="email" id="signupEmail" placeholder="you@example.com" autocomplete="email" />
+          </div>
+          <div class="field-group">
+            <label for="signupPassword">পাসওয়ার্ড</label>
+            <div class="field-wrap">
+              <input type="password" id="signupPassword" class="has-toggle" placeholder="কমপক্ষে ৬ অক্ষর" autocomplete="new-password" />
+              <button type="button" class="toggle-pass" data-target="signupPassword">দেখুন</button>
+            </div>
+          </div>
+          <div class="field-group">
+            <label for="signupPassword2">পাসওয়ার্ড আবার লিখুন</label>
+            <div class="field-wrap">
+              <input type="password" id="signupPassword2" class="has-toggle" placeholder="••••••••" autocomplete="new-password" />
+              <button type="button" class="toggle-pass" data-target="signupPassword2">দেখুন</button>
+            </div>
+          </div>
+          <button id="signupBtn" class="auth-btn" type="button">
+            <span id="signupSpinner" class="spinner" hidden></span>
+            <span id="signupBtnText">একাউন্ট তৈরি করুন</span>
+          </button>
+        </div>
+
+        <!-- ভেরিফিকেশন প্যানেল -->
+        <div id="panel-verify" class="panel">
+          <p class="verify-title">ইমেইল ভেরিফিকেশন প্রয়োজন</p>
+          <p class="verify-body">আমরা <b id="verifyEmailLabel">you@example.com</b> ঠিকানায় একটি ভেরিফিকেশন লিংক পাঠিয়েছি। লিংকে ক্লিক করে ইমেইল ভেরিফাই করুন, তারপর নিচের বাটনে চাপুন।</p>
+          <button id="recheckBtn" class="auth-btn" type="button">
+            <span id="recheckSpinner" class="spinner" hidden></span>
+            <span id="recheckBtnText">ভেরিফাই করেছি, আবার চেষ্টা করুন</span>
+          </button>
+          <div class="link-row" style="justify-content:center;">
+            <button id="resendBtn" class="link-btn" type="button">ভেরিফিকেশন লিংক আবার পাঠান</button>
+          </div>
+          <p id="cooldownText" class="cooldown-text">আবার পাঠাতে ৪৫ সেকেন্ড অপেক্ষা করুন</p>
+          <button class="link-btn center-link" type="button" onclick="showPanel('login')">লগইন পেজে ফিরে যান</button>
+        </div>
+
+        <!-- পাসওয়ার্ড রিসেট প্যানেল -->
+        <div id="panel-forgot" class="panel">
+          <p class="verify-title">পাসওয়ার্ড রিসেট করুন</p>
+          <p class="verify-body">আপনার একাউন্টের ইমেইল ঠিকানা দিন, আমরা একটি রিসেট লিংক পাঠিয়ে দেব।</p>
+          <div class="field-group">
+            <label for="forgotEmail">ইমেইল</label>
+            <input type="email" id="forgotEmail" placeholder="you@example.com" autocomplete="email" />
+          </div>
+          <button id="forgotBtn" class="auth-btn" type="button">
+            <span id="forgotSpinner" class="spinner" hidden></span>
+            <span id="forgotBtnText">রিসেট লিংক পাঠান</span>
+          </button>
+          <button class="link-btn center-link" type="button" onclick="showPanel('login')">লগইন পেজে ফিরে যান</button>
+        </div>
+
+        <!-- ইমেইল ভেরিফাই লিংক পাঠানোর প্যানেল -->
+        <div id="panel-resend-verify" class="panel">
+          <p class="verify-title">ভেরিফিকেশন লিংক পাঠান</p>
+          <p class="verify-body">আপনার একাউন্টের ইমেইল ও পাসওয়ার্ড দিন, আমরা নতুন করে একটি ভেরিফিকেশন লিংক পাঠিয়ে দেব।</p>
+          <div class="field-group">
+            <label for="resendVerifyEmail">ইমেইল</label>
+            <input type="email" id="resendVerifyEmail" placeholder="you@example.com" autocomplete="email" />
+          </div>
+          <div class="field-group">
+            <label for="resendVerifyPassword">পাসওয়ার্ড</label>
+            <div class="field-wrap">
+              <input type="password" id="resendVerifyPassword" class="has-toggle" placeholder="••••••••" autocomplete="current-password" />
+              <button type="button" class="toggle-pass" data-target="resendVerifyPassword">দেখুন</button>
+            </div>
+          </div>
+          <button id="resendVerifyLinkBtn" class="auth-btn" type="button">
+            <span id="resendVerifyLinkSpinner" class="spinner" hidden></span>
+            <span id="resendVerifyLinkBtnText">ভেরিফাই লিংক পাঠান</span>
+          </button>
+          <button class="link-btn center-link" type="button" onclick="showPanel('login')">লগইন পেজে ফিরে যান</button>
+        </div>
+
+      </section>
+
+      <div id="errorBox" class="error-box" role="alert"></div>
+      <div id="successBox" class="success-box" role="status"></div>
+      <p id="statusText" class="status-text" aria-live="polite"></p>
+    </div>
+
+    <p class="footnote">চালিয়ে যাওয়ার মাধ্যমে আপনি Questionz-এর ব্যবহারবিধিতে সম্মত হচ্ছেন</p>
+  </main>
+
+  <!-- UI Script -->
+  <script>
+    function showPanel(name) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-' + name).classList.add('active');
+      
+      const tabLogin = document.getElementById('tabLogin');
+      const tabSignup = document.getElementById('tabSignup');
+      
+      if(tabLogin) tabLogin.classList.toggle('active', name === 'login');
+      if(tabSignup) tabSignup.classList.toggle('active', name === 'signup');
+      
+      document.getElementById('errorBox').classList.remove('visible');
+      document.getElementById('successBox').classList.remove('visible');
+    }
+
+    document.querySelectorAll('.toggle-pass').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const input = document.getElementById(btn.dataset.target);
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        btn.textContent = show ? 'লুকান' : 'দেখুন';
+      });
+    });
+  </script>
+
+  <!-- Firebase Script Logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getDatabase, ref, update, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    // আপনার ১ম ওয়েবসাইটের সঠিক ফায়ারবেস কনফিগারেশন
+    const firebaseConfig = {
+      apiKey: "AIzaSyCcS1zWFslmbRFS5PAvNrH8TFYIbR8N7ic",
+      authDomain: "questionz-me.firebaseapp.com",
+      projectId: "questionz-me",
+      storageBucket: "questionz-me.firebasestorage.app",
+      messagingSenderId: "393630463399",
+      appId: "1:393630463399:web:825468121216445828f282",
+      measurementId: "G-1M0RWH9Y77",
+      databaseURL: "https://questionz-me-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const rtdb = getDatabase(app);
+
+    const errorBox = document.getElementById('errorBox');
+    const successBox = document.getElementById('successBox');
+
+    function showError(message) {
+      errorBox.textContent = message;
+      errorBox.classList.add('visible');
+      successBox.classList.remove('visible');
+    }
+
+    function showSuccess(message) {
+      successBox.textContent = message;
+      successBox.classList.add('visible');
+      errorBox.classList.remove('visible');
+    }
+
+    function toggleButtonLoading(btnId, spinnerId, textId, isLoading) {
+      const btn = document.getElementById(btnId);
+      const spinner = document.getElementById(spinnerId);
+      const text = document.getElementById(textId);
+      btn.disabled = isLoading;
+      spinner.hidden = !isLoading;
+      text.style.opacity = isLoading ? '0.5' : '1';
+    }
+
+    // প্রিমিয়াম ওয়েলকাম সিল দেখানোর হেল্পার — ডিফল্ট SweetAlert চেকমার্কের বদলে
+    // একটি ঘূর্ণায়মান গোল্ড অক্টাগন সিল দেখায়
+    function fireWelcomeSeal() {
+      return Swal.fire({
+        html: `
+          <div class="wm-seal">
+            <div class="wm-seal-ring"></div>
+            <div class="wm-seal-mark">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 12.5L9.5 18L20 6" stroke="#C9A461" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <p class="wm-kicker">যাচাই সম্পন্ন হয়েছে</p>
+          <h2 class="wm-title">স্বাগতম</h2>
+        `,
+        showConfirmButton: false,
+        timer: 1500,
+        customClass: { popup: 'wm-popup' }
+      });
+    }
+
+    // ১ম ওয়েবসাইটের Firestore Premium Check Function
+    const checkPremiumStatus = async (user) => {
+      const requestRef = doc(db, "premium_requests", user.uid);
+      const requestSnap = await getDoc(requestRef);
+      if (!requestSnap.exists()) return "no_request";
+      return requestSnap.data().status === 'approved' ? "approved" : "pending";
+    };
+
+    // লগইন বা ভেরিফিকেশনের পর ফায়ারবেস সেশন ও প্রিমিয়াম স্ট্যাটাস চেকিং প্রসেস
+    const handlePostLogin = async (user) => {
+      try {
+        // RTDB-তে Session ও Presence আপডেট করা
+        const newSession = Date.now().toString();
+        localStorage.setItem("my_session", newSession);
+        
+        const userStatusRef = ref(rtdb, 'active_users/' + user.uid);
+        await update(userStatusRef, {
+          email: user.email,
+          displayName: user.displayName || "User",
+          currentSession: newSession,
+          status: 'online',
+          lastSeen: serverTimestamp()
+        });
+        onDisconnect(userStatusRef).update({ status: 'offline' });
+
+        // প্রিমিয়াম স্ট্যাটাস চেকের জন্য SweetAlert লোডিং
+        Swal.fire({
+          title: 'অপেক্ষা করুন...',
+          text: 'প্রোফাইল যাচাই করা হচ্ছে',
+          allowOutsideClick: false,
+          showConfirmButton: false,
+          didOpen: () => { Swal.showLoading(); }
+        });
+
+        const status = await checkPremiumStatus(user);
+        
+        if (status === "approved") {
+          localStorage.setItem("is_premium", "true");
+          fireWelcomeSeal().then(() => { 
+            window.location.href = "dashboard.html"; // লোকাল পাথ
+          });
+        } else if (status === "pending") {
+          Swal.fire({ 
+            icon: 'info', 
+            title: 'অপেক্ষা করুন!', 
+            text: 'আপনি ইতিমধ্যে রিকুয়েষ্ট পাঠিয়েছেন, এপ্রুভ করা হচ্ছে, ৫ মিনিট পর লগইন করুন', 
+            confirmButtonText: 'ঠিক আছে' 
+          });
+        } else {
+          // প্রিমিয়াম না হলে transaction1.html এ পাঠাবে (লোকাল পাথ)
+          window.location.href = "transaction1.html"; 
+        }
+      } catch (error) {
+        console.error(error);
+        Swal.fire({ icon: 'error', title: 'ত্রুটি', text: 'ডেটাবেস সংযুক্ত হতে সমস্যা হচ্ছে।' });
+      }
+    };
+
+    // --- Signup Logic ---
+    document.getElementById('signupBtn').addEventListener('click', async () => {
+      const email = document.getElementById('signupEmail').value;
+      const pass = document.getElementById('signupPassword').value;
+      const pass2 = document.getElementById('signupPassword2').value;
+
+      if (!email || !pass || !pass2) return showError("দয়া করে সব ফিল্ড পূরণ করুন।");
+      if (pass !== pass2) return showError("পাসওয়ার্ড দুটি মিলছে না।");
+      if (pass.length < 6) return showError("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।");
+
+      toggleButtonLoading('signupBtn', 'signupSpinner', 'signupBtnText', true);
+      
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+        const user = userCredential.user;
+        
+        // Firestore-এ 'email_method_users' কালেকশনে ইউজার ডেটা রাখা হচ্ছে
+        await setDoc(doc(db, "email_method_users", user.uid), {
+          email: user.email,
+          createdAt: new Date().toISOString()
+        });
+
+        await sendEmailVerification(user);
+        
+        document.getElementById('verifyEmailLabel').textContent = user.email;
+        showPanel('verify');
+        showSuccess("একাউন্ট তৈরি হয়েছে! দয়া করে ইমেইল ভেরিফাই করুন।");
+        
+      } catch (error) {
+        if (error.code === 'auth/email-already-in-use') {
+          showError("এই ইমেইল দিয়ে ইতিমধ্যে একাউন্ট আছে।");
+        } else {
+          showError("একাউন্ট তৈরি করা যায়নি: " + error.message);
+        }
+      } finally {
+        toggleButtonLoading('signupBtn', 'signupSpinner', 'signupBtnText', false);
+      }
+    });
+
+    // --- Login Logic ---
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+      const email = document.getElementById('loginEmail').value;
+      const pass = document.getElementById('loginPassword').value;
+
+      if (!email || !pass) return showError("ইমেইল ও পাসওয়ার্ড দিন।");
+
+      toggleButtonLoading('loginBtn', 'loginSpinner', 'loginBtnText', true);
+      
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+        const user = userCredential.user;
+        
+        if (!user.emailVerified) {
+          document.getElementById('verifyEmailLabel').textContent = user.email;
+          showPanel('verify');
+          showError("একাউন্টে লগইন করতে আগে ইমেইল ভেরিফাই করুন।");
+        } else {
+          showSuccess("লগইন সফল হয়েছে!");
+          handlePostLogin(user); 
+        }
+      } catch (error) {
+        showError("ইমেইল অথবা পাসওয়ার্ড ভুল।");
+      } finally {
+        toggleButtonLoading('loginBtn', 'loginSpinner', 'loginBtnText', false);
+      }
+    });
+
+    // --- Resend Verification Logic (from Verify Panel) ---
+    document.getElementById('resendBtn').addEventListener('click', async () => {
+      const user = auth.currentUser;
+      if (user) {
+        try {
+          await sendEmailVerification(user);
+          showSuccess("ভেরিফিকেশন লিংক আবার পাঠানো হয়েছে!");
+        } catch (error) {
+          showError("লিংক পাঠাতে সমস্যা হয়েছে। কিছুক্ষণ পর আবার চেষ্টা করুন।");
+        }
+      } else {
+        showError("সেশন এক্সপায়ার হয়েছে। আবার লগইন করুন।");
+      }
+    });
+
+    // --- Custom Verify Link Sender Logic (নতুন প্যানেলের জন্য) ---
+    document.getElementById('resendVerifyLinkBtn').addEventListener('click', async () => {
+      const email = document.getElementById('resendVerifyEmail').value;
+      const pass = document.getElementById('resendVerifyPassword').value;
+
+      if (!email || !pass) return showError("দয়া করে ইমেইল ও পাসওয়ার্ড দিন।");
+
+      toggleButtonLoading('resendVerifyLinkBtn', 'resendVerifyLinkSpinner', 'resendVerifyLinkBtnText', true);
+
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+        const user = userCredential.user;
+
+        if (user.emailVerified) {
+          showSuccess("আপনার ইমেইলটি ইতিমধ্যে ভেরিফাই করা আছে! আপনি লগইন করতে পারেন।");
+          await auth.signOut(); // কাজ শেষ, তাই সেশন ক্লিয়ার করে দিলাম
+        } else {
+          await sendEmailVerification(user);
+          showSuccess("নতুন ভেরিফিকেশন লিংক আপনার ইমেইলে পাঠানো হয়েছে।");
+          await auth.signOut(); // লিংক পাঠানোর পর লগআউট করে দিলাম
+        }
+      } catch (error) {
+        showError("ইমেইল অথবা পাসওয়ার্ড ভুল।");
+      } finally {
+        toggleButtonLoading('resendVerifyLinkBtn', 'resendVerifyLinkSpinner', 'resendVerifyLinkBtnText', false);
+      }
+    });
+
+    // --- Recheck Verification Logic ---
+    document.getElementById('recheckBtn').addEventListener('click', async () => {
+      toggleButtonLoading('recheckBtn', 'recheckSpinner', 'recheckBtnText', true);
+      
+      const user = auth.currentUser;
+      if (user) {
+        await user.reload();
+        if (user.emailVerified) {
+          showSuccess("ইমেইল ভেরিফিকেশন সফল হয়েছে!");
+          handlePostLogin(user); 
+        } else {
+          showError("এখনো ভেরিফাই করা হয়নি। ইমেইল চেক করুন।");
+        }
+      }
+      
+      toggleButtonLoading('recheckBtn', 'recheckSpinner', 'recheckBtnText', false);
+    });
+
+    // --- Forgot Password Logic ---
+    document.getElementById('forgotBtn').addEventListener('click', async () => {
+      const email = document.getElementById('forgotEmail').value;
+      if (!email) return showError("দয়া করে ইমেইল লিখুন।");
+
+      toggleButtonLoading('forgotBtn', 'forgotSpinner', 'forgotBtnText', true);
+
+      try {
+        await sendPasswordResetEmail(auth, email);
+        showSuccess("পাসওয়ার্ড রিসেট লিংক আপনার ইমেইলে পাঠানো হয়েছে।");
+      } catch (error) {
+        showError("ইমেইলটি সঠিক নয় বা সার্ভারে সমস্যা হয়েছে।");
+      } finally {
+        toggleButtonLoading('forgotBtn', 'forgotSpinner', 'forgotBtnText', false);
+      }
+    });
+
+    // ==========================================
+    // --- Auto-Login (Session Persistence) Check
+    // Firebase-এর onAuthStateChanged কখনো কখনো ধীরে সাড়া দিতে পারে (স্লো নেটওয়ার্ক,
+    // WebView ইত্যাদি কারণে), তাই সর্বোচ্চ ৫ সেকেন্ড অপেক্ষা করা হয়। এর মধ্যে
+    // সেশন না পেলে জোর করে লগইন ফর্ম দেখিয়ে দেওয়া হয়, যাতে ইউজার আটকে না থাকে।
+    // ==========================================
+    let sessionCheckSettled = false;
+
+    const revealLoginForm = () => {
+      if (sessionCheckSettled) return;
+      sessionCheckSettled = true;
+      document.getElementById('initLoading').style.display = 'none';
+      document.getElementById('authWrapper').style.display = 'block';
+      showPanel('login');
+    };
+
+    const sessionCheckTimeout = setTimeout(revealLoginForm, 5000);
+
+    onAuthStateChanged(auth, async (user) => {
+      clearTimeout(sessionCheckTimeout);
+      const initLoading = document.getElementById('initLoading');
+      const authWrapper = document.getElementById('authWrapper');
+
+      if (user) {
+        sessionCheckSettled = true;
+        if (user.emailVerified) {
+          // ইউজার লগইন করা আছে এবং ভেরিফাইড, সরাসরি ড্যাশবোর্ডে রিডাইরেক্ট করবে
+          initLoading.style.display = 'flex';
+          authWrapper.style.display = 'none';
+          await handlePostLogin(user);
+        } else {
+          // ইউজার লগইন করা কিন্তু ইমেইল ভেরিফাই করা নেই
+          initLoading.style.display = 'none';
+          authWrapper.style.display = 'block';
+          document.getElementById('verifyEmailLabel').textContent = user.email;
+          showPanel('verify');
+        }
+      } else {
+        // কোনো ইউজার লগইন করা নেই, লগইন ফর্ম দেখাবে
+        revealLoginForm();
+      }
+    });
+
+  </script>
+</body>
+</html>
