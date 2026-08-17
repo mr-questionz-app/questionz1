@@ -113,6 +113,11 @@
   .wm-loader-draw { stroke: var(--gold); stroke-width: 3; stroke-dasharray: 100; stroke-dashoffset: 100; animation: wm-draw 5s linear forwards; filter: drop-shadow(0 0 4px rgba(201,164,97,0.45)); }
   @keyframes wm-draw { to { stroke-dashoffset: 0; } }
 
+  /* --loop মডিফায়ার: যেসব চেকের সময়সীমা নির্দিষ্ট নয় (যেমন প্রোফাইল যাচাই), সেখানে
+     রিংটা একবার আঁকা হয়ে থেমে না গিয়ে অনবরত ঘুরতে থাকে */
+  .wm-loader--loop .wm-loader-draw { animation: wm-draw-loop 1.6s ease-in-out infinite; }
+  @keyframes wm-draw-loop { 0% { stroke-dashoffset: 100; } 50% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -100; } }
+
   .wm-loader-dot { position: absolute; inset: 0; margin: auto; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); animation: wm-pulse 1.4s ease-in-out infinite; box-shadow: 0 0 10px rgba(201,164,97,0.7); }
   @keyframes wm-pulse { 0%, 100% { opacity: 0.5; transform: scale(0.85); } 50% { opacity: 1; transform: scale(1.15); } }
 
@@ -122,41 +127,35 @@
   @media (prefers-reduced-motion: reduce) {
     .wm-loader-draw { animation: none; stroke-dashoffset: 0; }
     .wm-loader-dot { animation: none; }
+    .wm-status-seal { animation: none; }
   }
 
-  /* SweetAlert Custom Styling for this Theme */
-  .swal2-popup { font-family: 'Noto Serif Bengali', serif !important; background: rgba(27, 37, 30, 0.95) !important; backdrop-filter: blur(15px) !important; -webkit-backdrop-filter: blur(15px) !important; border: 1px solid var(--charcoal-border) !important; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4) !important; border-radius: 15px !important; color: var(--cream) !important; }
+  /* SweetAlert Custom Styling for this Theme (এখন শুধু 'পেন্ডিং' ও 'এরর' এলার্টে ব্যবহার হয়) */
+  .swal2-popup { font-family: 'Noto Serif Bengali', serif !important; background: rgba(27, 37, 30, 0.95) !important; backdrop-filter: blur(15px) !important; -webkit-backdrop-filter: blur(15px) !important; border: 1px solid var(--charcoal-border) !important; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4) !important; border-radius: 15px !important; color: var(--cream) !important; max-width: 380px !important; }
   .swal2-title, .swal2-html-container { color: var(--cream) !important; }
   .swal2-confirm { background: linear-gradient(135deg, var(--gold), #a9814a) !important; color: #1B1408 !important; font-weight: 600 !important; }
 
   /* ==========================================================================
-     ---- প্রিমিয়াম ওয়েলকাম সিল (লগইনের পর দেখানো নোটিশের জন্য কাস্টম চিহ্ন) ----
-     এখানে ডিফল্ট SweetAlert চেকমার্কের বদলে একটি অক্টাগন-আকৃতির গোল্ড সিল/মেডেল
-     ব্যবহার করা হয়েছে — সার্টিফিকেশন/ভেরিফিকেশনের অনুভূতি দেয়, যা এক্সাম-প্রেপ
-     অ্যাপের সাথে থিম্যাটিকভাবে মানানসই।
+     ---- স্ট্যাটাস ওভারলে (প্রোফাইল যাচাই + ভেরিফিকেশন-সফল) ----
+     আগে এগুলো আলাদা SweetAlert পপআপ ছিল, যেটা মূল কার্ডের চেয়ে চওড়ায় বড়/ছোট হয়ে
+     "বক্সের ভিতরে আরেকটা বক্স" দেখাচ্ছিল। এখন এটা মূল .card-এর ভিতরেই বসানো একটা
+     প্যানেল — তাই সবসময় কার্ডের সমান প্রস্থ থাকবে, আলাদা কোনো ভাসমান বক্স তৈরি হয় না।
      ========================================================================== */
-  .wm-popup { padding: 38px 30px 32px !important; }
+  .status-overlay { display: none; flex-direction: column; align-items: center; padding: 26px 0 20px; }
 
-  .wm-seal { position: relative; width: 88px; height: 88px; margin: 2px auto 22px; }
-  .wm-seal-ring {
-    position: absolute; inset: 0;
+  .wm-status-seal {
+    position: relative; width: 84px; height: 84px; margin: 4px auto 18px;
     clip-path: polygon(30% 2%, 70% 2%, 98% 30%, 98% 70%, 70% 98%, 30% 98%, 2% 70%, 2% 30%);
-    background: linear-gradient(135deg, var(--gold), rgba(201,164,97,0.18) 50%, var(--gold));
-    animation: wm-seal-spin 18s linear infinite;
+    background: linear-gradient(135deg, var(--gold), #a9814a);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 12px 28px -10px rgba(201,164,97,0.55);
+    animation: wm-seal-pop 0.45s cubic-bezier(.22,1.4,.4,1);
   }
-  .wm-seal-ring::after {
-    content: '';
-    position: absolute; inset: 3px;
-    clip-path: polygon(30% 2%, 70% 2%, 98% 30%, 98% 70%, 70% 98%, 30% 98%, 2% 70%, 2% 30%);
-    background: linear-gradient(160deg, #1B251E, #10160F);
-  }
-  .wm-seal-mark { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-  .wm-seal-mark svg { width: 28px; height: 28px; }
-  @keyframes wm-seal-spin { to { transform: rotate(360deg); } }
-  @media (prefers-reduced-motion: reduce) { .wm-seal-ring { animation: none; } }
+  .wm-status-seal svg { width: 30px; height: 30px; }
+  @keyframes wm-seal-pop { from { transform: scale(0.55); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-  .wm-kicker { font-family: 'Noto Serif Bengali', serif; font-size: 12px; letter-spacing: 0.06em; color: var(--gold); opacity: 0.85; margin: 0 0 8px; }
-  .wm-title { font-family: 'Noto Serif Bengali', serif; font-size: 23px; font-weight: 600; letter-spacing: 0.02em; color: var(--cream); margin: 0; }
+  .wm-status-text { font-family: 'Noto Serif Bengali', serif; font-size: 14px; color: var(--cream); margin: 0; text-align: center; }
+  .wm-status-text--accent { color: var(--gold); font-size: 14.5px; font-weight: 600; letter-spacing: 0.02em; }
 </style>
 </head>
 <body>
@@ -299,6 +298,10 @@
       <p id="statusText" class="status-text" aria-live="polite"></p>
     </div>
 
+    <!-- স্ট্যাটাস ওভারলে: প্রোফাইল যাচাই + ভেরিফিকেশন-সফল বার্তা এখানেই কার্ডের ভিতরে
+         দেখানো হয়, আলাদা কোনো পপআপ বক্স নয় — তাই প্রস্থ সবসময় কার্ডের সমান থাকবে -->
+    <div id="statusOverlay" class="status-overlay" style="display:none;"></div>
+
     <p class="footnote">চালিয়ে যাওয়ার মাধ্যমে আপনি Questionz-এর ব্যবহারবিধিতে সম্মত হচ্ছেন</p>
   </main>
 
@@ -376,26 +379,38 @@
       text.style.opacity = isLoading ? '0.5' : '1';
     }
 
-    // প্রিমিয়াম ওয়েলকাম সিল দেখানোর হেল্পার — ডিফল্ট SweetAlert চেকমার্কের বদলে
-    // একটি ঘূর্ণায়মান গোল্ড অক্টাগন সিল দেখায়
-    function fireWelcomeSeal() {
-      return Swal.fire({
-        html: `
-          <div class="wm-seal">
-            <div class="wm-seal-ring"></div>
-            <div class="wm-seal-mark">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M4 12.5L9.5 18L20 6" stroke="#C9A461" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-          </div>
-          <p class="wm-kicker">যাচাই সম্পন্ন হয়েছে</p>
-          <h2 class="wm-title">স্বাগতম</h2>
-        `,
-        showConfirmButton: false,
-        timer: 1500,
-        customClass: { popup: 'wm-popup' }
-      });
+    // স্ট্যাটাস ওভারলে হেল্পার — এটা কার্ডের ভিতরেই বসে, তাই আলাদা কোনো পপআপ বক্স
+    // তৈরি হয় না এবং প্রস্থ সবসময় কার্ডের সমান থাকে
+    function showStatusOverlay(variant, text) {
+      document.getElementById('initLoading').style.display = 'none';
+      document.getElementById('authWrapper').style.display = 'none';
+      const overlay = document.getElementById('statusOverlay');
+
+      overlay.innerHTML = variant === 'success' ? `
+        <div class="wm-status-seal">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M4 12.5L9.5 18L20 6" stroke="#1B1408" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <p class="wm-status-text wm-status-text--accent">${text}</p>
+      ` : `
+        <div class="wm-loader wm-loader--loop">
+          <svg class="wm-loader-ring" viewBox="0 0 100 100" aria-hidden="true">
+            <polygon class="wm-loader-track" points="30,2 70,2 98,30 98,70 70,98 30,98 2,70 2,30" pathLength="100" />
+            <polygon class="wm-loader-draw" points="30,2 70,2 98,30 98,70 70,98 30,98 2,70 2,30" pathLength="100" />
+          </svg>
+          <div class="wm-loader-dot"></div>
+        </div>
+        <p class="wm-status-text">${text}</p>
+      `;
+
+      overlay.style.display = 'flex';
+    }
+
+    function returnToLoginForm() {
+      document.getElementById('statusOverlay').style.display = 'none';
+      document.getElementById('authWrapper').style.display = 'block';
+      showPanel('login');
     }
 
     // ১ম ওয়েবসাইটের Firestore Premium Check Function
@@ -423,23 +438,19 @@
         });
         onDisconnect(userStatusRef).update({ status: 'offline' });
 
-        // প্রিমিয়াম স্ট্যাটাস চেকের জন্য SweetAlert লোডিং
-        Swal.fire({
-          title: 'অপেক্ষা করুন...',
-          text: 'প্রোফাইল যাচাই করা হচ্ছে',
-          allowOutsideClick: false,
-          showConfirmButton: false,
-          didOpen: () => { Swal.showLoading(); }
-        });
+        // প্রিমিয়াম স্ট্যাটাস চেক চলাকালীন কার্ডের ভিতরেই লোডিং সিল দেখানো হচ্ছে
+        showStatusOverlay('loading', 'প্রোফাইল যাচাই করা হচ্ছে');
 
         const status = await checkPremiumStatus(user);
         
         if (status === "approved") {
           localStorage.setItem("is_premium", "true");
-          fireWelcomeSeal().then(() => { 
+          showStatusOverlay('success', 'যাচাই সম্পন্ন হয়েছে');
+          setTimeout(() => {
             window.location.href = "dashboard.html"; // লোকাল পাথ
-          });
+          }, 1300);
         } else if (status === "pending") {
+          returnToLoginForm();
           Swal.fire({ 
             icon: 'info', 
             title: 'অপেক্ষা করুন!', 
@@ -452,6 +463,7 @@
         }
       } catch (error) {
         console.error(error);
+        returnToLoginForm();
         Swal.fire({ icon: 'error', title: 'ত্রুটি', text: 'ডেটাবেস সংযুক্ত হতে সমস্যা হচ্ছে।' });
       }
     };
