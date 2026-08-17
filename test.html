@@ -243,7 +243,19 @@
         /* --- গ্র্যান্ড হেডার --- */
         .grand-header { position: relative; display: none; text-align: center; border-bottom: 1.5px solid #0F172A; padding-bottom: 8px; margin-bottom: 10px; }
         .grand-header h1 { margin: 0; font-size: 36px; font-weight: 900; letter-spacing: 5px; font-family: 'Cinzel', serif; color: #0F172A; }
-        .grand-header h3 { margin: 6px 0; font-size: 15px; font-family: 'Cutive Mono', 'Hind Siliguri', monospace; font-weight: 500; color: #000; word-spacing: -1.5px; }
+        .grand-header h3 {
+            margin: 6px auto;
+            max-width: calc(100% - 170px);
+            font-size: 11px;
+            font-family: 'Cutive Mono', 'Hind Siliguri', monospace;
+            font-weight: 500;
+            color: #000;
+            letter-spacing: -0.3px;
+            word-spacing: -2px;
+            line-height: 1.15;
+            overflow-wrap: break-word;
+            word-break: break-word;
+        }
         .grand-header .meta { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; margin-top: 5px; font-family: 'Noto Serif Bengali', serif; color: #334155; }
         .qr-code-print { position: absolute; top: 0; right: 0; width: 75px; height: 75px; border-radius: 4px; border: 2px solid #0F172A; padding: 2px; background: #FFFFFF; box-sizing: border-box; }
         .katex { font-size: 1.1em; }
@@ -335,7 +347,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         
-        // ফায়ারবেস কনফিগ (লগিন ছাড়াই ডেটাবেস থেকে প্রশ্ন নেওয়ার জন্য)
+        // ফায়ারবেস কনফিগ (লগিন ছাড়াই ডেটাবেস থেকে প্রশ্ন নেওয়ার জন্য)
         const firebaseConfig={apiKey:"AIzaSyCcS1zWFslmbRFS5PAvNrH8TFYIbR8N7ic",authDomain:"questionz-me.firebaseapp.com",projectId:"questionz-me",storageBucket:"questionz-me.firebasestorage.app",messagingSenderId:"393630463399",appId:"1:393630463399:web:825468121216445828f282",databaseURL:"https://questionz-me-default-rtdb.asia-southeast1.firebasedatabase.app/"};
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
@@ -707,7 +719,7 @@
 
         updateViewIndicator();
         
-        // પેজ লোড হলেই প্রশ্ন ফেচ শুরু হবে
+        // পেজ লোড হলেই প্রশ্ন ফেচ শুরু হবে
         fetchMCQs();
     </script>
 </body>
