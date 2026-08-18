@@ -126,7 +126,7 @@
 
     const meuPopup = (status, msg, btnText = 'ঠিক আছে') => {
       const config = {
-        success: { icon: 'success', title: 'সফল হয়েছে!', color: '#2F9E77' }, // Theme Emerald color
+        success: { icon: 'success', title: 'সফল হয়েছে!', color: '#2F9E77' }, // Theme Emerald color
         error: { icon: 'error', title: 'দুঃখিত!', color: '#E17A63' } // Theme Danger color
       };
       
@@ -150,7 +150,7 @@
       const user = firebase.auth().currentUser;
       
       if (!user) {
-        meuPopup('error', "রিকোয়েস্ট পাঠানোর আগে দয়া করে লগইন করুন।");
+        meuPopup('error', "রিকোয়েস্ট পাঠানোর আগে দয়া করে লগইন করুন।");
         return;
       }
       
@@ -167,13 +167,31 @@
             Swal.fire({
               icon: 'info',
               title: '<span style="color: var(--gold);">অপেক্ষা করুন!</span>',
-              html: '<div style="font-size: 14.5px; color: var(--cream);">আপনি ইতিমধ্যে রিকুয়েষ্ট পাঠিয়েছেন, এপ্রুভ করা হচ্ছে, ৫ মিনিট পর লগইন করুন</div>',
+              html: '<div style="font-size: 14.5px; color: var(--cream);">আপনি ইতিমধ্যে রিকুয়েষ্ট পাঠিয়েছেন, এপ্রুভ করা হচ্ছে, ৫ মিনিট পর লগইন করুন</div>',
               confirmButtonText: 'ঠিক আছে'
             });
             btn.disabled = false;
             btn.innerText = "Submit Request";
             return;
           } else if (status === "approved") {
+            meuPopup('success', "আপনি ইতিমধ্যে একজন প্রিমিয়াম সদস্য!", 'ঠিক আছে');
+            btn.disabled = false;
+            btn.innerText = "Submit Request";
+            return;
+          }
+        } else {
+          // uid-ভিত্তিক ডকুমেন্ট নেই — কিন্তু একাউন্ট ডিলিট করে একই ইমেইলে আবার
+          // সাইনআপ করলে নতুন uid তৈরি হয়, আর আগের approved রিকুয়েস্টটা পুরনো
+          // (এখন মৃত) uid-তেই থেকে যায়। এই চেক ছাড়া এখানে আবার নতুন pending
+          // রিকোয়েস্ট তৈরি হয়ে যেত — একই ইমেইলের জন্য বারবার ডুপ্লিকেট approved
+          // রেকর্ড জমা হওয়ার মূল কারণ ছিল এটাই।
+          const emailMatch = await db.collection("premium_requests")
+            .where("email", "==", user.email)
+            .where("status", "==", "approved")
+            .limit(1)
+            .get();
+
+          if (!emailMatch.empty) {
             meuPopup('success', "আপনি ইতিমধ্যে একজন প্রিমিয়াম সদস্য!", 'ঠিক আছে');
             btn.disabled = false;
             btn.innerText = "Submit Request";
@@ -195,7 +213,7 @@
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
         
-        meuPopup('success', 'আপনার রিকোয়েস্টটি সফলভাবে পাঠানো হয়েছে! ১০ মিনিটের মধ্যে আপনার জিমেইলটি Active করা হবে। যেকোনো সমস্যায় +8801521710509 নম্বরে WhatsApp এ যোগাযোগ করুন।', 'BACK TO HOMEPAGE');
+        meuPopup('success', 'আপনার রিকোয়েস্টটি সফলভাবে পাঠানো হয়েছে! ১০ মিনিটের মধ্যে আপনার জিমেইলটি Active করা হবে। যেকোনো সমস্যায় +8801521710509 নম্বরে WhatsApp এ যোগাযোগ করুন।', 'BACK TO HOMEPAGE');
         document.getElementById('requestForm').reset();
         document.getElementById('userEmail').value = user.email;
         
