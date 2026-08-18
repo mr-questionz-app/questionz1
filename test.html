@@ -15,7 +15,7 @@
 
     <style>
         /* ══════════════════════════════
-           TOKENS & BRAND (Updated with Dark Charcoal & Gold Palette)
+           TOKENS & BRAND (Updated to Charcoal & Gold Palette)
            ══════════════════════════════ */
         :root {
             --q-font-size: 15px;
@@ -26,18 +26,15 @@
             --primary-light: #a9814a;
             --primary-dim:   rgba(201, 164, 97, 0.10);
             --primary-glow:  rgba(201, 164, 97, 0.22);
-            
-            --border-gold:   rgba(201, 164, 97, 0.14);
 
             /* Surfaces (Charcoal Theme) */
-            --bg-desktop: #0B100E;
             --bg-page:    #121A15;
-            --bg-card:    #1B251E;
-            --bg-print:   #ffffff;
+            --bg-desktop: #0B100E;
+            --bg-print:   #4A4B68;
 
             /* Elevation */
             --shadow-page: 0 2px 6px rgba(0,0,0,0.4), 0 10px 28px rgba(0,0,0,0.6), 0 28px 56px rgba(201,164,97,0.05);
-            --shadow-nav: 0 1px 0 rgba(255,255,255,0.05) inset, 0 4px 16px rgba(0,0,0,0.4), 0 8px 40px rgba(0,0,0,0.5);
+            --shadow-nav: 0 1px 0 rgba(255,255,255,0.03) inset, 0 4px 16px rgba(0,0,0,0.4), 0 8px 40px rgba(0,0,0,0.6);
 
             /* Motion */
             --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -47,20 +44,16 @@
             --emerald-700: #1B5E46;
             --emerald-600: #2F9E77;
             --emerald-wash: rgba(47, 158, 119, 0.13);
-            
             --gold-500: #C9A461;
             --gold-600: #a9814a;
             --gold: #C9A461;
-            
-            --charcoal: #121A15;
-            
+            --charcoal: #1B251E;
             --cream: #F4EFE3;
-            --cream-dim: #B9B2A0;
-            
+            --cream-muted: #B9B2A0;
             --danger: #E17A63;
             --danger-wash: rgba(225, 122, 99, 0.13);
-            
             --violet: #6D28D9;
+            --border-gold: rgba(201, 164, 97, 0.14);
 
             --print-margin-top:    8mm;
             --print-margin-right:  6mm;
@@ -87,7 +80,7 @@
         sup { line-height: 0; font-size: 0.7em; }
 
         /* ══════════════════════════════
-           BOTTOM DOCK (all controls + answer/retake button, unified)
+           BOTTOM DOCK
            ══════════════════════════════ */
         .bottom-dock {
             position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%);
@@ -104,7 +97,7 @@
             box-shadow: var(--shadow-nav);
         }
         .dock-row { display: flex; align-items: center; gap: 8px; }
-        .dock-row-top { justify-content: space-between; padding-bottom: 7px; border-bottom: 1px dashed rgba(201, 164, 97, 0.25); }
+        .dock-row-top { justify-content: space-between; padding-bottom: 7px; border-bottom: 1px dashed rgba(201, 164, 97, 0.16); }
         .dock-row-bottom { justify-content: center; gap: 10px; }
         .dock-center-space { width: 64px; flex-shrink: 0; }
 
@@ -113,11 +106,10 @@
             display: flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 14px;
             background: var(--primary-dim); color: var(--cream); white-space: nowrap; user-select: none; cursor: pointer;
             font-family: 'Hind Siliguri', sans-serif; font-size: 12.5px; font-weight: 700;
-            border: 1px solid var(--border-gold);
         }
         .stat-chip svg { width: 14px; height: 14px; display: block; }
         .stat-chip .timer-val, .stat-chip .rem-q { font-family: 'Cutive Mono', monospace; font-weight: 700; letter-spacing: 0.2px; }
-        .stat-chip.stat-timer { background: var(--danger-wash); color: var(--danger); border-color: rgba(225, 122, 99, 0.2); }
+        .stat-chip.stat-timer { background: var(--danger-wash); color: var(--danger); }
 
         .dock-icon-btn {
             border: none; width: 38px; height: 38px; border-radius: 12px; flex-shrink: 0;
@@ -135,7 +127,7 @@
         .dock-icon-btn.gold-tone:hover   { background: rgba(201, 164, 97, 0.26); box-shadow: 0 3px 10px rgba(201, 164, 97, 0.3); transform: translateY(-1px); }
         .dock-icon-btn.gold-tone.is-active   { background: var(--gold-500); color: #0B100E; box-shadow: 0 2px 8px rgba(201, 164, 97, 0.45); }
         .dock-icon-btn.violet-tone { color: var(--violet); background: rgba(109, 40, 217, 0.15); }
-        .dock-icon-btn.violet-tone:hover { background: rgba(109, 40, 217, 0.25); box-shadow: 0 3px 10px rgba(109, 40, 217, 0.3); transform: translateY(-1px); }
+        .dock-icon-btn.violet-tone:hover { background: rgba(109, 40, 217, 0.25); box-shadow: 0 3px 10px rgba(109, 40, 217, 0.26); transform: translateY(-1px); }
         .dock-icon-btn.violet-tone.is-active { background: var(--violet); color: #fff; box-shadow: 0 2px 8px rgba(109, 40, 217, 0.45); }
 
         @keyframes btn-spin { to { transform: rotate(360deg); } }
@@ -144,7 +136,6 @@
         .view-switcher {
             display: flex; gap: 2px; padding: 2px; border-radius: 18px; flex-shrink: 0;
             background: var(--primary-dim); align-items: center; position: relative;
-            border: 1px solid var(--border-gold);
         }
         .view-switcher-indicator {
             position: absolute; top: 2px; left: 2px; height: 26px; border-radius: 14px;
@@ -154,7 +145,7 @@
         .view-btn {
             border: none; padding: 0 9px; height: 26px; border-radius: 14px; flex-shrink: 0;
             cursor: pointer; display: flex; align-items: center; justify-content: center;
-            background: transparent; color: var(--cream-dim); position: relative; z-index: 1;
+            background: transparent; color: var(--cream-muted); position: relative; z-index: 1;
             transition: color 0.22s var(--ease), transform 0.18s var(--spring);
         }
         .view-btn svg { width: 15px; height: 15px; display: block; }
@@ -196,13 +187,12 @@
 
         body.print-mode .content-columns::after, body.desktop-mode .content-columns::after {
             content: ''; position: absolute; top: 0; bottom: 0; left: 50%;
-            border-left: 1px solid rgba(201, 164, 97, 0.2); 
-            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+            border-left: 1px solid #000; -webkit-print-color-adjust: exact; print-color-adjust: exact;
         }
 
         .q-card {
             width: calc(50% - 5mm); break-inside: avoid; margin-bottom: 5px; padding: 5px; padding-bottom: 8px;
-            border-bottom: 1px dashed rgba(201, 164, 97, 0.18); box-sizing: border-box; border-radius: 4px;
+            border-bottom: 1px dashed var(--border-gold); box-sizing: border-box; border-radius: 4px;
         }
 
         body.mobile-mode { background: var(--bg-desktop); }
@@ -214,8 +204,8 @@
         body.mobile-mode .q-card {
             width: 100%; margin-bottom: 15px; padding: 14px; box-sizing: border-box;
             border: 1px solid var(--border-gold); border-bottom: 1px solid var(--border-gold);
-            background: var(--bg-card); border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4), 0 6px 20px rgba(0,0,0,0.5);
+            background: var(--charcoal); border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4), 0 6px 20px rgba(0,0,0,0.6);
         }
 
         .header { text-align: center; margin-top: 0; margin-bottom: 8px; border-bottom: 1px solid rgba(201, 164, 97, 0.12); padding-bottom: 4px; }
@@ -229,8 +219,8 @@
         .q-text { font-size: var(--q-font-size); font-weight: bold; display: block; margin-bottom: 5px; color: var(--cream); transition: font-size 0.2s; }
         .option-container { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
         .option-btn {
-            padding: 3px 8px; background: var(--bg-card); border: 1px solid var(--border-gold);
-            border-radius: 6px; cursor: pointer; font-size: var(--opt-font-size); text-align: left; color: var(--cream-dim);
+            padding: 3px 8px; background: var(--bg-page); border: 1px solid var(--border-gold);
+            border-radius: 6px; cursor: pointer; font-size: var(--opt-font-size); text-align: left; color: var(--cream-muted);
             transition: background 0.18s var(--ease), border-color 0.18s var(--ease), color 0.18s var(--ease), transform 0.15s var(--spring), box-shadow 0.18s var(--ease);
         }
         .option-btn:hover { background: var(--primary-dim); border-color: var(--primary-light); color: var(--cream); }
@@ -239,11 +229,11 @@
         .option-btn.selected { background: var(--primary-dim); color: var(--primary); border-color: var(--primary-light); font-weight: bold; }
         .option-btn.opt-correct { background: var(--emerald-wash) !important; color: var(--emerald-600) !important; border-color: var(--emerald-600) !important; font-weight: bold; }
         .option-btn.opt-wrong { background: var(--danger-wash) !important; color: var(--danger) !important; border-color: var(--danger) !important; font-weight: bold; }
-        .option-btn.opt-missed { background: rgba(201, 164, 97, 0.16) !important; color: var(--gold-600) !important; border-color: var(--gold-500) !important; font-weight: bold; }
+        .option-btn.opt-missed { background: rgba(201, 164, 97, 0.16) !important; color: var(--primary-light) !important; border-color: var(--primary) !important; font-weight: bold; }
         .locked-card { pointer-events: none; opacity: 0.85; }
         .locked-card .option-btn.opt-correct { background: rgba(47, 158, 119, 0.08) !important; color: #7CA896 !important; border-color: rgba(47, 158, 119, 0.25) !important; font-weight: bold; }
 
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 16, 14, 0.75); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 4000; justify-content: center; align-items: center; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 16, 14, 0.75); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); z-index: 4000; justify-content: center; align-items: center; }
         .result-modal { background: var(--bg-page); padding: 26px; border-radius: 16px; width: 320px; text-align: center; font-family: 'Noto Serif Bengali', 'Lora', serif; box-shadow: var(--shadow-page); border: 1px solid var(--border-gold); }
         .result-modal h3 { margin-top: 0; font-family: 'Hind Siliguri', sans-serif; font-weight: 700; letter-spacing: 0.3px; background: linear-gradient(118deg, var(--gold) 20%, var(--gold-600) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; border-bottom: 1px solid rgba(201, 164, 97, 0.12); padding-bottom: 10px; }
         .result-modal p { font-size: 17px; margin: 10px 0; line-height: 1.6; color: var(--cream); }
@@ -252,7 +242,7 @@
         .close-modal-btn:active { transform: scale(0.96); }
         .swal2-confirm, .swal2-cancel { font-family: 'Noto Serif Bengali', 'Lora', serif !important; }
 
-        .footer { flex-shrink: 0; display: flex; justify-content: center; text-align: center; font-size: 11px; line-height: 1.2; word-spacing: -1.5px; border-top: 1px solid var(--border-gold); padding-top: 5px; color: var(--cream-dim); font-family: 'Cutive Mono', 'Hind Siliguri', monospace; font-weight: 300; }
+        .footer { flex-shrink: 0; display: flex; justify-content: center; text-align: center; font-size: 11px; line-height: 1.2; word-spacing: -1.5px; border-top: 1px solid var(--border-gold); padding-top: 5px; color: var(--cream-muted); font-family: 'Cutive Mono', 'Hind Siliguri', monospace; font-weight: 300; }
         body.mobile-mode .footer { margin-top: 20px; padding-bottom: 10px; }
 
         #loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-desktop); display: flex; align-items: center; justify-content: center; z-index: 5000; overflow: hidden; }
@@ -330,42 +320,36 @@
             font-size: 11px;
             font-family: 'Cutive Mono', 'Hind Siliguri', monospace;
             font-weight: 500;
-            color: var(--cream-dim);
+            color: var(--cream-muted);
             letter-spacing: -0.3px;
             word-spacing: -2px;
             line-height: 1.15;
             overflow-wrap: break-word;
             word-break: break-word;
         }
-        .grand-header .meta { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; margin-top: 5px; font-family: 'Noto Serif Bengali', serif; color: var(--cream-dim); }
-        .qr-code-print { position: absolute; top: 0; right: 0; width: 75px; height: 75px; border-radius: 4px; border: 2px solid var(--border-gold); padding: 2px; background: #FFFFFF; box-sizing: border-box; }
+        .grand-header .meta { display: flex; justify-content: space-between; font-weight: 700; font-size: 14px; margin-top: 5px; font-family: 'Noto Serif Bengali', serif; color: var(--cream-muted); }
+        .qr-code-print { position: absolute; top: 0; right: 0; width: 75px; height: 75px; border-radius: 4px; border: 2px solid rgba(201, 164, 97, 0.3); padding: 2px; background: #FFFFFF; box-sizing: border-box; }
         .katex { font-size: 1.1em; }
 
-        /* --- Print Mode Styles (Browser Preview B/W) --- */
-        body.print-mode { background-color: #ffffff !important; color: #000000 !important; }
-        body.print-mode .page { width: 210mm; height: 297mm; padding: var(--print-margin-top) var(--print-margin-right) var(--print-margin-bottom) var(--print-margin-left); margin: 20px auto; background: #ffffff !important; box-shadow: 0 8px 30px rgba(0,0,0,0.35); border: none; border-radius: 4px; color: #000000 !important; }
+        /* --- Print Mode Styles (তোর দেওয়া অরিজিনাল কোড হুবহু রাখা হয়েছে) --- */
+        body.print-mode { background-color: var(--bg-print); }
+        
+        /* ডার্ক থিম যাতে প্রিন্টে না আসে তার জন্য শুধু প্রিন্টে ব্যাকগ্রাউন্ড সাদা আর টেক্সট কালো ফিক্স করা হয়েছে */
+        body.print-mode .page { width: 210mm; height: 297mm; padding: var(--print-margin-top) var(--print-margin-right) var(--print-margin-bottom) var(--print-margin-left); margin: 20px auto; background: #FFFFFF; color: #000; box-shadow: 0 8px 30px rgba(0,0,0,0.35); border: none; border-radius: 4px; }
         body.desktop-mode .page { width: 210mm; height: 297mm; padding: var(--print-margin-top) var(--print-margin-right) var(--print-margin-bottom) var(--print-margin-left); margin: 20px auto; background: var(--bg-page); box-shadow: 0 8px 30px rgba(0,0,0,0.6); border: none; border-radius: 4px; }
         
         body.print-mode .grand-header, body.desktop-mode .grand-header { display: block; }
-        body.print-mode .page-header, body.desktop-mode .page-header { display: none; }
+        body.print-mode .grand-header h1, body.print-mode .grand-header h3, body.print-mode .grand-header .meta { color: #000; }
         
+        body.print-mode .page-header, body.desktop-mode .page-header { display: none; }
         body.print-mode .q-card, body.desktop-mode .q-card { width: calc(50% - 5mm); border: none; margin-bottom: 0px; padding: 2px 5px; }
-        body.print-mode .q-card { background: #ffffff !important; pointer-events: none !important; opacity: 1 !important; color: #000000 !important; border-bottom: 1px dashed #ccc !important; }
+        body.print-mode .q-card { pointer-events: none !important; opacity: 1 !important; }
         
         body.print-mode .q-text, body.desktop-mode .q-text { line-height: 1.1; margin-bottom: 2px; }
-        body.print-mode .q-text { color: #000000 !important; }
+        body.print-mode .q-text { color: #000; }
         
         body.print-mode .option-container, body.desktop-mode .option-container { gap: 2px; }
-        
-        /* Print Preview specifically forces Black & White */
-        body.print-mode .option-btn, body.print-mode .option-btn.selected, body.print-mode .option-btn.opt-correct, body.print-mode .option-btn.opt-wrong, body.print-mode .option-btn.opt-missed, body.print-mode .locked-card .option-btn.opt-correct { background: transparent !important; border: 1px solid transparent !important; padding: 1px 4px; color: #000000 !important; font-weight: normal !important; line-height: 1.1; }
-
-        body.print-mode .header h2, body.print-mode .grand-header h1 { background: none !important; -webkit-text-fill-color: #000000 !important; color: #000000 !important; }
-        body.print-mode .grand-header h3, body.print-mode .grand-header .meta { color: #000000 !important; }
-        body.print-mode .grand-header { border-bottom: 1.5px solid #000000 !important; }
-        body.print-mode .footer { border-top: 1px solid #000000 !important; color: #000000 !important; }
-        body.print-mode .content-columns::after { border-left: 1px solid #000000 !important; }
-        body.print-mode .qr-code-print { border: 1px solid #000000 !important; }
+        body.print-mode .option-btn, body.desktop-mode .option-btn, body.print-mode .option-btn.selected, body.print-mode .option-btn.opt-correct, body.print-mode .option-btn.opt-wrong, body.print-mode .option-btn.opt-missed, body.print-mode .locked-card .option-btn.opt-correct { background: transparent !important; border: 1px solid transparent !important; padding: 1px 4px; color: #000 !important; font-weight: normal !important; line-height: 1.1; }
 
         body.desktop-mode .option-btn.selected { background: var(--primary-dim) !important; color: var(--primary) !important; border-color: var(--primary-light) !important; font-weight: bold !important; }
         body.desktop-mode .option-btn.opt-correct { background: var(--emerald-wash) !important; color: var(--emerald-600) !important; border-color: var(--emerald-600) !important; font-weight: bold !important; }
@@ -373,30 +357,21 @@
         body.desktop-mode .option-btn.opt-missed { background: rgba(201, 164, 97, 0.16) !important; color: var(--gold-600) !important; border-color: var(--gold-500) !important; font-weight: bold !important; }
         body.desktop-mode .locked-card .option-btn.opt-correct { background: rgba(47, 158, 119, 0.08) !important; color: #7CA896 !important; border-color: rgba(47, 158, 119, 0.25) !important; font-weight: bold !important; }
 
-        body.desktop-mode .footer { border-top: none; }
+        body.print-mode .footer, body.desktop-mode .footer { border-top: none; }
 
-        /* ==========================================================
-           ACTUAL PRINTER / PDF EXPORT (Forced 100% Black & White)
-           ========================================================== */
         @media print {
             @page { size: A4; margin: 0; }
-            .bottom-dock, #loading-screen, .modal-overlay, .wm-loader { display: none !important; }
-            body, html { background: white !important; margin: 0 !important; padding: 0 !important; color: black !important; }
-            .page { background: white !important; color: black !important; box-shadow: none !important; margin: 0 !important; padding: var(--print-margin-top) var(--print-margin-right) var(--print-margin-bottom) var(--print-margin-left) !important; width: 210mm !important; height: 297mm !important; page-break-after: always; box-sizing: border-box; border: none !important; }
+            .bottom-dock, #loading-screen, .modal-overlay { display: none !important; }
+            body { background: none !important; margin: 0 !important; padding: 0 !important; color: #000 !important; }
+            .page { box-shadow: none !important; margin: 0 !important; padding: var(--print-margin-top) var(--print-margin-right) var(--print-margin-bottom) var(--print-margin-left) !important; width: 210mm !important; height: 297mm !important; page-break-after: always; box-sizing: border-box; background: none !important; color: #000 !important; }
             .page:last-child { page-break-after: auto; }
-            
-            .grand-header { display: block !important; border-bottom: 1.5px solid black !important; }
-            .grand-header h1, .grand-header h3, .grand-header .meta { color: black !important; background: none !important; -webkit-text-fill-color: black !important; }
-            .qr-code-print { border: 1px solid black !important; }
+            .grand-header { display: block !important; }
+            .grand-header h1, .grand-header h3, .grand-header .meta { color: #000 !important; }
             .page-header { display: none !important; }
-            
-            .content-columns::after { border-left: 1px solid black !important; }
-            
-            .q-card { background: white !important; border: none !important; border-bottom: 1px dashed #ccc !important; margin-bottom: 0 !important; pointer-events: none !important; opacity: 1 !important; color: black !important; }
-            .q-text { color: black !important; line-height: 1.1 !important; margin-bottom: 2px !important; }
+            .q-card { border: none !important; margin-bottom: 0 !important; pointer-events: none !important; opacity: 1 !important; }
+            .q-text { line-height: 1.1 !important; margin-bottom: 2px !important; color: #000 !important; }
             .option-container { gap: 2px !important; }
-            .option-btn, .option-btn.selected, .option-btn.opt-correct, .option-btn.opt-wrong, .option-btn.opt-missed, .locked-card .option-btn.opt-correct { background: transparent !important; border: 1px solid transparent !important; color: black !important; font-weight: normal !important; line-height: 1.1 !important; padding: 1px 4px !important; }
-            .footer { color: black !important; border-top: 1px solid black !important; }
+            .option-btn, .option-btn.selected, .option-btn.opt-correct, .option-btn.opt-wrong, .option-btn.opt-missed, .locked-card .option-btn.opt-correct { background: transparent !important; border: 1px solid transparent !important; color: #000 !important; font-weight: normal !important; line-height: 1.1 !important; }
         }
     </style>
 </head>
