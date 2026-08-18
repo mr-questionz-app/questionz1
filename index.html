@@ -335,7 +335,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
     import { getDatabase, ref, update, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     // আপনার ১ম ওয়েবসাইটের সঠিক ফায়ারবেস কনফিগারেশন
@@ -415,10 +415,28 @@
 
     // ১ম ওয়েবসাইটের Firestore Premium Check Function
     const checkPremiumStatus = async (user) => {
+      // ধাপ ১: uid দিয়ে সরাসরি ডকুমেন্ট চেক (স্বাভাবিক, দ্রুততম পথ)
       const requestRef = doc(db, "premium_requests", user.uid);
       const requestSnap = await getDoc(requestRef);
-      if (!requestSnap.exists()) return "no_request";
-      return requestSnap.data().status === 'approved' ? "approved" : "pending";
+      if (requestSnap.exists()) {
+        return requestSnap.data().status === 'approved' ? "approved" : "pending";
+      }
+
+      // ধাপ ২: uid-ভিত্তিক ডকুমেন্ট না পেলে ইমেইল দিয়ে খুঁজে দেখা হচ্ছে।
+      // কারণ: Firebase Auth থেকে একাউন্ট ডিলিট করে একই ইমেইলে আবার সাইনআপ করলে
+      // নতুন uid তৈরি হয়, কিন্তু আগের approved রিকুয়েস্টটা পুরনো (এখন মৃত) uid-তেই
+      // থেকে যায় — এই fallback ছাড়া আগে approve করা ইউজারকেও আবার approve
+      // করতে বলা হতো।
+      const emailQuery = query(
+        collection(db, "premium_requests"),
+        where("email", "==", user.email),
+        where("status", "==", "approved"),
+        limit(1)
+      );
+      const emailMatches = await getDocs(emailQuery);
+      if (!emailMatches.empty) return "approved";
+
+      return "no_request";
     };
 
     // লগইন বা ভেরিফিকেশনের পর ফায়ারবেস সেশন ও প্রিমিয়াম স্ট্যাটাস চেকিং প্রসেস
