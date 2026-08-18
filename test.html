@@ -488,13 +488,17 @@
         body.print-mode .q-card { pointer-events: none !important; opacity: 1 !important; }
         body.print-mode .q-text, body.desktop-mode .q-text { line-height: 1.1; margin-bottom: 2px; }
         body.print-mode .option-container, body.desktop-mode .option-container { gap: 2px; }
-        body.print-mode .option-btn, body.desktop-mode .option-btn, body.print-mode .option-btn.selected, body.print-mode .option-btn.opt-correct, body.print-mode .option-btn.opt-wrong, body.print-mode .option-btn.opt-missed, body.print-mode .locked-card .option-btn.opt-correct { background: transparent !important; border: 1px solid transparent !important; padding: 1px 4px; color: #000 !important; font-weight: normal !important; line-height: 1.1; }
-
+        
+        /* Desktop Mode specific option styles */
+        body.desktop-mode .option-btn { background: transparent !important; border: 1px solid transparent !important; padding: 1px 4px; color: var(--text-primary) !important; font-weight: normal !important; line-height: 1.1; }
         body.desktop-mode .option-btn.selected { background: var(--primary-dim) !important; color: var(--primary) !important; border-color: var(--primary-light) !important; font-weight: bold !important; }
         body.desktop-mode .option-btn.opt-correct { background: var(--emerald-wash) !important; color: var(--emerald-700) !important; border-color: var(--emerald-600) !important; font-weight: bold !important; }
         body.desktop-mode .option-btn.opt-wrong { background: var(--danger-wash) !important; color: var(--danger) !important; border-color: var(--danger) !important; font-weight: bold !important; }
         body.desktop-mode .option-btn.opt-missed { background: var(--btn-gold-bg) !important; color: var(--gold-600) !important; border-color: var(--gold-500) !important; font-weight: bold !important; }
         body.desktop-mode .locked-card .option-btn.opt-correct { background: var(--locked-bg) !important; color: var(--locked-color) !important; border-color: var(--locked-border) !important; font-weight: bold !important; }
+
+        /* Print Mode specific option styles */
+        body.print-mode .option-btn, body.print-mode .option-btn.selected, body.print-mode .option-btn.opt-correct, body.print-mode .option-btn.opt-wrong, body.print-mode .option-btn.opt-missed, body.print-mode .locked-card .option-btn.opt-correct { background: transparent !important; border: 1px solid transparent !important; padding: 1px 4px; color: #000 !important; font-weight: normal !important; line-height: 1.1; }
 
         body.print-mode .footer, body.desktop-mode .footer { border-top: none; }
 
