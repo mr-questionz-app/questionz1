@@ -180,18 +180,15 @@ async function renderSets(d,s,c, isFromCache = false){
         
         // Load progress from LocalStorage first for instant UI
         const localProgKey = `qz_prog_${s}_${c}_${k}`;
-        const localTotalKey = `qz_total_${s}_${c}_${k}`;
-        
         const localProg = localStorage.getItem(localProgKey);
-        const localTotalStr = localStorage.getItem(localTotalKey);
-        
-        if(localProg && localTotalStr) {
+        if(localProg) {
             const arr = JSON.parse(localProg);
-            const total = parseInt(localTotalStr, 10);
-            if(total > 0) {
-                p = Math.min(100, Math.round((arr.length / total) * 100));
-            }
-        } else if (currentUser){
+            // Rough calculation: we don't have total Q count here, but we can store percent in test.html later. 
+            // For now, if we have local progress, we try to fetch accurate percent from DB if logged in.
+            p = Math.min(100, Math.floor(arr.length * 10)); // Placeholder fast logic if db fetch is slow
+        }
+
+        if(currentUser){
             try {
                 const snap=await getDoc(doc(db,"users",currentUser.uid,"exam_progress",`${s}_${c}_${k}`));
                 if(snap.exists() && snap.data().percent !== undefined) p=snap.data().percent||0;
