@@ -646,6 +646,9 @@
         const parentID = urlParams.get('parent'); 
         const catID = urlParams.get('cat'); 
         const setID = urlParams.get('set'); 
+
+        // APK/WebView-এর ভেতরে window.location.href লোকাল পাথ দেখায়, তাই QR-এর জন্য আসল ওয়েব ডোমেইন ফিক্সড রাখা হলো
+        const SITE_BASE_URL = "https://questionz1.pro-questionz-hub.workers.dev/test.html"; 
         
         const getLocalProgressKey = () => `qz_prog_${parentID}_${catID}_${setID}`; 
         const tempStorageKey = () => `temp_ans_${parentID}_${catID}_${setID}`; 
@@ -1012,7 +1015,7 @@
             
             if (num === 1) {
                 colClass = 'content-columns first-page-columns';
-                const qrText = window.location.href;
+                const qrText = `${SITE_BASE_URL}?parent=${encodeURIComponent(parentID)}&cat=${encodeURIComponent(catID)}&set=${encodeURIComponent(setID)}`;
                 const qrDataEncoded = encodeURIComponent(qrText);
 
                 grandHeaderHTML = `
