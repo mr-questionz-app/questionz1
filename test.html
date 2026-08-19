@@ -670,7 +670,7 @@
             
             if (currentUserUid) {
                 try {
-                    const progRef = doc(db, "users", currentUserUid, "progress", setID);
+                    const progRef = doc(db, "users", currentUserUid, "exam_progress", setID);
                     const progSnap = await getDoc(progRef);
                     if (progSnap.exists()) {
                         const fsLocked = progSnap.data().lockedIds || [];
@@ -816,7 +816,7 @@
                 localStorage.removeItem(tempStorageKey()); 
 
                 if (currentUserUid) {
-                    const progRef = doc(db, "users", currentUserUid, "progress", setID);
+                    const progRef = doc(db, "users", currentUserUid, "exam_progress", setID);
                     await setDoc(progRef, {
                         lockedIds: Array.from(lockedIds),
                         updatedAt: serverTimestamp()
@@ -827,7 +827,8 @@
                 userAnswers = {}; 
                 paginate(); 
             } catch (e) { 
-                Swal.fire('Error', 'সেভ করা সম্ভব হয়নি!', 'error'); 
+                Swal.fire('Error', 'Error: ' + e.message, 'error'); 
+                console.error("Save Error:", e);
             } finally { 
                 saveBtn.innerHTML = originalText; 
             } 
@@ -843,7 +844,7 @@
 
                 if (currentUserUid) {
                     try {
-                        const progRef = doc(db, "users", currentUserUid, "progress", setID);
+                        const progRef = doc(db, "users", currentUserUid, "exam_progress", setID);
                         await setDoc(progRef, {
                             lockedIds: [],
                             updatedAt: serverTimestamp()
@@ -1027,7 +1028,7 @@
             if (lockedIds.size > 0) { 
                 localStorage.setItem(getLocalProgressKey(), JSON.stringify(Array.from(lockedIds))); 
                 if (currentUserUid) {
-                    const progRef = doc(db, "users", currentUserUid, "progress", setID);
+                    const progRef = doc(db, "users", currentUserUid, "exam_progress", setID);
                     setDoc(progRef, {
                         lockedIds: Array.from(lockedIds),
                         updatedAt: serverTimestamp()
