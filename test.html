@@ -701,6 +701,7 @@
                     document.title = displayCatName + " - " + displaySetName + " | 𝐐𝐔𝐄𝐒𝐓𝐈𝐎𝐍𝐙 ";
                     mcqData = cache.mcqData;
                     totalQuestionsCount = mcqData.length;
+                    localStorage.setItem(`qz_total_${parentID}_${catID}_${setID}`, totalQuestionsCount);
                     hasCachedData = true;
 
                     await loadProgress();
@@ -760,6 +761,7 @@
                         document.title = displayCatName + " - " + displaySetName + " | 𝐐𝐔𝐄𝐒𝐓𝐈𝐎𝐍𝐙 ";
                         mcqData = newMcqData;
                         totalQuestionsCount = mcqData.length;
+                        localStorage.setItem(`qz_total_${parentID}_${catID}_${setID}`, totalQuestionsCount);
                         
                         if (!hasCachedData) {
                             await loadProgress();
@@ -816,9 +818,11 @@
                 localStorage.removeItem(tempStorageKey()); 
 
                 if (currentUserUid) {
+                    const percent = totalQuestionsCount > 0 ? Math.round((lockedIds.size / totalQuestionsCount) * 100) : 0;
                     const progRef = doc(db, "users", currentUserUid, "exam_progress", setID);
                     await setDoc(progRef, {
                         lockedIds: Array.from(lockedIds),
+                        percent: percent,
                         updatedAt: serverTimestamp()
                     }, { merge: true });
                 }
@@ -847,6 +851,7 @@
                         const progRef = doc(db, "users", currentUserUid, "exam_progress", setID);
                         await setDoc(progRef, {
                             lockedIds: [],
+                            percent: 0,
                             updatedAt: serverTimestamp()
                         }, { merge: true });
                     } catch(e) { console.log(e); }
@@ -1028,9 +1033,11 @@
             if (lockedIds.size > 0) { 
                 localStorage.setItem(getLocalProgressKey(), JSON.stringify(Array.from(lockedIds))); 
                 if (currentUserUid) {
+                    const percent = totalQuestionsCount > 0 ? Math.round((lockedIds.size / totalQuestionsCount) * 100) : 0;
                     const progRef = doc(db, "users", currentUserUid, "exam_progress", setID);
                     setDoc(progRef, {
                         lockedIds: Array.from(lockedIds),
+                        percent: percent,
                         updatedAt: serverTimestamp()
                     }, { merge: true }).catch(e => console.log("Auto-save error:", e));
                 }
