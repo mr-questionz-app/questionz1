@@ -145,50 +145,46 @@ function setLocalCache(key, data) {
 async function loadSetsFromMetadata(s,c){
     const k=`${s}_${c}`;
     
-    // 1. Check Local Cache first for instant load
     const cachedData = getLocalCache(k);
     if(cachedData){
-        renderSets(cachedData,s,c, true); 
+        renderSets(cachedData,s,c); 
     }
 
-    // 2. Fetch from Firestore in background
     try{
         const m=await getDoc(doc(db,s,c,'sets','_metadata'));
         if(m.exists()){
             const d=m.data();
-            // Update cache and re-render only if data is different or no cache existed
             if(JSON.stringify(cachedData) !== JSON.stringify(d)){
                 setLocalCache(k, d);
-                await renderSets(d,s,c, false);
+                await renderSets(d,s,c);
             }
         }
     }catch(e){console.error("Metadata Load Error:",e)}
 }
 
-async function renderSets(d,s,c, isFromCache = false){
+async function renderSets(d,s,c){
     if(c!==historyStack[historyStack.length-1])return;
     const keys=Object.keys(d).sort();
     
-    // If not from cache, we clear the grid to avoid duplicates (since we might re-render updated data)
-    if(!isFromCache) grid.innerHTML = '';
-    
     const fragment=document.createDocumentFragment();
     const promises=keys.map(async(k)=>{
-        if(isFromCache && document.getElementById(`set-${k}`)) return null; // Skip if already there and we are just caching
+        if(document.getElementById(`set-${k}`)) return null; 
         const info=d[k];
         let p=0;
         
-        // Load progress from LocalStorage first for instant UI
         const localProgKey = `qz_prog_${s}_${c}_${k}`;
+        const localTotalKey = `qz_total_${s}_${c}_${k}`;
+        
         const localProg = localStorage.getItem(localProgKey);
-        if(localProg) {
+        const localTotalStr = localStorage.getItem(localTotalKey);
+        
+        if(localProg && localTotalStr) {
             const arr = JSON.parse(localProg);
-            // Rough calculation: we don't have total Q count here, but we can store percent in test.html later. 
-            // For now, if we have local progress, we try to fetch accurate percent from DB if logged in.
-            p = Math.min(100, Math.floor(arr.length * 10)); // Placeholder fast logic if db fetch is slow
-        }
-
-        if(currentUser){
+            const total = parseInt(localTotalStr, 10);
+            if(total > 0) {
+                p = Math.min(100, Math.round((arr.length / total) * 100));
+            }
+        } else if (currentUser){
             try {
                 const snap=await getDoc(doc(db,"users",currentUser.uid,"exam_progress",`${s}_${c}_${k}`));
                 if(snap.exists() && snap.data().percent !== undefined) p=snap.data().percent||0;
@@ -225,20 +221,19 @@ async function renderSets(d,s,c, isFromCache = false){
     }
 }
 
-function renderItems(items,pId, isFromCache = false){
+function renderItems(items,pId){
     if(pId!==historyStack[historyStack.length-1])return;
-    
-    if(!isFromCache) grid.innerHTML = ''; // Clear existing if we are updating from live data
     
     const f=document.createDocumentFragment();
     items.forEach(cat=>{
-        if(isFromCache && document.getElementById(`cat-${cat.id}`)) return; // Skip if already there
-        const display=cat.name.length>30?cat.name.substring(0,30)+"...":cat.name,box=document.createElement('div');
-        box.id=`cat-${cat.id}`;
-        box.className='noun-box';
-        box.innerHTML=`<span>${display}</span>`;
-        box.onclick=()=>navigateTo(cat.id,cat.name);
-        f.appendChild(box)
+        if(!document.getElementById(`cat-${cat.id}`)) {
+            const display=cat.name.length>30?cat.name.substring(0,30)+"...":cat.name,box=document.createElement('div');
+            box.id=`cat-${cat.id}`;
+            box.className='noun-box';
+            box.innerHTML=`<span>${display}</span>`;
+            box.onclick=()=>navigateTo(cat.id,cat.name);
+            f.appendChild(box)
+        }
     });
     grid.appendChild(f);
     loading.style.display="none"
@@ -253,16 +248,14 @@ function loadCategories(pId){
     
     if(pId!=="root"&&sId) {
         loadSetsFromMetadata(sId,pId);
-        return; // Early return as loadSetsFromMetadata handles rendering for sets
+        // আগের আপডেটের return; টা এখান থেকে বাদ দেওয়া হয়েছে
     }
     
-    // 1. Instant Load from Cache
     const cachedItems = getLocalCache(`cat_${pId}`);
     if (cachedItems) {
-        renderItems(cachedItems, pId, true);
+        renderItems(cachedItems, pId);
     }
 
-    // 2. Setup Realtime Listener (Background Sync)
     const q=query(collection(db,"categories"),where("parentId","==",pId));
     unsubscribe=onSnapshot(q,s=>{
         const items=[];
@@ -276,12 +269,11 @@ function loadCategories(pId){
         });
         
         if(items.length>0){
-            // Update cache and re-render
             if (JSON.stringify(cachedItems) !== JSON.stringify(items)) {
                 setLocalCache(`cat_${pId}`, items);
-                renderItems(items,pId, false);
-            } else if (!cachedItems) { // if there was no cache initially
-                renderItems(items,pId, false);
+                renderItems(items,pId);
+            } else if (!cachedItems) { 
+                renderItems(items,pId);
             }
         }else if(pId==="root"){
             loading.style.display="none";
