@@ -229,6 +229,28 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        /* ══════════════════════════════
+           SCROLLBAR (theme-matched)
+           ══════════════════════════════ */
+        html {
+            scrollbar-width: thin;
+            scrollbar-color: var(--border-color) transparent;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+
         body {
             margin: 0; padding: 0 0 150px 0;
             background-color: var(--bg-desktop);
