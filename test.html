@@ -566,12 +566,21 @@
 
     <script type="module"> 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         
-        // ফায়ারবেস কনফিগ (লগিন ছাড়াই ডেটাবেস থেকে প্রশ্ন নেওয়ার জন্য)
         const firebaseConfig={apiKey:"AIzaSyCcS1zWFslmbRFS5PAvNrH8TFYIbR8N7ic",authDomain:"questionz-me.firebaseapp.com",projectId:"questionz-me",storageBucket:"questionz-me.firebasestorage.app",messagingSenderId:"393630463399",appId:"1:393630463399:web:825468121216445828f282",databaseURL:"https://questionz-me-default-rtdb.asia-southeast1.firebasedatabase.app/"};
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
+        
+        let currentUserUid = null;
+        const authReady = new Promise((resolve) => {
+            onAuthStateChanged(auth, (user) => {
+                if (user) currentUserUid = user.uid;
+                resolve(user);
+            });
+        });
         
         let mcqData = []; 
         let userAnswers = {}; 
@@ -602,7 +611,6 @@
         const catID = urlParams.get('cat'); 
         const setID = urlParams.get('set'); 
         
-        // প্রগ্রেস ব্রাউজারে সেভ করার জন্য লোকাল স্টোরেজ কি (Local Storage Key)
         const getLocalProgressKey = () => `qz_prog_${parentID}_${catID}_${setID}`; 
         const tempStorageKey = () => `temp_ans_${parentID}_${catID}_${setID}`; 
         
@@ -650,38 +658,84 @@
             updateViewIndicator();
         }; 
 
+        async function loadProgress() {
+            await authReady; 
+            
+            const savedProgress = localStorage.getItem(getLocalProgressKey());
+            if (savedProgress) { 
+                lockedIds = new Set(JSON.parse(savedProgress)); 
+            } else {
+                lockedIds = new Set();
+            }
+            
+            if (currentUserUid) {
+                try {
+                    const progRef = doc(db, "users", currentUserUid, "progress", setID);
+                    const progSnap = await getDoc(progRef);
+                    if (progSnap.exists()) {
+                        const fsLocked = progSnap.data().lockedIds || [];
+                        fsLocked.forEach(id => lockedIds.add(id));
+                        localStorage.setItem(getLocalProgressKey(), JSON.stringify(Array.from(lockedIds)));
+                    }
+                } catch(e) {
+                    console.log("Error loading progress from Firestore", e);
+                }
+            }
+        }
+
         async function fetchMCQs() { 
             if (!parentID || !catID || !setID) { 
                 document.getElementById("loading-screen").innerHTML = "<div style='color:#666; font-size:18px;'>ডেটা পাওয়া যায়নি!</div>"; 
                 return; 
             } 
-            try { 
+            
+            const cacheKey = `qz_qcache_${parentID}_${catID}_${setID}`;
+            const cachedDataStr = localStorage.getItem(cacheKey);
+            let hasCachedData = false;
+
+            if (cachedDataStr) {
+                try {
+                    const cache = JSON.parse(cachedDataStr);
+                    displayCatName = cache.displayCatName;
+                    displaySetName = cache.displaySetName;
+                    document.title = displayCatName + " - " + displaySetName + " | 𝐐𝐔𝐄𝐒𝐓𝐈𝐎𝐍𝐙 ";
+                    mcqData = cache.mcqData;
+                    totalQuestionsCount = mcqData.length;
+                    hasCachedData = true;
+
+                    await loadProgress();
+                    initApp();
+                } catch(e) {
+                    console.error("Cache parsing error", e);
+                }
+            }
+
+            const fetchLogic = async () => {
+                let fetchedCatName = catID;
                 try {
                     const catDocRef = doc(db, "categories", catID);
                     const catSnap = await getDoc(catDocRef);
-                    displayCatName = (catSnap.exists() && catSnap.data().name) ? catSnap.data().name : catID;
-                } catch(e) { displayCatName = catID; }
+                    fetchedCatName = (catSnap.exists() && catSnap.data().name) ? catSnap.data().name : catID;
+                } catch(e) {}
 
                 const docRef = doc(db, parentID, catID, "sets", setID); 
                 const docSnap = await getDoc(docRef); 
                 
                 if (docSnap.exists()) { 
                     const data = docSnap.data(); 
-                    displaySetName = data.title ? data.title : setID; 
-                    if (displaySetName === setID) {
+                    let fetchedSetName = data.title ? data.title : setID; 
+                    if (fetchedSetName === setID) {
                         try {
                             const metaRef = doc(db, parentID, catID, "sets", "_metadata");
                             const metaSnap = await getDoc(metaRef);
                             if (metaSnap.exists() && metaSnap.data()[setID] && metaSnap.data()[setID].title) {
-                                displaySetName = metaSnap.data()[setID].title;
+                                fetchedSetName = metaSnap.data()[setID].title;
                             }
                         } catch(err) { console.log("Metadata fetch error:", err); }
                     }
 
-                    document.title = displayCatName + " - " + displaySetName + " | 𝐐𝐔𝐄𝐒𝐓𝐈𝐎𝐍𝐙 ";
-
                     const rawQuestions = data.questions; 
-                    mcqData = rawQuestions.map((q, index) => { 
+                    const newMcqData = rawQuestions.map((q, index) => { 
                         let correctKey = q.ans; 
                         if (q.ans && !['a','b','c','d'].includes(q.ans)) { 
                             const idx = q.options.indexOf(q.ans); 
@@ -689,14 +743,45 @@
                         } 
                         return { id: index + 1, q: q.question, a: q.options[0], b: q.options[1], c: q.options[2], d: q.options[3], ans: correctKey, orig_a: q.options[0], orig_b: q.options[1], orig_c: q.options[2], orig_d: q.options[3], orig_ans: correctKey }; 
                     }); 
-                    totalQuestionsCount = mcqData.length; 
                     
-                    // ব্রাউজারের লোকাল স্টোরেজ থেকে লক করা আইডিগুলো আনা হচ্ছে
-                    const savedProgress = localStorage.getItem(getLocalProgressKey());
-                    if (savedProgress) { lockedIds = new Set(JSON.parse(savedProgress)); } 
-                    initApp(); 
+                    const newCacheObj = {
+                        displayCatName: fetchedCatName,
+                        displaySetName: fetchedSetName,
+                        mcqData: newMcqData,
+                        rawHash: JSON.stringify(rawQuestions) 
+                    };
+
+                    const oldCacheObj = cachedDataStr ? JSON.parse(cachedDataStr) : null;
+
+                    if (!hasCachedData || (oldCacheObj && oldCacheObj.rawHash !== newCacheObj.rawHash)) {
+                        localStorage.setItem(cacheKey, JSON.stringify(newCacheObj));
+                        displayCatName = fetchedCatName;
+                        displaySetName = fetchedSetName;
+                        document.title = displayCatName + " - " + displaySetName + " | 𝐐𝐔𝐄𝐒𝐓𝐈𝐎𝐍𝐙 ";
+                        mcqData = newMcqData;
+                        totalQuestionsCount = mcqData.length;
+                        
+                        if (!hasCachedData) {
+                            await loadProgress();
+                            initApp();
+                        } else {
+                            console.log("Questions updated in background. Will apply on next reload.");
+                        }
+                    }
                 } 
-            } catch (error) { document.getElementById("loading-screen").innerHTML = "<div style='color:#d93025; font-size:18px;'>এরর: " + error.message + "</div>"; } 
+            };
+
+            try { 
+                if (hasCachedData) {
+                    fetchLogic(); 
+                } else {
+                    await fetchLogic(); 
+                }
+            } catch (error) { 
+                if (!hasCachedData) {
+                    document.getElementById("loading-screen").innerHTML = "<div style='color:#d93025; font-size:18px;'>এরর: " + error.message + "</div>"; 
+                }
+            } 
         } 
 
         function initApp() { 
@@ -727,10 +812,18 @@
                 } 
             }); 
             try { 
-                // ক্লাউডের বদলে লোকাল স্টোরেজে সেভ করা হচ্ছে
                 localStorage.setItem(getLocalProgressKey(), JSON.stringify(Array.from(lockedIds))); 
                 localStorage.removeItem(tempStorageKey()); 
-                Swal.fire({ icon: 'success', title: 'সেভ সফল!', text: 'আপনার প্রগ্রেস এই ব্রাউজারে সেভ হয়েছে। শুধুমাত্র সঠিক উত্তরগুলো লক করা হয়েছে।', timer: 2000, showConfirmButton: false }); 
+
+                if (currentUserUid) {
+                    const progRef = doc(db, "users", currentUserUid, "progress", setID);
+                    await setDoc(progRef, {
+                        lockedIds: Array.from(lockedIds),
+                        updatedAt: serverTimestamp()
+                    }, { merge: true });
+                }
+
+                Swal.fire({ icon: 'success', title: 'সেভ সফল!', text: 'আপনার প্রগ্রেস সেভ হয়েছে। শুধুমাত্র সঠিক উত্তরগুলো লক করা হয়েছে।', timer: 2000, showConfirmButton: false }); 
                 userAnswers = {}; 
                 paginate(); 
             } catch (e) { 
@@ -747,6 +840,17 @@
                 userAnswers = {}; 
                 localStorage.removeItem(tempStorageKey()); 
                 localStorage.removeItem(getLocalProgressKey()); 
+
+                if (currentUserUid) {
+                    try {
+                        const progRef = doc(db, "users", currentUserUid, "progress", setID);
+                        await setDoc(progRef, {
+                            lockedIds: [],
+                            updatedAt: serverTimestamp()
+                        }, { merge: true });
+                    } catch(e) { console.log(e); }
+                }
+
                 try { 
                     Swal.fire('সফল!', 'সব প্রশ্ন আনলক করা হয়েছে।', 'success'); 
                     initApp(); 
@@ -920,9 +1024,15 @@
             }); 
             localStorage.removeItem(tempStorageKey()); 
             
-            // রেজাল্ট দেখার পর অটো সেভ 
             if (lockedIds.size > 0) { 
                 localStorage.setItem(getLocalProgressKey(), JSON.stringify(Array.from(lockedIds))); 
+                if (currentUserUid) {
+                    const progRef = doc(db, "users", currentUserUid, "progress", setID);
+                    setDoc(progRef, {
+                        lockedIds: Array.from(lockedIds),
+                        updatedAt: serverTimestamp()
+                    }, { merge: true }).catch(e => console.log("Auto-save error:", e));
+                }
             } 
             
             let totalCorrect = lockedIds.size; 
@@ -939,8 +1049,6 @@
         function startTimer(mins) { if (timerInterval) clearInterval(timerInterval); let time = mins * 60; timerInterval = setInterval(() => { let m = Math.floor(time / 60); let s = time % 60; let display = `${toBengaliNumber(m.toString().padStart(2, '0'))}:${toBengaliNumber(s.toString().padStart(2, '0'))}`; document.querySelectorAll('.timer-val').forEach(el => el.innerText = display); if (time > 0) time--; else { clearInterval(timerInterval); timerInterval = null; } }, 1000); }
 
         updateViewIndicator();
-        
-        // পেজ লোড হলেই প্রশ্ন ফেচ শুরু হবে
         fetchMCQs();
     </script>
 </body>
