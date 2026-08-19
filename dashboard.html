@@ -125,26 +125,178 @@ import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/
 const firebaseConfig={apiKey:"AIzaSyCcS1zWFslmbRFS5PAvNrH8TFYIbR8N7ic",authDomain:"questionz-me.firebaseapp.com",projectId:"questionz-me",storageBucket:"questionz-me.firebasestorage.app",messagingSenderId:"393630463399",appId:"1:393630463399:web:825468121216445828f282",databaseURL:"https://questionz-me-default-rtdb.asia-southeast1.firebasedatabase.app/"};
 const app=initializeApp(firebaseConfig),db=getFirestore(app),auth=getAuth(app);
 let historyStack=JSON.parse(sessionStorage.getItem('qz_history'))||["root"],breadcrumbs=JSON.parse(sessionStorage.getItem('qz_breadcrumbs'))||[],unsubscribe=null,currentUser=null;
-const categoryCache=new Map(),metadataCache=new Map(),grid=document.getElementById('category-grid'),loading=document.getElementById('loading'),breadcrumbContainer=document.getElementById('breadcrumb-container');
+const grid=document.getElementById('category-grid'),loading=document.getElementById('loading'),breadcrumbContainer=document.getElementById('breadcrumb-container');
 renderBreadcrumbs();
 onAuthStateChanged(auth,u=>{currentUser=u;updateUI(historyStack[historyStack.length-1]);});
-async function loadSetsFromMetadata(s,c){const k=`${s}_${c}`;if(metadataCache.has(k)){renderSets(metadataCache.get(k),s,c);return}try{const m=await getDoc(doc(db,s,c,'sets','_metadata'));if(m.exists()){const d=m.data();metadataCache.set(k,d);await renderSets(d,s,c)}}catch(e){console.error("Metadata Load Error:",e)}}
-async function renderSets(d,s,c){if(c!==historyStack[historyStack.length-1])return;const keys=Object.keys(d).sort(),fragment=document.createDocumentFragment();const promises=keys.map(async(k)=>{if(document.getElementById(`set-${k}`))return null;const info=d[k];let p=0;if(currentUser){const snap=await getDoc(doc(db,"users",currentUser.uid,"exam_progress",`${s}_${c}_${k}`));if(snap.exists())p=snap.data().percent||0}return{k,info,p}});const resolved=await Promise.all(promises);resolved.forEach(item=>{if(!item)return;const{k,info,p}=item,title=info.title||k,display=title.length>30?title.substring(0,30)+"...":title;const box=document.createElement('div');box.id=`set-${k}`;box.className='noun-box';box.innerHTML=`<span>${display}</span><div class="progress-percent">${p}%</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${Math.min(100,p)}%"></div></div>`;
-box.onclick=()=>{
-    let cid=(k||"").trim().toLowerCase(),
-    // 🚨 এখানে প্রতিটি HTML ফাইলের নামের আগে '/' যুক্ত করা হয়েছে
-    target=cid.endsWith('_ielts')?'/ieltspractice.html':
-           (cid.endsWith('_cq')?'/cqtest.html':
-           (cid.endsWith('_onu')?'/test-onuchecced.html':
-           (cid.endsWith('_academic')?'/academic-test.html':
-           '/test.html')));
-           
-    localStorage.setItem('qz_current_path',['Home',...breadcrumbs,display].join(' > '));
-    window.location.href=`${target}?sub=${encodeURIComponent(s)}&cat=${encodeURIComponent(c)}&set=${encodeURIComponent(k)}&parent=${encodeURIComponent(s)}`
-};
-fragment.appendChild(box)});if(c===historyStack[historyStack.length-1]){grid.appendChild(fragment);loading.style.display="none"}}
-function renderItems(items,pId){if(pId!==historyStack[historyStack.length-1])return;const f=document.createDocumentFragment();items.forEach(cat=>{if(!document.getElementById(`cat-${cat.id}`)){const display=cat.name.length>30?cat.name.substring(0,30)+"...":cat.name,box=document.createElement('div');box.id=`cat-${cat.id}`;box.className='noun-box';box.innerHTML=`<span>${display}</span>`;box.onclick=()=>navigateTo(cat.id,cat.name);f.appendChild(box)}});grid.appendChild(f);loading.style.display="none"}
-function loadCategories(pId){if(unsubscribe)unsubscribe();grid.innerHTML="";loading.style.display="flex";const sId=historyStack[1];if(pId!=="root"&&sId)loadSetsFromMetadata(sId,pId);const q=query(collection(db,"categories"),where("parentId","==",pId));unsubscribe=onSnapshot(q,s=>{const items=[];s.forEach(doc=>{if(doc.id!=="_metadata")items.push({id:doc.id,...doc.data()})});items.sort((a,b)=>{if(a.order!==undefined&&b.order!==undefined)return a.order-b.order;return(parseInt(a.name)||0)-(parseInt(b.name)||0)});if(items.length>0){categoryCache.set(pId,items);renderItems(items,pId)}else if(pId==="root"){loading.style.display="none";grid.innerHTML="<p style='text-align:center;font-size:14px;color:#B9B2A0;font-family:\"Bensen\",sans-serif;'>কোনো ক্যাটাগরি পাওয়া যায়নি।</p>"}else{setTimeout(()=>{if(grid.children.length===0&&pId===historyStack[historyStack.length-1]){loading.style.display="none";grid.innerHTML="<p style='text-align:center;font-size:14px;color:#B9B2A0;font-family:\"Bensen\",sans-serif;'>কিছুই পাওয়া যায়নি।</p>"}},6000)}})}
+
+// LocalStorage caching helper
+function getLocalCache(key) {
+    try {
+        const item = localStorage.getItem(`qz_dash_${key}`);
+        return item ? JSON.parse(item) : null;
+    } catch(e) { return null; }
+}
+function setLocalCache(key, data) {
+    try {
+        localStorage.setItem(`qz_dash_${key}`, JSON.stringify(data));
+    } catch(e) { console.error("Cache saving error:", e); }
+}
+
+async function loadSetsFromMetadata(s,c){
+    const k=`${s}_${c}`;
+    
+    // 1. Check Local Cache first for instant load
+    const cachedData = getLocalCache(k);
+    if(cachedData){
+        renderSets(cachedData,s,c, true); 
+    }
+
+    // 2. Fetch from Firestore in background
+    try{
+        const m=await getDoc(doc(db,s,c,'sets','_metadata'));
+        if(m.exists()){
+            const d=m.data();
+            // Update cache and re-render only if data is different or no cache existed
+            if(JSON.stringify(cachedData) !== JSON.stringify(d)){
+                setLocalCache(k, d);
+                await renderSets(d,s,c, false);
+            }
+        }
+    }catch(e){console.error("Metadata Load Error:",e)}
+}
+
+async function renderSets(d,s,c, isFromCache = false){
+    if(c!==historyStack[historyStack.length-1])return;
+    const keys=Object.keys(d).sort();
+    
+    // If not from cache, we clear the grid to avoid duplicates (since we might re-render updated data)
+    if(!isFromCache) grid.innerHTML = '';
+    
+    const fragment=document.createDocumentFragment();
+    const promises=keys.map(async(k)=>{
+        if(isFromCache && document.getElementById(`set-${k}`)) return null; // Skip if already there and we are just caching
+        const info=d[k];
+        let p=0;
+        
+        // Load progress from LocalStorage first for instant UI
+        const localProgKey = `qz_prog_${s}_${c}_${k}`;
+        const localProg = localStorage.getItem(localProgKey);
+        if(localProg) {
+            const arr = JSON.parse(localProg);
+            // Rough calculation: we don't have total Q count here, but we can store percent in test.html later. 
+            // For now, if we have local progress, we try to fetch accurate percent from DB if logged in.
+            p = Math.min(100, Math.floor(arr.length * 10)); // Placeholder fast logic if db fetch is slow
+        }
+
+        if(currentUser){
+            try {
+                const snap=await getDoc(doc(db,"users",currentUser.uid,"exam_progress",`${s}_${c}_${k}`));
+                if(snap.exists() && snap.data().percent !== undefined) p=snap.data().percent||0;
+            } catch(e){}
+        }
+        return{k,info,p}
+    });
+
+    const resolved=await Promise.all(promises);
+    resolved.forEach(item=>{
+        if(!item)return;
+        const{k,info,p}=item,title=info.title||k,display=title.length>30?title.substring(0,30)+"...":title;
+        const box=document.createElement('div');
+        box.id=`set-${k}`;
+        box.className='noun-box';
+        box.innerHTML=`<span>${display}</span><div class="progress-percent">${p}%</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${Math.min(100,p)}%"></div></div>`;
+        box.onclick=()=>{
+            let cid=(k||"").trim().toLowerCase(),
+            target=cid.endsWith('_ielts')?'/ieltspractice.html':
+                   (cid.endsWith('_cq')?'/cqtest.html':
+                   (cid.endsWith('_onu')?'/test-onuchecced.html':
+                   (cid.endsWith('_academic')?'/academic-test.html':
+                   '/test.html')));
+                   
+            localStorage.setItem('qz_current_path',['Home',...breadcrumbs,display].join(' > '));
+            window.location.href=`${target}?sub=${encodeURIComponent(s)}&cat=${encodeURIComponent(c)}&set=${encodeURIComponent(k)}&parent=${encodeURIComponent(s)}`
+        };
+        fragment.appendChild(box)
+    });
+    
+    if(c===historyStack[historyStack.length-1]){
+        grid.appendChild(fragment);
+        loading.style.display="none"
+    }
+}
+
+function renderItems(items,pId, isFromCache = false){
+    if(pId!==historyStack[historyStack.length-1])return;
+    
+    if(!isFromCache) grid.innerHTML = ''; // Clear existing if we are updating from live data
+    
+    const f=document.createDocumentFragment();
+    items.forEach(cat=>{
+        if(isFromCache && document.getElementById(`cat-${cat.id}`)) return; // Skip if already there
+        const display=cat.name.length>30?cat.name.substring(0,30)+"...":cat.name,box=document.createElement('div');
+        box.id=`cat-${cat.id}`;
+        box.className='noun-box';
+        box.innerHTML=`<span>${display}</span>`;
+        box.onclick=()=>navigateTo(cat.id,cat.name);
+        f.appendChild(box)
+    });
+    grid.appendChild(f);
+    loading.style.display="none"
+}
+
+function loadCategories(pId){
+    if(unsubscribe)unsubscribe();
+    grid.innerHTML="";
+    loading.style.display="flex";
+    
+    const sId=historyStack[1];
+    
+    if(pId!=="root"&&sId) {
+        loadSetsFromMetadata(sId,pId);
+        return; // Early return as loadSetsFromMetadata handles rendering for sets
+    }
+    
+    // 1. Instant Load from Cache
+    const cachedItems = getLocalCache(`cat_${pId}`);
+    if (cachedItems) {
+        renderItems(cachedItems, pId, true);
+    }
+
+    // 2. Setup Realtime Listener (Background Sync)
+    const q=query(collection(db,"categories"),where("parentId","==",pId));
+    unsubscribe=onSnapshot(q,s=>{
+        const items=[];
+        s.forEach(doc=>{
+            if(doc.id!=="_metadata")items.push({id:doc.id,...doc.data()})
+        });
+        
+        items.sort((a,b)=>{
+            if(a.order!==undefined&&b.order!==undefined)return a.order-b.order;
+            return(parseInt(a.name)||0)-(parseInt(b.name)||0)
+        });
+        
+        if(items.length>0){
+            // Update cache and re-render
+            if (JSON.stringify(cachedItems) !== JSON.stringify(items)) {
+                setLocalCache(`cat_${pId}`, items);
+                renderItems(items,pId, false);
+            } else if (!cachedItems) { // if there was no cache initially
+                renderItems(items,pId, false);
+            }
+        }else if(pId==="root"){
+            loading.style.display="none";
+            grid.innerHTML="<p style='text-align:center;font-size:14px;color:#B9B2A0;font-family:\"Bensen\",sans-serif;'>কোনো ক্যাটাগরি পাওয়া যায়নি।</p>"
+        }else{
+            setTimeout(()=>{
+                if(grid.children.length===0&&pId===historyStack[historyStack.length-1]){
+                    loading.style.display="none";
+                    grid.innerHTML="<p style='text-align:center;font-size:14px;color:#B9B2A0;font-family:\"Bensen\",sans-serif;'>কিছুই পাওয়া যায়নি।</p>"
+                }
+            },6000)
+        }
+    })
+}
+
 function saveState(){sessionStorage.setItem('qz_history',JSON.stringify(historyStack));sessionStorage.setItem('qz_breadcrumbs',JSON.stringify(breadcrumbs))}
 function navigateTo(id,name){historyStack.push(id);breadcrumbs.push(name);saveState();history.pushState({id:id},"");updateUI(id)}
 window.jumpTo=function(i){if(i===-1){historyStack=["root"];breadcrumbs=[]}else{historyStack=historyStack.slice(0,i+2);breadcrumbs=breadcrumbs.slice(0,i+1)}saveState();updateUI(historyStack[historyStack.length-1])};
