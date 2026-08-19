@@ -204,7 +204,30 @@
             --btn-active-text: #121A15;
         }
 
-        *, *::before, *::after { box-sizing: border-box; }
+        *, *::before, *::after {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+
+        html, body {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button, a, input, textarea, select, .option-btn, .dock-icon-btn, .dock-fab, .view-btn, .stat-chip, .close-modal-btn, [onclick] {
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+
+        button:focus, button:active,
+        .option-btn:focus, .option-btn:active,
+        .dock-icon-btn:focus, .dock-icon-btn:active,
+        .dock-fab:focus, .dock-fab:active,
+        .view-btn:focus, .view-btn:active,
+        .close-modal-btn:focus, .close-modal-btn:active {
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
+        }
 
         body {
             margin: 0; padding: 0 0 150px 0;
