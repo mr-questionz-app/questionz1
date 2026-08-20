@@ -230,8 +230,12 @@
         }
 
         /* ══════════════════════════════
-           SCROLLBAR (hidden)
+           SCROLLBAR (hidden) + native WebView scroll fix
            ══════════════════════════════ */
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
         html {
             scrollbar-width: none;
             -ms-overflow-style: none;
@@ -242,8 +246,22 @@
             height: 0;
         }
 
+        #app-scroll-wrapper {
+            height: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 0 0 150px 0;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        #app-scroll-wrapper::-webkit-scrollbar {
+            display: none;
+            width: 0;
+            height: 0;
+        }
+
         body {
-            margin: 0; padding: 0 0 150px 0;
+            margin: 0; padding: 0;
             background-color: var(--bg-desktop);
             font-family: 'Noto Serif Bengali', 'Lora', serif;
             transition: background-color 0.35s var(--ease);
@@ -540,8 +558,10 @@
 
         @media print {
             @page { size: A4; margin: 0; }
+            html, body, #app-scroll-wrapper { height: auto !important; overflow: visible !important; }
             .bottom-dock, #loading-screen, .modal-overlay { display: none !important; }
             body { background: none !important; margin: 0 !important; padding: 0 !important; }
+            #app-scroll-wrapper { padding: 0 !important; }
             .page { box-shadow: none !important; margin: 0 !important; padding: var(--print-margin-top) var(--print-margin-right) var(--print-margin-bottom) var(--print-margin-left) !important; width: 210mm !important; height: 297mm !important; page-break-after: always; box-sizing: border-box; }
             .page:last-child { page-break-after: auto; }
             .grand-header { display: block !important; }
@@ -564,6 +584,8 @@
           <div class="wm-loader-dot"></div>
         </div>
     </div>
+
+    <div id="app-scroll-wrapper"></div>
 
     <div class="bottom-dock">
         <div class="dock-inner">
@@ -1036,7 +1058,7 @@
                 <div class="${colClass}"></div>
                 <div class="footer"></div> 
             `; 
-            document.body.appendChild(page); 
+            document.getElementById('app-scroll-wrapper').appendChild(page); 
             return page; 
         } 
 
